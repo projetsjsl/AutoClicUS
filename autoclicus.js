@@ -155,6 +155,10 @@
     countdownEnd: (() => { const t = new Date(); t.setHours(16, 0, 0, 0); return t.getTime() > Date.now() ? t.getTime() : null; })(),
     countdownInterval: null,
 
+    // Loop execution stats
+    loopTimestamps: [],
+    loopStartTime: null,
+
     // UI state for forms
     showConditionForm: false,
     showPromptForm: false,
@@ -741,6 +745,8 @@
       State.startTime = Date.now();
       State.sessionId = Audit.generateId();
       State.auditTrail = [];
+      State.loopTimestamps = [];
+      State.loopStartTime = Date.now();
 
       UI.flash('success', State.dryRun ? 'Simulation démarrée' : 'Lecture démarrée');
       UI.render();
@@ -752,6 +758,7 @@
       while (State.isPlaying && State.currentLoop < State.loopCount) {
         State.currentLoop++;
         State.currentStep = 0;
+        State.loopStartTime = Date.now();
 
         for (let i = 0; i < State.recordedActions.length; i++) {
           if (!State.isPlaying) break;
@@ -798,6 +805,9 @@
           // Delay between actions
           await this.sleep(State.settings.delayBetweenActions / State.speed);
         }
+
+        // Record loop completion for stats
+        State.loopTimestamps.push(Date.now() - State.loopStartTime);
 
         if (State.currentLoop < State.loopCount) {
           await this.sleep(State.settings.delayBetweenLoops / State.speed);
@@ -1236,10 +1246,9 @@
           z-index: 999999;
           display: flex;
           flex-direction: column;
-          overflow: auto;
+          overflow: hidden;
           backdrop-filter: blur(10px);
           transition: border-color 0.4s, box-shadow 0.4s;
-          resize: horizontal;
         }
 
         #autoclicus-ui.state-recording {
@@ -1458,6 +1467,82 @@
           pointer-events: none;
         }
 
+        /* Resize handle */
+        .resize-handle {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 18px;
+          height: 18px;
+          cursor: ew-resize;
+          opacity: 0.4;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px;
+          color: ${Config.theme.textSecondary};
+          z-index: 10;
+          border-radius: 0 8px 0 16px;
+          transition: opacity 0.2s;
+        }
+
+        .resize-handle:hover {
+          opacity: 0.8;
+          background: rgba(0,0,0,0.05);
+        }
+
+        /* Execution stats */
+        .exec-stats {
+          background: linear-gradient(135deg, #0a1628 0%, #1a2744 100%);
+          padding: 8px 14px 6px;
+          border-bottom: 1px solid rgba(0, 135, 78, 0.2);
+        }
+
+        .exec-stats-row {
+          display: flex;
+          justify-content: space-between;
+          gap: 6px;
+          margin-bottom: 6px;
+        }
+
+        .exec-stat {
+          text-align: center;
+          flex: 1;
+        }
+
+        .exec-stat-value {
+          display: block;
+          font-size: 15px;
+          font-weight: 700;
+          font-family: 'SF Mono', 'Courier New', monospace;
+          color: #4ade80;
+          font-variant-numeric: tabular-nums;
+          text-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+        }
+
+        .exec-stat-label {
+          font-size: 9px;
+          color: rgba(255,255,255,0.5);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .exec-stats-progress {
+          height: 4px;
+          background: rgba(255,255,255,0.1);
+          border-radius: 2px;
+          overflow: hidden;
+          margin-bottom: 2px;
+        }
+
+        .exec-stats-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #4ade80, #22c55e);
+          border-radius: 2px;
+          transition: width 0.3s ease;
+          box-shadow: 0 0 6px rgba(74, 222, 128, 0.5);
+        }
+
         /* Bottom status strip */
         .bottom-strip {
           padding: 6px 14px;
@@ -1538,6 +1623,17 @@
           flex: 1;
           overflow-y: auto;
           padding: 20px;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(0,0,0,0.15) transparent;
+        }
+
+        .content::-webkit-scrollbar {
+          width: 4px;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+          background: rgba(0,0,0,0.15);
+          border-radius: 2px;
         }
 
         .btn {
@@ -2253,9 +2349,11 @@
         ${this.renderTabs()}
         ${this.renderContent()}
         ${this.renderBottomStrip()}
+        <div class="resize-handle" id="resize-handle">⇔</div>
       `);
 
       this.attachEventListeners();
+      this.attachResizeHandle();
     },
 
     renderHeader() {
@@ -2307,9 +2405,82 @@
             <input type="text" id="rate-seller" placeholder="1.0000" value="${State.tauxVendeur}">
           </div>
           <div class="rate-field" style="flex: 0 0 auto;">
+            <label>Boucles</label>
+            <input type="number" id="loops" min="1" max="${Config.limits.maxLoops}" value="${State.loopCount}" style="width: 70px; font-family: 'SF Mono', monospace; font-size: 13px;">
+          </div>
+          <div class="rate-field" style="flex: 0 0 auto;">
             <label>Fin à</label>
             <input type="time" id="countdown-time" value="${State.countdownEnd ? new Date(State.countdownEnd).toTimeString().substring(0,5) : '16:00'}" style="font-family: 'SF Mono', monospace; font-size: 13px;">
           </div>
+        </div>
+        ${State.isPlaying ? this.renderExecStats() : ''}
+      `;
+    },
+
+    renderExecStats() {
+      const done = State.currentLoop;
+      const total = State.loopCount;
+      const remaining = total - done;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      // Calculate avg loop time from completed loops
+      const avgMs = State.loopTimestamps.length > 0
+        ? State.loopTimestamps.reduce((a, b) => a + b, 0) / State.loopTimestamps.length
+        : 0;
+
+      const etaMs = avgMs * remaining;
+      const etaFinish = avgMs > 0 ? new Date(Date.now() + etaMs) : null;
+
+      // Check if we'll finish before countdown
+      let deadlineStatus = '';
+      if (State.countdownEnd && etaFinish) {
+        if (etaFinish.getTime() <= State.countdownEnd) {
+          const margin = State.countdownEnd - etaFinish.getTime();
+          const marginMins = Math.floor(margin / 60000);
+          deadlineStatus = `<span style="color: ${Config.theme.success};">✅ Finira avec ~${marginMins} min d'avance</span>`;
+        } else {
+          const over = etaFinish.getTime() - State.countdownEnd;
+          const overMins = Math.ceil(over / 60000);
+          deadlineStatus = `<span style="color: ${Config.theme.error};">⚠️ Dépassera de ~${overMins} min</span>`;
+        }
+      }
+
+      const formatDuration = (ms) => {
+        if (ms <= 0) return '--';
+        const s = Math.floor(ms / 1000);
+        if (s < 60) return `${s}s`;
+        const m = Math.floor(s / 60);
+        const rs = s % 60;
+        if (m < 60) return `${m}m${String(rs).padStart(2, '0')}s`;
+        const h = Math.floor(m / 60);
+        const rm = m % 60;
+        return `${h}h${String(rm).padStart(2, '0')}m`;
+      };
+
+      return `
+        <div class="exec-stats">
+          <div class="exec-stats-row">
+            <div class="exec-stat">
+              <span class="exec-stat-value">${remaining}</span>
+              <span class="exec-stat-label">/ ${total} restant${remaining !== 1 ? 's' : ''}</span>
+            </div>
+            <div class="exec-stat">
+              <span class="exec-stat-value">${avgMs > 0 ? formatDuration(avgMs) : '--'}</span>
+              <span class="exec-stat-label">/ boucle</span>
+            </div>
+            <div class="exec-stat">
+              <span class="exec-stat-value">${etaMs > 0 ? formatDuration(etaMs) : '--'}</span>
+              <span class="exec-stat-label">restant</span>
+            </div>
+            <div class="exec-stat">
+              <span class="exec-stat-value">${etaFinish ? etaFinish.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }) : '--'}</span>
+              <span class="exec-stat-label">fin est.</span>
+            </div>
+          </div>
+          <div class="exec-stats-progress">
+            <div class="exec-stats-fill" style="width: ${pct}%"></div>
+          </div>
+          ${deadlineStatus ? `<div style="text-align: center; font-size: 11px; padding: 2px 0;">${deadlineStatus}</div>` : ''}
         </div>
       `;
     },
@@ -2430,11 +2601,6 @@
             <div class="input-group">
               <label>Vitesse (${State.speed}x)</label>
               <input type="range" id="speed" min="0.25" max="8" step="0.25" value="${State.speed}">
-            </div>
-
-            <div class="input-group">
-              <label>Boucles (${State.loopCount})</label>
-              <input type="number" id="loops" min="1" max="${Config.limits.maxLoops}" value="${State.loopCount}">
             </div>
 
             <div class="input-group">
@@ -3572,6 +3738,33 @@
           }
         });
       }
+    },
+
+    attachResizeHandle() {
+      const root = State.shadowRoot;
+      const handle = root.querySelector('#resize-handle');
+      const ui = root.querySelector('#autoclicus-ui');
+      if (!handle || !ui) return;
+
+      handle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        const startX = e.clientX;
+        const startW = ui.offsetWidth;
+
+        const onMove = (ev) => {
+          const delta = startX - ev.clientX; // drag left = wider (panel is right-aligned)
+          const newW = Math.max(380, Math.min(window.innerWidth * 0.9, startW + delta));
+          ui.style.width = newW + 'px';
+        };
+
+        const onUp = () => {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        };
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
     },
 
     attachKeyboardShortcuts() {
