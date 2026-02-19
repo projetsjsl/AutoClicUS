@@ -1,4 +1,4 @@
-// AutoClicUS v5.0.0 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
+// AutoClicUS v5.1.0 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
 // Automation assistant for SmartD USD exchange rate operations
 // Paste this complete snippet into Chrome DevTools console
 
@@ -9,7 +9,7 @@
   // CONFIG
   // =============================================================================
   const Config = {
-    version: '5.0.0',
+    version: '5.1.0',
     emmaAvatar: 'data:image/jpeg;base64,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',
     theme: {
       bg: '#ffffff',
@@ -146,6 +146,14 @@
       showTooltips: true,
       confirmBeforeDelete: true
     },
+
+    // Rates
+    tauxAcheteur: '',
+    tauxVendeur: '',
+
+    // Countdown
+    countdownEnd: null,
+    countdownInterval: null,
 
     // UI state for forms
     showConditionForm: false,
@@ -836,6 +844,30 @@
           return;
         }
 
+        if (action.type === 'paste_buyer_rate' || action.type === 'paste_seller_rate') {
+          const rate = action.type === 'paste_buyer_rate' ? State.tauxAcheteur : State.tauxVendeur;
+          const label = action.type === 'paste_buyer_rate' ? 'acheteur' : 'vendeur';
+          if (!rate) {
+            UI.flash('error', `Taux ${label} non défini`);
+            Audit.log(action, action.type, 'missing_rate', 'error', Date.now() - startTime);
+            return;
+          }
+          const activeEl = document.activeElement;
+          if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+            if (!State.dryRun) {
+              this.setInputValue(activeEl, rate);
+            }
+            Audit.log(action, action.type, rate, 'success', Date.now() - startTime);
+          } else {
+            // Try clipboard fallback
+            if (!State.dryRun) {
+              try { await navigator.clipboard.writeText(rate); } catch (e) { /* ignore */ }
+            }
+            Audit.log(action, action.type, `clipboard:${rate}`, 'success', Date.now() - startTime);
+          }
+          return;
+        }
+
         // Regular action
         const { element, confidence } = Fingerprint.resolve(action.fingerprint);
 
@@ -1193,7 +1225,7 @@
           width: 450px;
           max-height: 90vh;
           background: ${Config.theme.bg};
-          border: 1px solid rgba(0, 135, 78, 0.2);
+          border: 2px solid rgba(0, 135, 78, 0.2);
           border-radius: 16px;
           box-shadow: 0 10px 40px ${Config.theme.shadow}, 0 0 0 1px rgba(0, 135, 78, 0.05);
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -1203,8 +1235,20 @@
           display: flex;
           flex-direction: column;
           overflow: hidden;
-          animation: ai-pulse 4s ease-in-out infinite;
           backdrop-filter: blur(10px);
+          transition: border-color 0.4s, box-shadow 0.4s;
+        }
+
+        #autoclicus-ui.state-recording {
+          border-color: ${Config.theme.error};
+          box-shadow: 0 0 20px rgba(220, 53, 69, 0.3), 0 0 40px rgba(220, 53, 69, 0.1), 0 10px 40px ${Config.theme.shadow};
+          animation: ai-recording-pulse 1.5s ease-in-out infinite;
+        }
+
+        #autoclicus-ui.state-playing {
+          border-color: ${Config.theme.primary};
+          box-shadow: 0 0 20px rgba(0, 135, 78, 0.3), 0 0 40px rgba(0, 135, 78, 0.1), 0 10px 40px ${Config.theme.shadow};
+          animation: ai-pulse 2s ease-in-out infinite;
         }
 
         .header {
@@ -1212,10 +1256,10 @@
           background-size: 200% 200%;
           animation: ai-gradient 6s ease infinite;
           color: white;
-          padding: 16px 20px;
+          padding: 10px 14px;
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 10px;
           position: relative;
           overflow: hidden;
         }
@@ -1245,54 +1289,198 @@
         }
 
         .header-title {
-          font-size: 18px;
+          font-size: 16px;
           font-weight: 600;
-          margin-bottom: 2px;
           letter-spacing: 0.5px;
           text-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .header-subtitle {
-          font-size: 12px;
-          opacity: 0.9;
+          font-size: 11px;
+          opacity: 0.85;
         }
 
         .header-ai-badge {
           display: inline-block;
-          padding: 1px 6px;
-          background: rgba(255,255,255,0.2);
-          border-radius: 8px;
-          font-size: 10px;
-          font-weight: 600;
+          padding: 1px 5px;
+          background: rgba(255,255,255,0.25);
+          border-radius: 6px;
+          font-size: 9px;
+          font-weight: 700;
           letter-spacing: 1px;
           vertical-align: middle;
           margin-left: 4px;
-          backdrop-filter: blur(4px);
+        }
+
+        .header-right {
+          text-align: right;
+          flex-shrink: 0;
         }
 
         .header-clock {
-          font-size: 12px;
-          opacity: 0.9;
+          font-size: 18px;
+          font-weight: 600;
           font-variant-numeric: tabular-nums;
-          text-align: right;
+          text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .header-countdown {
+          font-size: 13px;
+          font-weight: 600;
+          color: #ff6b6b;
+          font-variant-numeric: tabular-nums;
+          margin-top: 1px;
+          text-shadow: 0 0 6px rgba(255,107,107,0.5);
+        }
+
+        .header-countdown.expired {
+          animation: ai-dot-pulse 0.5s ease-in-out infinite;
         }
 
         .header-ai-status {
-          font-size: 10px;
+          font-size: 9px;
           opacity: 0.8;
-          margin-top: 2px;
+          margin-top: 1px;
           display: flex;
           align-items: center;
-          gap: 4px;
+          gap: 3px;
           justify-content: flex-end;
         }
 
         .ai-dot {
-          width: 6px;
-          height: 6px;
+          width: 5px;
+          height: 5px;
           border-radius: 50%;
           background: #4ade80;
           animation: ai-dot-pulse 2s ease-in-out infinite;
+        }
+
+        /* Rate bar */
+        .rate-bar {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 14px;
+          background: ${Config.theme.bgSecondary};
+          border-bottom: 1px solid ${Config.theme.border};
+          font-size: 13px;
+        }
+
+        .rate-field {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .rate-field label {
+          font-size: 11px;
+          font-weight: 600;
+          color: ${Config.theme.textSecondary};
+          text-transform: uppercase;
+          letter-spacing: 0.3px;
+          white-space: nowrap;
+        }
+
+        .rate-field input {
+          width: 100%;
+          padding: 5px 8px;
+          border: 1px solid ${Config.theme.border};
+          border-radius: 5px;
+          font-size: 14px;
+          font-weight: 600;
+          font-family: 'Courier New', monospace;
+          color: ${Config.theme.primary};
+          text-align: center;
+          background: white;
+        }
+
+        .rate-field input:focus {
+          outline: none;
+          border-color: ${Config.theme.primary};
+          box-shadow: 0 0 0 2px rgba(0, 135, 78, 0.15);
+        }
+
+        .rate-divider {
+          width: 1px;
+          height: 28px;
+          background: ${Config.theme.border};
+        }
+
+        /* Geek progress bar */
+        .progress-bar-geek {
+          height: 8px;
+          background: #0a0a0a;
+          border-radius: 4px;
+          overflow: hidden;
+          margin-bottom: 16px;
+          position: relative;
+          border: 1px solid rgba(0, 135, 78, 0.3);
+        }
+
+        .progress-bar-geek .progress-fill-geek {
+          height: 100%;
+          border-radius: 3px;
+          transition: width 0.3s;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .progress-bar-geek .progress-fill-geek.playing {
+          background: linear-gradient(90deg, #00874e, #00ff88, #00874e);
+          background-size: 200% 100%;
+          animation: ai-progress-sweep 1s linear infinite;
+          box-shadow: 0 0 8px rgba(0, 255, 136, 0.6), inset 0 0 4px rgba(0, 255, 136, 0.3);
+        }
+
+        .progress-bar-geek .progress-fill-geek.recording {
+          background: linear-gradient(90deg, #dc3545, #ff6b6b, #dc3545);
+          background-size: 200% 100%;
+          animation: ai-progress-sweep 0.8s linear infinite;
+          box-shadow: 0 0 8px rgba(220, 53, 69, 0.6), inset 0 0 4px rgba(255, 107, 107, 0.3);
+        }
+
+        .progress-bar-geek::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(0,0,0,0.15) 3px, rgba(0,0,0,0.15) 4px);
+          pointer-events: none;
+        }
+
+        /* Bottom status strip */
+        .bottom-strip {
+          padding: 6px 14px;
+          font-size: 11px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-top: 1px solid ${Config.theme.border};
+          background: ${Config.theme.bgSecondary};
+          transition: all 0.3s;
+        }
+
+        .bottom-strip.recording {
+          background: linear-gradient(90deg, rgba(220,53,69,0.08), rgba(220,53,69,0.15), rgba(220,53,69,0.08));
+          background-size: 200% 100%;
+          animation: ai-progress-sweep 2s linear infinite;
+          border-top-color: rgba(220,53,69,0.3);
+          color: ${Config.theme.error};
+        }
+
+        .bottom-strip.playing {
+          background: linear-gradient(90deg, rgba(0,135,78,0.08), rgba(0,135,78,0.15), rgba(0,135,78,0.08));
+          background-size: 200% 100%;
+          animation: ai-progress-sweep 2s linear infinite;
+          border-top-color: rgba(0,135,78,0.3);
+          color: ${Config.theme.primary};
+        }
+
+        .bottom-strip .status-icon {
+          font-size: 14px;
         }
 
         .tabs {
@@ -2048,10 +2236,16 @@
       const ui = State.shadowRoot.querySelector('#autoclicus-ui');
       if (!ui) return;
 
+      // Apply state classes for border glow
+      ui.classList.toggle('state-recording', State.isRecording);
+      ui.classList.toggle('state-playing', State.isPlaying);
+
       safeHTML(ui, `
         ${this.renderHeader()}
+        ${this.renderRateBar()}
         ${this.renderTabs()}
         ${this.renderContent()}
+        ${this.renderBottomStrip()}
       `);
 
       this.attachEventListeners();
@@ -2061,20 +2255,76 @@
       const now = new Date();
       const time = now.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
+      let countdownHTML = '';
+      if (State.countdownEnd) {
+        const remaining = State.countdownEnd - now.getTime();
+        if (remaining > 0) {
+          const mins = Math.floor(remaining / 60000);
+          const secs = Math.floor((remaining % 60000) / 1000);
+          countdownHTML = `<div class="header-countdown">${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}</div>`;
+        } else {
+          countdownHTML = `<div class="header-countdown" style="animation: ai-recording-pulse 0.8s ease-in-out infinite;">00:00 TERMINÉ</div>`;
+        }
+      }
+
       return `
         <div class="header">
           <div class="header-avatar">
-            <img src="${Config.emmaAvatar}" alt="Emma IA" width="44" height="44"
+            <img src="${Config.emmaAvatar}" alt="Emma" width="40" height="40"
                  style="border-radius: 50%; border: 2px solid rgba(255,255,255,0.6); object-fit: cover;">
           </div>
           <div class="header-info">
-            <div class="header-title">Emma IA <span class="header-ai-badge">AI</span></div>
+            <div class="header-title">Emma <span class="header-ai-badge">AI</span></div>
             <div class="header-subtitle">Assistante · Taux de change</div>
           </div>
-          <div>
+          <div class="header-right">
             <div class="header-clock">${time}</div>
+            ${countdownHTML}
             <div class="header-ai-status"><span class="ai-dot"></span> En ligne</div>
           </div>
+        </div>
+      `;
+    },
+
+    renderRateBar() {
+      return `
+        <div class="rate-bar">
+          <div class="rate-field">
+            <label>Taux acheteur</label>
+            <input type="text" id="rate-buyer" placeholder="1.0000" value="${State.tauxAcheteur}">
+          </div>
+          <div class="rate-field">
+            <label>Taux vendeur</label>
+            <input type="text" id="rate-seller" placeholder="1.0000" value="${State.tauxVendeur}">
+          </div>
+          <div class="rate-field" style="flex: 0 0 auto;">
+            <label>Décompte</label>
+            <input type="time" id="countdown-time" style="font-family: 'SF Mono', monospace; font-size: 13px;">
+          </div>
+        </div>
+      `;
+    },
+
+    renderBottomStrip() {
+      let stripClass = 'bottom-strip';
+      let statusText = 'Prêt';
+      let statusIcon = '⚪';
+
+      if (State.isRecording) {
+        stripClass += ' recording';
+        statusText = 'Enregistrement en cours';
+        statusIcon = '🔴';
+      } else if (State.isPlaying) {
+        stripClass += ' playing';
+        const step = State.currentStep + 1;
+        const total = State.recordedActions.length;
+        statusText = `Lecture ${step}/${total} · Boucle ${State.currentLoop}/${State.loopCount}`;
+        statusIcon = '🟢';
+      }
+
+      return `
+        <div class="${stripClass}">
+          <span class="status-icon">${statusIcon}</span> ${statusText}
         </div>
       `;
     },
@@ -2153,13 +2403,15 @@
               </button>
             </div>
 
-            ${State.isPlaying ? `
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${progress}%"></div>
+            ${State.isPlaying || State.isRecording ? `
+              <div class="progress-bar-geek">
+                <div class="progress-fill-geek ${State.isPlaying ? 'playing' : 'recording'}" style="width: ${State.isPlaying ? progress : 100}%"></div>
               </div>
-              <div style="text-align: center; font-size: 13px; color: ${Config.theme.textSecondary};">
+              ${State.isPlaying ? `<div style="text-align: center; font-size: 13px; color: ${Config.theme.textSecondary};">
                 Étape ${State.currentStep + 1} / ${State.recordedActions.length} · Boucle ${State.currentLoop} / ${State.loopCount}
-              </div>
+              </div>` : `<div style="text-align: center; font-size: 13px; color: #ff6b6b;">
+                Enregistrement... ${State.recordedActions.length} action${State.recordedActions.length !== 1 ? 's' : ''}
+              </div>`}
             ` : ''}
           </div>
 
@@ -2336,13 +2588,15 @@
         if (action.type === 'confirm') return `❓ ${action.title || 'Confirmation'}`;
         if (action.type === 'wait') return `⏳ Attendre ${action.delay || 1000}ms`;
         if (action.type === 'navigate') return `🌐 ${action.url || ''}`;
+        if (action.type === 'paste_buyer_rate') return `💵 Coller taux acheteur`;
+        if (action.type === 'paste_seller_rate') return `💰 Coller taux vendeur`;
         const sel = action.fingerprint?.selector || '';
         const val = action.value ? ` = "${action.value.substring(0, 20)}"` : '';
         return `${action.eventType} → ${sel.substring(0, 30)}${val}`;
       };
 
       const actionTypeIcon = (action) => {
-        const icons = { click: '👆', input: '⌨️', change: '🔄', keydown: '⌨️', prompt: '📝', confirm: '❓', wait: '⏳', navigate: '🌐' };
+        const icons = { click: '👆', input: '⌨️', change: '🔄', keydown: '⌨️', prompt: '📝', confirm: '❓', wait: '⏳', navigate: '🌐', paste_buyer_rate: '💵', paste_seller_rate: '💰' };
         return icons[action.type] || icons[action.eventType] || '▶️';
       };
 
@@ -2355,6 +2609,8 @@
               <button class="btn btn-primary btn-small tooltip-wrap" data-tip="Ajouter une confirmation Oui/Non" id="add-confirm">+ Confirmation</button>
               <button class="btn btn-secondary btn-small tooltip-wrap" data-tip="Ajouter une pause/attente" id="add-wait">+ Attente</button>
               <button class="btn btn-secondary btn-small tooltip-wrap" data-tip="Ajouter une navigation URL" id="add-navigate">+ Navigation</button>
+              <button class="btn btn-secondary btn-small tooltip-wrap" data-tip="Coller le taux acheteur dans le champ actif" id="add-paste-buyer">💵 Taux acheteur</button>
+              <button class="btn btn-secondary btn-small tooltip-wrap" data-tip="Coller le taux vendeur dans le champ actif" id="add-paste-seller">💰 Taux vendeur</button>
               <button class="btn btn-danger btn-small tooltip-wrap" data-tip="Supprime toutes les actions" id="clear-actions">🗑️ Tout effacer</button>
             </div>
           </div>
@@ -2830,6 +3086,45 @@
       if (speedInput) speedInput.addEventListener('input', (e) => { State.speed = parseFloat(e.target.value); this.render(); });
       if (loopsInput) loopsInput.addEventListener('input', (e) => { State.loopCount = parseInt(e.target.value); this.render(); });
       if (timeLimitInput) timeLimitInput.addEventListener('input', (e) => { State.timeLimit = parseInt(e.target.value) * 1000; });
+
+      // Rate bar inputs
+      const rateBuyerInput = root.querySelector('#rate-buyer');
+      const rateSellerInput = root.querySelector('#rate-seller');
+      const countdownTimeInput = root.querySelector('#countdown-time');
+
+      if (rateBuyerInput) rateBuyerInput.addEventListener('input', (e) => { State.tauxAcheteur = e.target.value; });
+      if (rateSellerInput) rateSellerInput.addEventListener('input', (e) => { State.tauxVendeur = e.target.value; });
+      if (countdownTimeInput) {
+        countdownTimeInput.addEventListener('change', (e) => {
+          const val = e.target.value;
+          if (!val) {
+            State.countdownEnd = null;
+            if (State.countdownInterval) { clearInterval(State.countdownInterval); State.countdownInterval = null; }
+            return;
+          }
+          const [h, m] = val.split(':').map(Number);
+          const target = new Date();
+          target.setHours(h, m, 0, 0);
+          if (target.getTime() <= Date.now()) target.setDate(target.getDate() + 1);
+          State.countdownEnd = target.getTime();
+          if (State.countdownInterval) clearInterval(State.countdownInterval);
+          State.countdownInterval = setInterval(() => {
+            const cd = root.querySelector('.header-countdown');
+            if (!cd) return;
+            const remaining = State.countdownEnd - Date.now();
+            if (remaining > 0) {
+              const mins = Math.floor(remaining / 60000);
+              const secs = Math.floor((remaining % 60000) / 1000);
+              cd.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            } else {
+              cd.textContent = '00:00 TERMINÉ';
+              cd.style.animation = 'ai-recording-pulse 0.8s ease-in-out infinite';
+              clearInterval(State.countdownInterval);
+              State.countdownInterval = null;
+            }
+          }, 1000);
+        });
+      }
       if (dryRunCheckbox) dryRunCheckbox.addEventListener('change', (e) => { State.dryRun = e.target.checked; });
 
       // Conditions tab — inline form
@@ -2951,6 +3246,25 @@
           });
           this.render();
           this.flash('success', 'Navigation ajoutée');
+        });
+      }
+
+      const btnPasteBuyer = root.querySelector('#add-paste-buyer');
+      const btnPasteSeller = root.querySelector('#add-paste-seller');
+
+      if (btnPasteBuyer) {
+        btnPasteBuyer.addEventListener('click', () => {
+          State.recordedActions.push({ id: Date.now().toString(36), type: 'paste_buyer_rate' });
+          this.render();
+          this.flash('success', 'Coller taux acheteur ajouté');
+        });
+      }
+
+      if (btnPasteSeller) {
+        btnPasteSeller.addEventListener('click', () => {
+          State.recordedActions.push({ id: Date.now().toString(36), type: 'paste_seller_rate' });
+          this.render();
+          this.flash('success', 'Coller taux vendeur ajouté');
         });
       }
 
