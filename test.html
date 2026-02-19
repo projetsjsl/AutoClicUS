@@ -271,6 +271,120 @@
       display: flex;
       flex-direction: column;
     }
+
+    /* Transaction row clickable */
+    #transactions-body tr {
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    #transactions-body tr:hover {
+      background: #e8f5e9 !important;
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 10000;
+      display: flex; align-items: center; justify-content: center;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Modal panel */
+    .modal-panel {
+      background: white;
+      border-radius: 12px;
+      width: 480px;
+      max-width: 90vw;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: modalSlideIn 0.25s ease-out;
+      overflow: hidden;
+    }
+    @keyframes modalSlideIn {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #00874e 0%, #00a65a 100%);
+      color: white;
+      padding: 16px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-header h3 { font-size: 16px; font-weight: 600; }
+    .modal-close {
+      background: none; border: none; color: white; font-size: 20px;
+      cursor: pointer; opacity: 0.8; padding: 0 4px;
+    }
+    .modal-close:hover { opacity: 1; }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-error-bar {
+      background: #dc3545;
+      color: white;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      display: none;
+    }
+    .modal-error-bar.visible {
+      display: block;
+    }
+
+    .modal-info-row {
+      display: flex; justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+    }
+    .modal-info-label { color: #6c757d; }
+    .modal-info-value { font-weight: 600; color: #1a1a1a; }
+
+    .modal-rate-field {
+      margin-top: 16px;
+    }
+    .modal-rate-field label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: #00874e; margin-bottom: 6px;
+    }
+    .modal-rate-input {
+      width: 100%; padding: 12px; font-size: 18px;
+      border: 2px solid #00874e; border-radius: 8px;
+      font-family: 'SF Mono', 'Courier New', monospace;
+      text-align: center; font-weight: 600;
+    }
+    .modal-rate-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(0,135,78,0.15);
+    }
+
+    .modal-footer {
+      padding: 16px 20px;
+      border-top: 1px solid #e0e0e0;
+      display: flex; gap: 10px; justify-content: flex-end;
+    }
+    .modal-btn-back {
+      padding: 10px 20px; background: white; color: #333;
+      border: 1px solid #d0d0d0; border-radius: 6px;
+      font-size: 14px; cursor: pointer;
+    }
+    .modal-btn-back:hover { background: #f5f5f5; }
+    .modal-btn-submit {
+      padding: 10px 24px;
+      background: linear-gradient(135deg, #00874e 0%, #00a65a 100%);
+      color: white; border: none; border-radius: 6px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .modal-btn-submit:hover {
+      box-shadow: 0 4px 12px rgba(0,135,78,0.3);
+    }
   </style>
 </head>
 <body>
@@ -462,7 +576,140 @@
     </div>
   </div>
 
+  <!-- Transaction Modal (simulates SmartD modal) -->
+  <div class="modal-overlay" id="transaction-modal" style="display:none;">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h3 id="modal-title">Modifier taux — ****1234</h3>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-error-bar" id="modal-error-bar">
+        ❌ Erreur de concurrence — une autre session a modifié ce compte.
+      </div>
+      <div class="modal-body">
+        <div class="modal-info-row">
+          <span class="modal-info-label">Compte</span>
+          <span class="modal-info-value" id="modal-account">****1234</span>
+        </div>
+        <div class="modal-info-row">
+          <span class="modal-info-label">Type</span>
+          <span class="modal-info-value" id="modal-type">🇺🇸 Compte US</span>
+        </div>
+        <div class="modal-info-row">
+          <span class="modal-info-label">Solde USD</span>
+          <span class="modal-info-value" id="modal-usd">$10,542.18</span>
+        </div>
+        <div class="modal-info-row">
+          <span class="modal-info-label">Taux actuel</span>
+          <span class="modal-info-value" id="modal-current-rate">1.3500</span>
+        </div>
+        <div class="modal-rate-field">
+          <label for="modal-rate-input">Nouveau taux USD/CAD</label>
+          <input type="text" class="modal-rate-input" id="modal-rate-input" placeholder="ex: 1.3567">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn-back" id="modal-back-btn">← Retour</button>
+        <button class="modal-btn-submit" id="modal-submit-btn">✓ Soumettre</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ========== TRANSACTION MODAL LOGIC ==========
+    let currentModalRow = null;
+    let currentRowIndex = null;
+
+    // Click on any transaction row → open modal
+    document.getElementById('transactions-body').addEventListener('click', function(e) {
+      const row = e.target.closest('tr');
+      if (!row) return;
+
+      currentModalRow = row;
+      currentRowIndex = Array.from(row.parentElement.children).indexOf(row) + 1;
+
+      // Populate modal with row data
+      const cells = row.cells;
+      document.getElementById('modal-account').textContent = cells[0].textContent;
+      document.getElementById('modal-type').textContent = cells[1].textContent;
+      document.getElementById('modal-usd').textContent = cells[2].textContent;
+      document.getElementById('modal-current-rate').textContent = cells[3].textContent;
+      document.getElementById('modal-title').textContent = 'Modifier taux — ' + cells[0].textContent;
+      document.getElementById('modal-rate-input').value = '';
+      document.getElementById('modal-error-bar').classList.remove('visible');
+
+      // Show modal
+      document.getElementById('transaction-modal').style.display = 'flex';
+    });
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('transaction-modal').style.display = 'none';
+      currentModalRow = null;
+      currentRowIndex = null;
+    }
+
+    document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+    document.getElementById('modal-back-btn').addEventListener('click', closeModal);
+
+    // Close on overlay click (outside modal panel)
+    document.getElementById('transaction-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // Submit rate from modal
+    document.getElementById('modal-submit-btn').addEventListener('click', function() {
+      const rateInput = document.getElementById('modal-rate-input');
+      const rate = parseFloat(rateInput.value);
+
+      if (!rateInput.value || isNaN(rate)) {
+        rateInput.style.borderColor = '#dc3545';
+        rateInput.placeholder = 'Entrez un taux valide!';
+        setTimeout(() => {
+          rateInput.style.borderColor = '#00874e';
+          rateInput.placeholder = 'ex: 1.3567';
+        }, 1500);
+        return;
+      }
+
+      // Simulate random concurrency error (10% chance)
+      if (Math.random() < 0.1) {
+        document.getElementById('modal-error-bar').classList.add('visible');
+        return;
+      }
+
+      // Update the transaction row
+      if (currentModalRow && currentRowIndex) {
+        const rateDisplay = document.getElementById('rate-display-' + currentRowIndex);
+        const cadDisplay = document.getElementById('cad-display-' + currentRowIndex);
+        if (rateDisplay) rateDisplay.textContent = rate.toFixed(4);
+        if (cadDisplay) {
+          const usdAmount = parseFloat(currentModalRow.cells[2].textContent.replace(/[$,]/g, ''));
+          const cadAmount = usdAmount * rate;
+          cadDisplay.textContent = '$' + cadAmount.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' CAD';
+        }
+        // Change status badge to show it was updated
+        const badge = currentModalRow.querySelector('.status-badge');
+        if (badge) {
+          badge.className = 'status-badge status-active';
+          badge.textContent = '✓ Mis à jour';
+          badge.style.background = 'rgba(0,135,78,0.15)';
+          badge.style.color = '#00874e';
+        }
+      }
+
+      closeModal();
+    });
+
+    // Escape key closes modal
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && document.getElementById('transaction-modal').style.display === 'flex') {
+        closeModal();
+      }
+    });
+
+    // ========== EXISTING LOGIC ==========
+
     // Toggle rate vendeur field
     document.getElementById('toggle-vendeur').addEventListener('click', function() {
       const vendeurGroup = document.getElementById('rate-vendeur-group');

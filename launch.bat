@@ -4,7 +4,7 @@ title AutoClicUS Launcher — JSLAI
 
 :: =============================================================================
 :: AutoClicUS Multi-Instance Launcher
-:: Opens N Chrome windows side by side, full height, with SmartD loaded
+:: Opens N Chrome windows side by side, full height, with target site loaded
 :: No dependencies — pure Windows batch
 :: =============================================================================
 
@@ -16,7 +16,8 @@ echo  ╚═══════════════════════�
 echo.
 
 :: --- Configuration ---
-set "TARGET_URL=https://accesd.desjardins.com"
+:: Change DEFAULT_URL to your target site
+set "DEFAULT_URL=https://example.com"
 set "CHROME_PATH="
 
 :: Try common Chrome paths
@@ -38,6 +39,14 @@ if "%CHROME_PATH%"=="" (
 )
 
 echo  Chrome trouve: %CHROME_PATH%
+echo.
+
+:: --- Ask for target URL ---
+echo  URL cible (Entree = %DEFAULT_URL%):
+set /p "TARGET_URL=  URL: "
+if "%TARGET_URL%"=="" set "TARGET_URL=%DEFAULT_URL%"
+echo.
+echo  Cible: %TARGET_URL%
 echo.
 
 :: --- Main menu ---

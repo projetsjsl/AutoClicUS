@@ -40,7 +40,47 @@
       actions: 'autoclicus_actions_v4',
       conditions: 'autoclicus_conditions_v4',
       config: 'autoclicus_config_v4',
-      audit: 'autoclicus_audit_v4'
+      audit: 'autoclicus_audit_v4',
+      scenario: 'autoclicus_scenario_v1'
+    },
+    // Emma Vibe Themes
+    vibeThemes: {
+      neutre: {
+        name: 'Neutre',
+        emoji: '🟢',
+        headerBg: 'linear-gradient(135deg, #00874e 0%, #005a34 40%, #00a65a 100%)',
+        primary: '#00874e',
+        primaryLight: '#00a65a',
+        accent: '#4ade80',
+        bg: '#ffffff',
+        bgSecondary: '#f7f9f8',
+        border: '#e0e0e0',
+        borderGlow: 'rgba(0, 135, 78, 0.2)'
+      },
+      plage: {
+        name: 'Plage',
+        emoji: '🏖️',
+        headerBg: 'linear-gradient(135deg, #ff6b35 0%, #f7c948 50%, #00b4d8 100%)',
+        primary: '#ff6b35',
+        primaryLight: '#f7c948',
+        accent: '#00b4d8',
+        bg: '#fffbf0',
+        bgSecondary: '#fff5e6',
+        border: '#ffd4a8',
+        borderGlow: 'rgba(255, 107, 53, 0.3)'
+      },
+      ski: {
+        name: 'Ski',
+        emoji: '⛷️',
+        headerBg: 'linear-gradient(135deg, #1e3a5f 0%, #4a90d9 50%, #b8d4f0 100%)',
+        primary: '#1e3a5f',
+        primaryLight: '#4a90d9',
+        accent: '#00d4ff',
+        bg: '#f0f6ff',
+        bgSecondary: '#e6effa',
+        border: '#b8d4f0',
+        borderGlow: 'rgba(74, 144, 217, 0.3)'
+      }
     }
   };
 
@@ -166,7 +206,23 @@
     capturingShortcut: null,
     elementPickerActive: false,
     pickedElement: null,
-    editingActionIndex: null
+    editingActionIndex: null,
+
+    // Minimized state
+    isMinimized: false,
+
+    // Vibe theme & font size
+    vibeTheme: 'neutre',  // 'neutre' | 'plage' | 'ski'
+    fontSize: 14,         // base font size in px (12-20)
+
+    // Scenario (guided recording)
+    scenario: {
+      stepActions: {},       // { stepId: [actions] }
+      guidedStep: null,      // current step being recorded
+      isGuided: false,       // true when in guided recording mode
+      rateModel: 'acheteur',   // 'acheteur' or 'vendeur'
+      configured: false      // true when all required steps are configured
+    }
   };
 
   // =============================================================================
@@ -649,6 +705,239 @@
   };
 
   // =============================================================================
+  // SCENARIO — Pre-built guided workflows
+  // =============================================================================
+  const Scenario = {
+    defaultWorkflow: {
+      id: 'taux-usd-fin-journee',
+      name: 'Taux USD — Fin de journée',
+      description: 'Scénario guidé pour saisir le taux de change USD dans SmartD. Configurez chaque étape une fois, puis lancez le scénario.',
+      steps: [
+        // Setup steps (run ONCE)
+        { id: 'filtres-us', name: 'Filtrer bourses US', type: 'setup', recordRequired: true, instruction: 'Cliquez sur le filtre US dans SmartD.' },
+        { id: 'filtres-tsx-off', name: 'Retirer filtre TSX', type: 'setup', recordRequired: true, instruction: 'Cliquez pour décocher le filtre TSX.' },
+        { id: 'filtres-pro-off', name: 'Exclure comptes pro', type: 'setup', recordRequired: true, instruction: 'Cliquez pour exclure les comptes professionnels.' },
+        { id: 'saisie-taux', name: 'Taux du jour', type: 'rate_input', recordRequired: false, auto: true, instruction: 'Le taux est pris de la barre de taux ci-dessus.' },
+        { id: 'choix-modele', name: '1 taux ou 2 taux', type: 'ui_toggle', recordRequired: false, auto: true, instruction: 'Choix fait via le toggle dans cet onglet.' },
+        // Loop marker
+        { id: 'loop-start', name: 'Début boucle', type: 'marker', recordRequired: false, auto: true, instruction: 'Les étapes suivantes sont répétées pour chaque transaction.' },
+        // Loop steps (repeat × BOUCLES)
+        { id: 'clic-ligne', name: 'Cliquer ligne transaction', type: 'loop', recordRequired: true, instruction: 'Cliquez sur une ligne de transaction pour ouvrir le modal.' },
+        { id: 'attente-modal', name: 'Attente ouverture modal', type: 'wait', recordRequired: false, auto: true, delay: 1000, instruction: 'Attente automatique (1000ms).' },
+        { id: 'clic-champ-taux', name: 'Cliquer champ taux dans modal', type: 'loop', recordRequired: true, instruction: 'Cliquez sur le champ de saisie du taux dans le modal.' },
+        { id: 'coller-taux', name: 'Coller taux', type: 'paste_rate', recordRequired: false, auto: true, instruction: 'Le taux acheteur est collé automatiquement.' },
+        { id: 'soumettre', name: 'Soumettre', type: 'loop', recordRequired: true, instruction: 'Cliquez sur le bouton Soumettre dans le modal.' },
+        { id: 'attente-fermeture', name: 'Attente fermeture modal', type: 'wait', recordRequired: false, auto: true, delay: 1500, instruction: 'Attente automatique (1500ms).' },
+        { id: 'detect-erreur', name: 'Détecter erreur (barre rouge)', type: 'condition', recordRequired: false, optional: true, instruction: 'Optionnel: cliquez sur l\'indicateur d\'erreur (barre rouge) pour le détecter automatiquement.' },
+        { id: 'clic-retour', name: 'Bouton Retour (si erreur)', type: 'error_recovery', recordRequired: false, optional: true, instruction: 'Optionnel: cliquez sur le bouton Retour utilisé en cas d\'erreur.' }
+      ]
+    },
+
+    getStepStatus(stepId) {
+      const step = this.defaultWorkflow.steps.find(s => s.id === stepId);
+      if (!step) return 'unconfigured';
+      if (step.auto) return 'auto';
+      if (step.optional && !State.scenario.stepActions[stepId]) return 'optional';
+      if (State.scenario.stepActions[stepId]?.length > 0) return 'configured';
+      return 'unconfigured';
+    },
+
+    isAllRequiredConfigured() {
+      return this.defaultWorkflow.steps
+        .filter(s => s.recordRequired)
+        .every(s => State.scenario.stepActions[s.id]?.length > 0);
+    },
+
+    startGuidedRecording(stepId) {
+      const step = this.defaultWorkflow.steps.find(s => s.id === stepId);
+      if (!step) return;
+
+      State.scenario.isGuided = true;
+      State.scenario.guidedStep = stepId;
+
+      // Show overlay instruction outside shadow DOM
+      this._showOverlay(step.instruction);
+
+      // Start recorder in guided mode
+      if (!State.isRecording) {
+        State.isRecording = true;
+        document.addEventListener('click', Recorder.onEvent, true);
+        document.addEventListener('input', Recorder.onEvent, true);
+        document.addEventListener('change', Recorder.onEvent, true);
+        document.addEventListener('keydown', Recorder.onEvent, true);
+      }
+    },
+
+    stopGuidedRecording() {
+      State.scenario.isGuided = false;
+      const stepId = State.scenario.guidedStep;
+      State.scenario.guidedStep = null;
+
+      // Stop recorder
+      State.isRecording = false;
+      document.removeEventListener('click', Recorder.onEvent, true);
+      document.removeEventListener('input', Recorder.onEvent, true);
+      document.removeEventListener('change', Recorder.onEvent, true);
+      document.removeEventListener('keydown', Recorder.onEvent, true);
+
+      this._removeOverlay();
+      this.saveConfig();
+      UI.flash('success', `Étape « ${stepId} » configurée`);
+      UI.render();
+    },
+
+    buildActionSequence() {
+      const actions = [];
+      const steps = this.defaultWorkflow.steps;
+
+      for (const step of steps) {
+        if (step.type === 'marker') {
+          // Insert loop_start marker
+          actions.push({ id: 'loop_start_marker', type: 'loop_start' });
+          continue;
+        }
+
+        if (step.type === 'wait') {
+          actions.push({
+            id: `scenario_wait_${step.id}`,
+            type: 'wait',
+            delay: step.delay || 1000
+          });
+          continue;
+        }
+
+        if (step.type === 'paste_rate') {
+          // Attach fingerprint from clic-champ-taux step for focus guard
+          const fieldActions = State.scenario.stepActions['clic-champ-taux'];
+          const targetFp = fieldActions?.[0]?.fingerprint || null;
+          actions.push({
+            id: `scenario_paste_${step.id}`,
+            type: State.scenario.rateModel === 'vendeur' ? 'paste_seller_rate' : 'paste_buyer_rate',
+            targetFingerprint: targetFp
+          });
+          continue;
+        }
+
+        if (step.type === 'rate_input' || step.type === 'ui_toggle') {
+          // These are handled by UI state, not actions
+          continue;
+        }
+
+        if (step.type === 'condition') {
+          // Error detection — only if configured
+          const stepActions = State.scenario.stepActions[step.id];
+          if (stepActions?.length > 0) {
+            actions.push({
+              id: `scenario_cond_${step.id}`,
+              type: 'condition_check',
+              fingerprint: stepActions[0].fingerprint,
+              onDetected: 'stop'
+            });
+          }
+          continue;
+        }
+
+        if (step.type === 'error_recovery') {
+          // Back button — only if configured
+          const stepActions = State.scenario.stepActions[step.id];
+          if (stepActions?.length > 0) {
+            actions.push({
+              id: `scenario_recovery_${step.id}`,
+              type: 'error_recovery',
+              fingerprint: stepActions[0].fingerprint
+            });
+          }
+          continue;
+        }
+
+        // User-recorded steps (setup + loop)
+        const stepActions = State.scenario.stepActions[step.id];
+        if (stepActions?.length > 0) {
+          for (const a of stepActions) {
+            actions.push({ ...a, scenarioStepId: step.id });
+          }
+        }
+      }
+
+      return actions;
+    },
+
+    saveConfig() {
+      try {
+        Storage.setItem(Config.storage.scenario, JSON.stringify({
+          stepActions: State.scenario.stepActions,
+          rateModel: State.scenario.rateModel
+        }));
+      } catch (e) {
+        console.warn('Scenario save error:', e);
+      }
+    },
+
+    loadConfig() {
+      try {
+        const saved = Storage.getItem(Config.storage.scenario);
+        if (saved) {
+          const data = JSON.parse(saved);
+          if (data.stepActions) State.scenario.stepActions = data.stepActions;
+          if (data.rateModel) State.scenario.rateModel = data.rateModel;
+          // Recalculate configured flag
+          const requiredSteps = this.defaultWorkflow.steps.filter(s => s.recordRequired);
+          State.scenario.configured = requiredSteps.every(s => {
+            const actions = State.scenario.stepActions[s.id];
+            return actions && actions.length > 0;
+          });
+        }
+      } catch (e) {
+        console.warn('Scenario load error:', e);
+      }
+    },
+
+    _showOverlay(instruction) {
+      this._removeOverlay();
+      const overlay = document.createElement('div');
+      overlay.id = 'autoclicus-guided-overlay';
+      overlay.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0;
+        background: linear-gradient(135deg, #00874e, #00a65a);
+        color: white; padding: 14px 24px; z-index: 999999;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 15px; font-weight: 600; text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        animation: slideDown 0.3s ease-out;
+        pointer-events: none;
+      `;
+      overlay.textContent = `🎯 ${instruction} — Cliquez sur l'élément dans la page`;
+
+      const cancelBtn = document.createElement('button');
+      cancelBtn.textContent = 'Annuler';
+      cancelBtn.style.cssText = `
+        margin-left: 16px; padding: 6px 16px; background: rgba(255,255,255,0.2);
+        color: white; border: 1px solid rgba(255,255,255,0.4); border-radius: 6px;
+        cursor: pointer; font-size: 13px; font-weight: 500;
+        pointer-events: auto;
+      `;
+      cancelBtn.addEventListener('click', () => {
+        State.scenario.isGuided = false;
+        State.scenario.guidedStep = null;
+        State.isRecording = false;
+        document.removeEventListener('click', Recorder.onEvent, true);
+        document.removeEventListener('input', Recorder.onEvent, true);
+        document.removeEventListener('change', Recorder.onEvent, true);
+        document.removeEventListener('keydown', Recorder.onEvent, true);
+        this._removeOverlay();
+        UI.render();
+      });
+      overlay.appendChild(cancelBtn);
+      document.body.appendChild(overlay);
+    },
+
+    _removeOverlay() {
+      const existing = document.getElementById('autoclicus-guided-overlay');
+      if (existing) existing.remove();
+    }
+  };
+
+  // =============================================================================
   // RECORDER - Action recording
   // =============================================================================
   const Recorder = {
@@ -665,6 +954,7 @@
       document.addEventListener('keydown', this.onEvent, true);
 
       UI.flash('success', 'Enregistrement démarré');
+      UI.pageBorderFlash('record');
       UI.render();
     },
 
@@ -680,12 +970,15 @@
       document.removeEventListener('keydown', this.onEvent, true);
 
       UI.flash('info', `Enregistrement arrêté - ${State.recordedActions.length} actions`);
+      UI.pageBorderClear();
       UI.render();
     },
 
     onEvent(event) {
       // Ignore events from our own UI (composedPath crosses shadow DOM boundary)
       if (event.composedPath().some(el => el.id === 'autoclicus-container')) return;
+      // Ignore clicks on guided overlay
+      if (event.composedPath().some(el => el.id === 'autoclicus-guided-overlay')) return;
 
       const target = event.target;
       const eventType = event.type;
@@ -703,6 +996,17 @@
         value: target.value || target.textContent?.trim() || '',
         timestamp: Date.now()
       };
+
+      // GUIDED MODE: Route action to scenario step instead of global actions list
+      if (State.scenario.isGuided && State.scenario.guidedStep) {
+        const stepId = State.scenario.guidedStep;
+        if (!State.scenario.stepActions[stepId]) {
+          State.scenario.stepActions[stepId] = [];
+        }
+        State.scenario.stepActions[stepId] = [action]; // Single action per step
+        Scenario.stopGuidedRecording();
+        return;
+      }
 
       // Deduplicate: checkbox/radio clicks fire click + input + change
       // Keep only the click, skip redundant input/change on same element within 100ms
@@ -738,12 +1042,6 @@
     async start() {
       if (State.isPlaying) return;
 
-      // Origin check
-      if (!window.location.hostname.includes('desjardins.com')) {
-        const proceed = confirm('⚠️ Ce script est conçu pour SmartD (*.desjardins.com).\n\nContinuer quand même?');
-        if (!proceed) return;
-      }
-
       // Preflight check
       try {
         await Conditions.runPreflight(State.conditions);
@@ -761,30 +1059,94 @@
       State.auditTrail = [];
       State.loopTimestamps = [];
       State.loopStartTime = Date.now();
+      State.deadlineTime = State.countdownEnd || null;
 
-      UI.flash('success', State.dryRun ? 'Simulation démarrée' : 'Lecture démarrée');
+      const startMsg = State.dryRun ? 'Simulation démarrée'
+        : State.vibeTheme === 'plage' ? 'Lecture démarrée — vague en approche! 🌊'
+        : State.vibeTheme === 'ski' ? 'Lecture démarrée — descente! 🏔️'
+        : 'Lecture démarrée';
+      UI.flash('success', startMsg);
+      UI.pageBorderFlash('play');
       UI.render();
 
       await this.run();
     },
 
     async run() {
+      const actions = State.recordedActions;
+
+      // Detect loop_start marker — split into setup + loop actions
+      const loopIdx = actions.findIndex(a => a.type === 'loop_start');
+      const hasLoop = loopIdx >= 0;
+      const setupActions = hasLoop ? actions.slice(0, loopIdx) : [];
+      const loopActions = hasLoop ? actions.slice(loopIdx + 1) : actions;
+
+      // Execute setup actions ONCE (before loop)
+      if (hasLoop && setupActions.length > 0) {
+        for (let i = 0; i < setupActions.length; i++) {
+          if (!State.isPlaying) return;
+          while (State.isPaused) await this.sleep(100);
+
+          State.currentStep = i;
+          UI.updatePlaybackDisplay();
+
+          try {
+            await this.execAction(setupActions[i]);
+          } catch (e) {
+            console.error('Setup action error:', e);
+            UI.flash('error', `Erreur setup: ${e.message}`);
+            this.stop();
+            return;
+          }
+
+          await this.sleep(State.settings.delayBetweenActions / State.speed);
+        }
+      }
+
+      // Execute loop actions × loopCount
       while (State.isPlaying && State.currentLoop < State.loopCount) {
         State.currentLoop++;
-        State.currentStep = 0;
+        State.currentStep = hasLoop ? setupActions.length : 0;
         State.loopStartTime = Date.now();
 
-        for (let i = 0; i < State.recordedActions.length; i++) {
+        for (let i = 0; i < loopActions.length; i++) {
           if (!State.isPlaying) break;
 
           while (State.isPaused) {
             await this.sleep(100);
           }
 
-          State.currentStep = i;
+          State.currentStep = (hasLoop ? setupActions.length + 1 : 0) + i;
           UI.updatePlaybackDisplay(); // P1: targeted update, not full re-render
 
-          const action = State.recordedActions[i];
+          const action = loopActions[i];
+
+          // Handle condition_check (error detection from scenario)
+          if (action.type === 'condition_check') {
+            try {
+              const { element } = Fingerprint.resolve(action.fingerprint);
+              if (element && element.offsetParent !== null) {
+                // Error detected — execute recovery action if configured
+                const recoveryAction = loopActions.find(a => a.type === 'error_recovery');
+                if (recoveryAction) {
+                  try {
+                    UI.flash('warning', 'Erreur détectée — exécution du retour…');
+                    await this.execAction(recoveryAction);
+                    await this.sleep(1500);
+                  } catch (re) { /* recovery failed, still stop */ }
+                }
+                UI.flash('error', 'Erreur de concurrence détectée — arrêt automatique');
+                this.stop();
+                return;
+              }
+            } catch (e) { /* element not found = no error, continue */ }
+            continue;
+          }
+
+          // Handle error_recovery (executed by condition_check above, skip in normal flow)
+          if (action.type === 'error_recovery') {
+            continue;
+          }
 
           try {
             await this.execAction(action);
@@ -793,7 +1155,8 @@
             Audit.log(action, action.fingerprint, action.value, 'error', 0);
 
             // Check for fallback
-            const condition = State.conditions.find(c => c.triggerIndex === i);
+            const globalIdx = hasLoop ? setupActions.length + 1 + i : i;
+            const condition = State.conditions.find(c => c.triggerIndex === globalIdx);
             if (condition && condition.fallbackActions) {
               await this.executeFallback(condition.fallbackActions);
             } else {
@@ -804,7 +1167,7 @@
           }
 
           // Check time limits
-          if (State.timeLimit && (Date.now() - State.startTime) > State.timeLimit * 1000) {
+          if (State.timeLimit && (Date.now() - State.startTime) > State.timeLimit) {
             UI.flash('warning', 'Limite de temps atteinte');
             this.stop();
             return;
@@ -825,6 +1188,13 @@
         // P3: Flush audit at loop boundary
         Audit.save();
 
+        // Check deadline between loops
+        if (State.deadlineTime && Date.now() > State.deadlineTime) {
+          UI.flash('warning', 'Heure limite atteinte');
+          this.stop();
+          return;
+        }
+
         if (State.currentLoop < State.loopCount) {
           await this.sleep(State.settings.delayBetweenLoops / State.speed);
         }
@@ -832,7 +1202,8 @@
 
       if (State.isPlaying) {
         this.stop();
-        UI.flash('success', 'Lecture terminée');
+        const doneMsg = State.vibeTheme === 'plage' ? 'Lecture terminée — cocktail time! 🍹' : State.vibeTheme === 'ski' ? 'Lecture terminée — après-ski! 🎿' : 'Lecture terminée';
+        UI.flash('success', doneMsg);
       }
     },
 
@@ -878,7 +1249,14 @@
             Audit.log(action, action.type, 'missing_rate', 'error', Date.now() - startTime);
             return;
           }
-          const activeEl = document.activeElement;
+          // P2 fix: ensure focus on target field (guard against focus theft)
+          let activeEl = document.activeElement;
+          if (!(activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) && action.targetFingerprint) {
+            try {
+              const { element: target } = Fingerprint.resolve(action.targetFingerprint);
+              if (target) { target.focus(); activeEl = target; }
+            } catch (e) { /* fallback to clipboard */ }
+          }
           if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
             if (!State.dryRun) {
               this.setInputValue(activeEl, rate);
@@ -1025,12 +1403,23 @@
             return;
           }
 
-          // Rate validation
+          // Rate validation (non-blocking — no confirm() during execution)
           const numValue = parseFloat(value);
           if (!isNaN(numValue) && action.id?.includes('taux')) {
             if (numValue < Config.rateValidation.min || numValue > Config.rateValidation.max) {
-              const proceed = confirm(`⚠️ Le taux ${numValue} semble incorrect (attendu: ${Config.rateValidation.min}-${Config.rateValidation.max}).\n\nContinuer quand même?`);
-              if (!proceed) return;
+              if (!input.dataset.warningAcknowledged) {
+                input.style.borderColor = Config.theme.warning;
+                input.dataset.warningAcknowledged = 'true';
+                let warning = modal.querySelector('.rate-warning');
+                if (!warning) {
+                  warning = document.createElement('div');
+                  warning.className = 'rate-warning';
+                  warning.style.cssText = `color: ${Config.theme.warning}; font-size: 12px; margin-top: 6px; font-weight: 500;`;
+                  input.parentNode.appendChild(warning);
+                }
+                warning.textContent = `⚠️ Taux ${numValue} hors limites (${Config.rateValidation.min}-${Config.rateValidation.max}). Cliquez OK à nouveau pour confirmer.`;
+                return;
+              }
             }
           }
 
@@ -1158,6 +1547,7 @@
       State.isPaused = false;
       State.totalDuration = Date.now() - (State.startTime || Date.now());
       Audit.save(); // P3: Final flush on stop
+      UI.pageBorderClear();
       UI.render();
     },
 
@@ -1245,6 +1635,143 @@
         @keyframes ai-float {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-3px); }
+        }
+
+        @keyframes minimized-shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+
+        /* Minimized strip */
+        .minimized-strip {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 14px;
+          background: linear-gradient(135deg, #0a1628 0%, #1a2744 100%);
+          border-radius: 14px;
+          cursor: pointer;
+          user-select: none;
+        }
+        .mini-actions {
+          display: flex;
+          gap: 4px;
+          flex-shrink: 0;
+        }
+        .mini-btn {
+          width: 26px;
+          height: 26px;
+          border: 1px solid rgba(255,255,255,0.25);
+          background: rgba(255,255,255,0.08);
+          color: white;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 13px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.2s, opacity 0.2s;
+          flex-shrink: 0;
+        }
+        .mini-btn:hover { background: rgba(255,255,255,0.2); }
+        .mini-btn:disabled { opacity: 0.3; cursor: default; }
+        .mini-btn.rec-active { background: rgba(220,53,69,0.4); border-color: rgba(220,53,69,0.6); }
+        .mini-btn.play-active { background: rgba(74,222,128,0.3); border-color: rgba(74,222,128,0.5); }
+
+        .minimized-strip .mini-avatar {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          border: 2px solid rgba(255,255,255,0.5);
+          object-fit: cover;
+          flex-shrink: 0;
+        }
+
+        .minimized-strip .mini-label {
+          font-size: 12px;
+          font-weight: 600;
+          color: white;
+          white-space: nowrap;
+        }
+
+        .minimized-strip .mini-progress-wrap {
+          flex: 1;
+          min-width: 60px;
+          height: 6px;
+          background: rgba(255,255,255,0.1);
+          border-radius: 3px;
+          overflow: hidden;
+        }
+
+        .minimized-strip .mini-progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #4ade80, #22c55e);
+          border-radius: 3px;
+          transition: width 0.3s ease;
+          box-shadow: 0 0 6px rgba(74, 222, 128, 0.5);
+        }
+
+        .minimized-strip .mini-progress-fill.recording {
+          background: linear-gradient(90deg, #dc3545, #ff6b6b);
+          box-shadow: 0 0 6px rgba(220, 53, 69, 0.5);
+        }
+
+        .minimized-strip .mini-status {
+          font-size: 11px;
+          color: rgba(255,255,255,0.7);
+          font-variant-numeric: tabular-nums;
+          white-space: nowrap;
+        }
+
+        .minimized-strip .mini-expand {
+          width: 24px;
+          height: 24px;
+          border: 1px solid rgba(255,255,255,0.3);
+          background: rgba(255,255,255,0.1);
+          color: white;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          transition: background 0.2s;
+        }
+        .minimized-strip .mini-expand:hover {
+          background: rgba(255,255,255,0.25);
+        }
+
+        .minimized-strip.playing {
+          border: 1px solid rgba(74, 222, 128, 0.4);
+          box-shadow: 0 0 12px rgba(74, 222, 128, 0.2);
+        }
+
+        .minimized-strip.recording-state {
+          border: 1px solid rgba(220, 53, 69, 0.4);
+          box-shadow: 0 0 12px rgba(220, 53, 69, 0.2);
+        }
+
+        /* Minimize button in header */
+        .header-minimize {
+          width: 28px;
+          height: 28px;
+          border: 1px solid rgba(255,255,255,0.3);
+          background: rgba(255,255,255,0.1);
+          color: white;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 16px;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          transition: background 0.2s;
+          margin-left: 6px;
+        }
+        .header-minimize:hover {
+          background: rgba(255,255,255,0.25);
         }
 
         #autoclicus-ui {
@@ -1588,60 +2115,41 @@
 
         .tabs {
           display: flex;
+          flex-wrap: wrap;
           background: ${Config.theme.bgSecondary};
           border-bottom: 1px solid ${Config.theme.border};
-          overflow-x: auto;
-          scrollbar-width: thin;
-          scrollbar-color: rgba(0,0,0,0.12) transparent;
-          -webkit-overflow-scrolling: touch;
-          padding: 0 2px;
-        }
-        .tabs::-webkit-scrollbar {
-          height: 3px;
-        }
-        .tabs::-webkit-scrollbar-thumb {
-          background: rgba(0,0,0,0.12);
-          border-radius: 2px;
+          overflow: visible;
+          padding: 6px 8px 4px;
+          gap: 4px;
         }
 
         .tab {
-          flex: 1 1 0;
-          min-width: 0;
-          padding: 11px 4px;
+          flex: 0 0 auto;
+          padding: 8px 10px;
           text-align: center;
           cursor: pointer;
-          border: none;
+          border: 1px solid transparent;
           background: transparent;
           color: ${Config.theme.textSecondary};
-          font-size: 11px;
+          font-size: 12px;
           font-weight: 500;
           transition: all 0.2s;
           position: relative;
           white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          border-radius: 6px;
         }
 
         .tab:hover {
-          background: rgba(0, 135, 78, 0.05);
+          background: rgba(0, 135, 78, 0.08);
           color: ${Config.theme.primary};
+          border-color: rgba(0, 135, 78, 0.15);
         }
 
         .tab.active {
           color: ${Config.theme.primary};
           font-weight: 600;
-        }
-
-        .tab.active::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 3px;
-          background: linear-gradient(90deg, ${Config.theme.primary}, ${Config.theme.primaryLight}, ${Config.theme.primary});
-          background-size: 200% 100%;
-          animation: ai-shimmer 2s linear infinite;
+          background: rgba(0, 135, 78, 0.1);
+          border-color: rgba(0, 135, 78, 0.25);
         }
 
         .content {
@@ -2019,6 +2527,151 @@
           color: white;
         }
 
+        /* Scenario tab styles */
+        .scenario-step {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 12px;
+          border: 1px solid ${Config.theme.border};
+          border-radius: 8px;
+          margin-bottom: 6px;
+          background: white;
+          transition: background 0.15s ease;
+        }
+
+        .scenario-step:hover {
+          background: ${Config.theme.bgSecondary};
+        }
+
+        .scenario-step.is-marker {
+          background: linear-gradient(135deg, rgba(0,135,78,0.08), rgba(0,166,90,0.04));
+          border-left: 3px solid ${Config.theme.primary};
+          font-weight: 600;
+        }
+
+        .scenario-step-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 22px;
+          height: 22px;
+          border-radius: 50%;
+          font-size: 11px;
+          font-weight: 700;
+          flex-shrink: 0;
+        }
+
+        .scenario-badge-unconfigured {
+          background: #e9ecef;
+          color: #6c757d;
+        }
+
+        .scenario-badge-configured {
+          background: ${Config.theme.success};
+          color: white;
+        }
+
+        .scenario-badge-auto {
+          background: #e3f2fd;
+          color: #1976d2;
+        }
+
+        .scenario-badge-optional {
+          background: #fff3e0;
+          color: #f57c00;
+        }
+
+        .scenario-step-info {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .scenario-step-name {
+          font-size: 13px;
+          font-weight: 500;
+          color: ${Config.theme.text};
+        }
+
+        .scenario-step-detail {
+          font-size: 11px;
+          color: ${Config.theme.textSecondary};
+          margin-top: 2px;
+        }
+
+        .scenario-step-action {
+          flex-shrink: 0;
+        }
+
+        .btn-configure {
+          padding: 5px 12px;
+          font-size: 12px;
+          background: ${Config.theme.primary};
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 500;
+          transition: all 0.2s ease;
+        }
+
+        .btn-configure:hover {
+          background: ${Config.theme.primaryLight};
+          transform: translateY(-1px);
+        }
+
+        .btn-configure.reconfigure {
+          background: transparent;
+          color: ${Config.theme.primary};
+          border: 1px solid ${Config.theme.primary};
+        }
+
+        .scenario-toggle-group {
+          display: flex;
+          gap: 0;
+          border: 1px solid ${Config.theme.border};
+          border-radius: 8px;
+          overflow: hidden;
+          margin-bottom: 16px;
+        }
+
+        .scenario-toggle-btn {
+          flex: 1;
+          padding: 10px 16px;
+          border: none;
+          background: white;
+          cursor: pointer;
+          font-size: 13px;
+          font-weight: 500;
+          color: ${Config.theme.textSecondary};
+          transition: all 0.2s ease;
+        }
+
+        .scenario-toggle-btn.active {
+          background: ${Config.theme.primary};
+          color: white;
+        }
+
+        .scenario-separator {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin: 12px 0;
+          color: ${Config.theme.textSecondary};
+          font-size: 12px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .scenario-separator::before,
+        .scenario-separator::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: ${Config.theme.border};
+        }
+
         .empty-state {
           text-align: center;
           padding: 40px 20px;
@@ -2370,6 +3023,131 @@
           transform: translateX(20px);
         }
 
+        /* Action bar (between rate-bar and tabs) */
+        .action-bar {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 12px;
+          background: ${Config.theme.bgTertiary || '#f0f2f5'};
+          border-bottom: 1px solid ${Config.theme.border};
+        }
+        .action-bar-buttons {
+          display: flex;
+          gap: 4px;
+          flex-shrink: 0;
+        }
+        .action-bar-btn {
+          padding: 4px 10px;
+          border: 1px solid ${Config.theme.border};
+          background: white;
+          color: ${Config.theme.text || '#333'};
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          transition: all 0.15s;
+          white-space: nowrap;
+        }
+        .action-bar-btn:hover { background: ${Config.theme.bgSecondary || '#f5f5f5'}; }
+        .action-bar-btn:disabled { opacity: 0.35; cursor: default; }
+        .action-bar-btn.rec { color: #dc3545; border-color: rgba(220,53,69,0.3); }
+        .action-bar-btn.rec:hover { background: rgba(220,53,69,0.08); }
+        .action-bar-btn.rec.active { background: rgba(220,53,69,0.12); border-color: #dc3545; font-weight: 600; }
+        .action-bar-btn.play { color: #198754; border-color: rgba(25,135,84,0.3); }
+        .action-bar-btn.play:hover { background: rgba(25,135,84,0.08); }
+        .action-bar-btn.play.active { background: rgba(25,135,84,0.12); border-color: #198754; font-weight: 600; }
+        .action-bar-btn.stop { color: #6c757d; }
+        .action-bar-btn.pause { color: #fd7e14; border-color: rgba(253,126,20,0.3); }
+        .action-bar-btn.pause:hover { background: rgba(253,126,20,0.08); }
+        .action-bar-divider {
+          width: 1px;
+          height: 22px;
+          background: ${Config.theme.border};
+          flex-shrink: 0;
+        }
+        .action-bar-mode {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 11px;
+          color: ${Config.theme.textSecondary || '#666'};
+          flex: 1;
+          min-width: 0;
+          overflow: hidden;
+        }
+        .action-bar-mode-name {
+          font-weight: 600;
+          color: ${Config.theme.text || '#333'};
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .mode-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          padding: 2px 8px;
+          border-radius: 10px;
+          font-size: 10px;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+        .mode-badge.scenario { background: rgba(13,110,253,0.1); color: #0d6efd; }
+        .mode-badge.recording { background: rgba(220,53,69,0.1); color: #dc3545; }
+        .mode-badge.playing { background: rgba(25,135,84,0.1); color: #198754; }
+        .mode-badge.idle { background: rgba(108,117,125,0.1); color: #6c757d; }
+
+        /* Info tooltip icon */
+        .info-tip {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: rgba(13,110,253,0.1);
+          color: #0d6efd;
+          font-size: 10px;
+          font-weight: 700;
+          cursor: help;
+          position: relative;
+          vertical-align: middle;
+          flex-shrink: 0;
+        }
+        .info-tip:hover::after {
+          content: attr(data-info);
+          position: absolute;
+          bottom: calc(100% + 6px);
+          left: 50%;
+          transform: translateX(-50%);
+          background: #1a2744;
+          color: white;
+          padding: 6px 10px;
+          border-radius: 6px;
+          font-size: 11px;
+          font-weight: 400;
+          white-space: nowrap;
+          max-width: 260px;
+          white-space: normal;
+          z-index: 100;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+          line-height: 1.4;
+        }
+        .info-tip:hover::before {
+          content: '';
+          position: absolute;
+          bottom: calc(100% + 2px);
+          left: 50%;
+          transform: translateX(-50%);
+          border: 4px solid transparent;
+          border-top-color: #1a2744;
+          z-index: 101;
+        }
+
         /* Wait action badge */
         .wait-badge {
           display: inline-block;
@@ -2391,9 +3169,69 @@
       ui.classList.toggle('state-recording', State.isRecording);
       ui.classList.toggle('state-playing', State.isPlaying);
 
+      // Minimized mode: compact strip with progress bar
+      if (State.isMinimized) {
+        const pct = (State.isPlaying && State.loopCount > 0) ? Math.round((State.currentLoop / State.loopCount) * 100) : 0;
+        const statusText = State.isPlaying
+          ? `${State.currentLoop}/${State.loopCount}`
+          : State.isRecording ? 'REC' : 'Prêt';
+        const stripClass = State.isPlaying ? 'playing' : State.isRecording ? 'recording-state' : '';
+        const fillClass = State.isRecording ? 'recording' : '';
+
+        const miniModeName = State.isPlaying
+          ? (State.scenario.configured ? '📋 Scénario' : '▶ Lecture')
+          : State.isRecording
+            ? (State.scenario.isGuided ? '⏺ Guidé' : '⏺ REC')
+            : (State.scenario.configured ? '📋 Prêt' : '');
+        const hasActions = State.recordedActions.length > 0 || State.scenario.configured;
+
+        safeHTML(ui, `
+          <div class="minimized-strip ${stripClass}" id="mini-strip">
+            <img class="mini-avatar" src="${Config.emmaAvatar}" alt="E">
+            <span class="mini-label">${miniModeName || 'AutoClicUS'}</span>
+            <div class="mini-actions">
+              <button class="mini-btn ${State.isRecording ? 'rec-active' : ''}" id="mini-rec" title="Enregistrer" ${State.isPlaying ? 'disabled' : ''}>⏺</button>
+              <button class="mini-btn ${State.isPlaying ? 'play-active' : ''}" id="mini-play" title="Lancer" ${!hasActions || State.isRecording ? 'disabled' : ''}>▶</button>
+              <button class="mini-btn" id="mini-stop" title="Stop" ${!State.isPlaying && !State.isRecording ? 'disabled' : ''}>⬛</button>
+            </div>
+            <div class="mini-progress-wrap">
+              <div class="mini-progress-fill ${fillClass}" style="width:${pct}%"></div>
+            </div>
+            <span class="mini-status">${statusText}</span>
+            <button class="mini-expand" id="btn-expand" title="Agrandir">+</button>
+          </div>
+        `);
+
+        // Expand button handler
+        const expandBtn = ui.querySelector('#btn-expand');
+        if (expandBtn) {
+          expandBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            State.isMinimized = false;
+            this.render();
+          });
+        }
+        // Mini action button handlers
+        const miniRec = ui.querySelector('#mini-rec');
+        const miniPlay = ui.querySelector('#mini-play');
+        const miniStop = ui.querySelector('#mini-stop');
+        if (miniRec) miniRec.addEventListener('click', (e) => { e.stopPropagation(); State.isRecording ? Recorder.stop() : Recorder.start(); });
+        if (miniPlay) miniPlay.addEventListener('click', (e) => { e.stopPropagation(); if (!State.isPlaying) Player.start(); });
+        if (miniStop) miniStop.addEventListener('click', (e) => { e.stopPropagation(); if (State.isPlaying) Player.stop(); else if (State.isRecording) Recorder.stop(); });
+        // Double-click on strip label expands (single click reserved for actions)
+        const miniLabel = ui.querySelector('.mini-label');
+        if (miniLabel) {
+          miniLabel.addEventListener('dblclick', () => { State.isMinimized = false; this.render(); });
+        }
+        this.attachDragHandle();
+        return;
+      }
+
       safeHTML(ui, `
         ${this.renderHeader()}
         ${this.renderRateBar()}
+        ${this.renderActionBar()}
+        <div class="flash-area"></div>
         ${this.renderTabs()}
         ${this.renderContent()}
         ${this.renderBottomStrip()}
@@ -2410,6 +3248,7 @@
       this.attachEventListeners();
       this.attachDragHandle();
       this.attachResizeHandles();
+      this.applyVibeTheme();
     },
 
     // P1: Lightweight update during playback — skip full re-render + re-attach
@@ -2417,12 +3256,18 @@
       const root = State.shadowRoot;
       if (!root) return;
 
+      // Update minimized strip if minimized
+      if (State.isMinimized) {
+        this.updateMinimizedProgress();
+        return;
+      }
+
       // Update bottom strip (step/loop counter)
       const strip = root.querySelector('.bottom-strip');
       if (strip && State.isPlaying) {
         const step = State.currentStep + 1;
         const total = State.recordedActions.length;
-        strip.innerHTML = `<span class="status-icon">🟢</span> Lecture ${step}/${total} · Boucle ${State.currentLoop}/${State.loopCount}`;
+        safeHTML(strip, `<span class="status-icon">🟢</span> Lecture ${step}/${total} · Boucle ${State.currentLoop}/${State.loopCount}`);
       }
 
       // Update exec stats panel
@@ -2430,7 +3275,6 @@
       if (State.isPlaying) {
         const statsHTML = this.renderExecStats();
         if (existingStats) {
-          safeHTML(existingStats, existingStats.innerHTML); // clear
           existingStats.outerHTML = statsHTML;
         } else {
           // Insert after rate-bar if not present
@@ -2482,39 +3326,164 @@
                  style="border-radius: 50%; border: 2px solid rgba(255,255,255,0.6); object-fit: cover;">
           </div>
           <div class="header-info">
-            <div class="header-title">Emma <span class="header-ai-badge">AI</span></div>
-            <div class="header-subtitle">Assistante · Taux de change</div>
+            <div class="header-title">Emma <span class="header-ai-badge">JSLAI</span></div>
+            <div class="header-subtitle">${State.vibeTheme === 'plage' ? 'Assistante · Taux de plage 🌊' : State.vibeTheme === 'ski' ? 'Assistante · Taux de descente ⛷️' : 'Assistante · Taux de change'}</div>
           </div>
           <div class="header-right">
             <div class="header-clock">${time}</div>
             ${countdownHTML}
             <div class="header-ai-status"><span class="ai-dot"></span> En ligne</div>
           </div>
+          <button class="header-minimize" id="btn-minimize" title="Réduire">&#8722;</button>
         </div>
       `;
     },
 
+    _rateFieldStyle(value, isActive) {
+      const v = parseFloat(value);
+      const filled = value && !isNaN(v) && v > 0;
+      if (filled) {
+        // Valid: light green
+        return isActive
+          ? 'border: 2px solid #00874e; background: rgba(0,135,78,0.08); color: #00874e; font-weight: 600;'
+          : 'border: 1px solid rgba(0,135,78,0.4); background: rgba(0,135,78,0.04); color: #1a1a1a;';
+      } else {
+        // Empty/missing: light grey
+        return isActive
+          ? 'border: 2px dashed #bbb; background: rgba(0,0,0,0.02); color: #999;'
+          : 'border: 1px solid #e0e0e0; background: rgba(0,0,0,0.015); color: #bbb;';
+      }
+    },
+
+    _rateLabelStyle(value, isActive) {
+      const v = parseFloat(value);
+      const filled = value && !isNaN(v) && v > 0;
+      if (filled) {
+        return isActive
+          ? 'color: #00874e; font-weight: 700;'
+          : 'color: #00874e; font-weight: 500; opacity: 0.7;';
+      } else {
+        return isActive
+          ? 'color: #999; font-weight: 600;'
+          : 'color: #bbb; font-weight: 400;';
+      }
+    },
+
     renderRateBar() {
+      const isAcheteur = State.scenario.rateModel === 'acheteur';
+      const buyerFilled = State.tauxAcheteur && !isNaN(parseFloat(State.tauxAcheteur)) && parseFloat(State.tauxAcheteur) > 0;
+      const sellerFilled = State.tauxVendeur && !isNaN(parseFloat(State.tauxVendeur)) && parseFloat(State.tauxVendeur) > 0;
+      const loopsFilled = State.loopCount && State.loopCount >= 1;
+
+      const buyerIcon = buyerFilled ? '✅' : (isAcheteur ? '⬜' : '');
+      const sellerIcon = sellerFilled ? '✅' : (!isAcheteur ? '⬜' : '');
+      const loopsIcon = loopsFilled ? '✅' : '⬜';
+
       return `
         <div class="rate-bar">
           <div class="rate-field">
-            <label>Taux acheteur</label>
-            <input type="text" id="rate-buyer" placeholder="1.0000" value="${State.tauxAcheteur}">
+            <label style="${this._rateLabelStyle(State.tauxAcheteur, isAcheteur)}">${buyerIcon} Taux acheteur${isAcheteur ? ' ●' : ''}</label>
+            <input type="text" id="rate-buyer" placeholder="ex: 1.3567" value="${State.tauxAcheteur}" style="${this._rateFieldStyle(State.tauxAcheteur, isAcheteur)} font-family: 'SF Mono', monospace; font-size: 13px;">
           </div>
           <div class="rate-field">
-            <label>Taux vendeur</label>
-            <input type="text" id="rate-seller" placeholder="1.0000" value="${State.tauxVendeur}">
+            <label style="${this._rateLabelStyle(State.tauxVendeur, !isAcheteur)}">${sellerIcon} Taux vendeur${!isAcheteur ? ' ●' : ''}</label>
+            <input type="text" id="rate-seller" placeholder="ex: 1.3567" value="${State.tauxVendeur}" style="${this._rateFieldStyle(State.tauxVendeur, !isAcheteur)} font-family: 'SF Mono', monospace; font-size: 13px;">
           </div>
           <div class="rate-field" style="flex: 0 0 auto;">
-            <label>Boucles</label>
-            <input type="number" id="loops" min="1" max="${Config.limits.maxLoops}" value="${State.loopCount}" style="width: 70px; font-family: 'SF Mono', monospace; font-size: 13px;">
+            <label style="${loopsFilled ? 'color: #00874e; font-weight: 600;' : 'color: #999;'}">${loopsIcon} Boucles</label>
+            <input type="number" id="loops" min="1" max="${Config.limits.maxLoops}" value="${State.loopCount}" style="width: 70px; font-family: 'SF Mono', monospace; font-size: 13px; ${loopsFilled ? 'border: 1px solid rgba(0,135,78,0.4); background: rgba(0,135,78,0.04);' : 'border: 1px solid #e0e0e0; background: rgba(0,0,0,0.015);'}">
           </div>
           <div class="rate-field" style="flex: 0 0 auto;">
-            <label>Fin à</label>
-            <input type="time" id="countdown-time" value="${State.countdownEnd ? new Date(State.countdownEnd).toTimeString().substring(0,5) : '16:00'}" style="font-family: 'SF Mono', monospace; font-size: 13px;">
+            <label style="color: #00874e; font-weight: 500;">✅ Fin à</label>
+            <input type="time" id="countdown-time" value="${State.countdownEnd ? new Date(State.countdownEnd).toTimeString().substring(0,5) : '16:00'}" style="font-family: 'SF Mono', monospace; font-size: 13px; border: 1px solid rgba(0,135,78,0.4); background: rgba(0,135,78,0.04);">
           </div>
         </div>
         ${State.isPlaying ? this.renderExecStats() : ''}
+      `;
+    },
+
+    // Live update rate field visuals without full re-render (keeps focus)
+    _updateRateFieldVisuals(root) {
+      const isAcheteur = State.scenario.rateModel === 'acheteur';
+      const buyerInput = root.querySelector('#rate-buyer');
+      const sellerInput = root.querySelector('#rate-seller');
+      if (buyerInput) {
+        const buyerFilled = State.tauxAcheteur && !isNaN(parseFloat(State.tauxAcheteur)) && parseFloat(State.tauxAcheteur) > 0;
+        buyerInput.style.cssText = this._rateFieldStyle(State.tauxAcheteur, isAcheteur) + 'font-family: "SF Mono", monospace; font-size: 13px;';
+        const buyerLabel = buyerInput.parentElement.querySelector('label');
+        if (buyerLabel) {
+          buyerLabel.style.cssText = this._rateLabelStyle(State.tauxAcheteur, isAcheteur);
+          buyerLabel.textContent = (buyerFilled ? '✅' : (isAcheteur ? '⬜' : '')) + ' Taux acheteur' + (isAcheteur ? ' ●' : '');
+        }
+      }
+      if (sellerInput) {
+        const sellerFilled = State.tauxVendeur && !isNaN(parseFloat(State.tauxVendeur)) && parseFloat(State.tauxVendeur) > 0;
+        sellerInput.style.cssText = this._rateFieldStyle(State.tauxVendeur, !isAcheteur) + 'font-family: "SF Mono", monospace; font-size: 13px;';
+        const sellerLabel = sellerInput.parentElement.querySelector('label');
+        if (sellerLabel) {
+          sellerLabel.style.cssText = this._rateLabelStyle(State.tauxVendeur, !isAcheteur);
+          sellerLabel.textContent = (sellerFilled ? '✅' : (!isAcheteur ? '⬜' : '')) + ' Taux vendeur' + (!isAcheteur ? ' ●' : '');
+        }
+      }
+    },
+
+    renderActionBar() {
+      // Determine active mode/scenario name
+      let modeBadge = '';
+      let modeName = '';
+      if (State.isPlaying) {
+        modeBadge = '<span class="mode-badge playing">▶ Lecture</span>';
+        modeName = State.scenario.configured ? '📋 ' + Scenario.defaultWorkflow.name : State.recordedActions.length + ' actions enregistrées';
+      } else if (State.isRecording) {
+        if (State.scenario.isGuided) {
+          const step = Scenario.defaultWorkflow.steps.find(s => s.id === State.scenario.guidedStep);
+          modeBadge = '<span class="mode-badge recording">⏺ Enregistrement guidé</span>';
+          modeName = step ? '📋 ' + step.name : 'Scénario';
+        } else {
+          modeBadge = '<span class="mode-badge recording">⏺ Enregistrement libre</span>';
+          modeName = State.recordedActions.length + ' actions';
+        }
+      } else if (State.scenario.configured) {
+        modeBadge = '<span class="mode-badge scenario">📋 Scénario prêt</span>';
+        modeName = Scenario.defaultWorkflow.name;
+      } else if (State.recordedActions.length > 0) {
+        modeBadge = '<span class="mode-badge idle">⏸ En attente</span>';
+        modeName = State.recordedActions.length + ' actions enregistrées';
+      } else {
+        modeBadge = '<span class="mode-badge idle">○ Aucun</span>';
+        modeName = 'Aucun scénario chargé';
+      }
+
+      const hasActions = State.recordedActions.length > 0 || State.scenario.configured;
+
+      return `
+        <div class="action-bar">
+          <div class="action-bar-buttons">
+            <button class="action-bar-btn rec ${State.isRecording ? 'active' : ''}" id="ab-rec" title="Enregistrer (${State.settings.shortcuts.record})" ${State.isPlaying ? 'disabled' : ''}>
+              ⏺ REC
+            </button>
+            <button class="action-bar-btn stop" id="ab-stop-rec" title="Arrêter enreg." ${!State.isRecording ? 'disabled' : ''}>
+              ⬛
+            </button>
+          </div>
+          <div class="action-bar-divider"></div>
+          <div class="action-bar-buttons">
+            <button class="action-bar-btn play ${State.isPlaying ? 'active' : ''}" id="ab-play" title="Lancer (${State.settings.shortcuts.play})" ${!hasActions || State.isRecording ? 'disabled' : ''}>
+              ▶ PLAY
+            </button>
+            <button class="action-bar-btn pause" id="ab-pause" title="Pause (${State.settings.shortcuts.pause})" ${!State.isPlaying ? 'disabled' : ''}>
+              ${State.isPaused ? '▶' : '⏸'}
+            </button>
+            <button class="action-bar-btn stop" id="ab-stop-play" title="Stop (${State.settings.shortcuts.stop})" ${!State.isPlaying ? 'disabled' : ''}>
+              ⬛ STOP
+            </button>
+          </div>
+          <div class="action-bar-divider"></div>
+          <div class="action-bar-mode">
+            ${modeBadge}
+            <span class="action-bar-mode-name">${modeName}</span>
+          </div>
+        </div>
       `;
     },
 
@@ -2588,38 +3557,60 @@
 
     renderBottomStrip() {
       let stripClass = 'bottom-strip';
-      let statusText = 'Prêt';
-      let statusIcon = '⚪';
+      let statusText = '';
+      let statusIcon = '';
+      let statusLabel = '';
 
       if (State.isRecording) {
         stripClass += ' recording';
-        statusText = 'Enregistrement en cours';
         statusIcon = '🔴';
+        statusLabel = 'REC';
+        if (State.scenario.isGuided) {
+          const step = Scenario.defaultWorkflow.steps.find(s => s.id === State.scenario.guidedStep);
+          statusText = `Enregistrement guidé — ${step ? step.name : 'étape'}`;
+        } else {
+          statusText = `Enregistrement libre — ${State.recordedActions.length} action${State.recordedActions.length !== 1 ? 's' : ''}`;
+        }
       } else if (State.isPlaying) {
         stripClass += ' playing';
+        statusIcon = '▶';
+        statusLabel = 'PLAY';
         const step = State.currentStep + 1;
         const total = State.recordedActions.length;
         statusText = `Lecture ${step}/${total} · Boucle ${State.currentLoop}/${State.loopCount}`;
-        statusIcon = '🟢';
+      } else if (State.isPaused) {
+        statusIcon = '⏸';
+        statusLabel = 'PAUSE';
+        statusText = 'Lecture en pause';
+      } else {
+        statusIcon = '✅';
+        statusLabel = 'PRÊT';
+        const parts = [];
+        if (State.scenario.configured) parts.push('📋 Scénario prêt');
+        if (State.recordedActions.length > 0) parts.push(`${State.recordedActions.length} actions`);
+        statusText = parts.length > 0 ? parts.join(' · ') : 'Aucune action chargée';
       }
 
       return `
         <div class="${stripClass}">
-          <span class="status-icon">${statusIcon}</span> ${statusText}
+          <span class="status-icon">${statusIcon}</span>
+          <strong style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 4px;">${statusLabel}</strong>
+          ${statusText}
         </div>
       `;
     },
 
     renderTabs() {
       const tabs = [
-        { id: 'record', label: 'Enreg.' },
-        { id: 'edit', label: 'Éditer' },
-        { id: 'conditions', label: 'Cond.' },
-        { id: 'audit', label: 'Audit' },
-        { id: 'stats', label: 'Stats' },
-        { id: 'save', label: 'Sauv.' },
-        { id: 'settings', label: 'Régl.' },
-        { id: 'help', label: 'Aide' }
+        { id: 'scenario', label: '📋 Scénario' },
+        { id: 'record', label: '⏺ Enreg.' },
+        { id: 'edit', label: '✏️ Éditer' },
+        { id: 'conditions', label: '🔀 Cond.' },
+        { id: 'audit', label: '📊 Audit' },
+        { id: 'stats', label: '📈 Stats' },
+        { id: 'save', label: '💾 Sauv.' },
+        { id: 'settings', label: '⚙️ Régl.' },
+        { id: 'help', label: '❓ Aide' }
       ];
 
       return `
@@ -2635,6 +3626,7 @@
 
     renderContent() {
       switch (State.currentTab) {
+        case 'scenario': return this.renderScenarioTab();
         case 'record': return this.renderRecordTab();
         case 'edit': return this.renderEditTab();
         case 'conditions': return this.renderConditionsTab();
@@ -2647,6 +3639,131 @@
       }
     },
 
+    renderScenarioTab() {
+      const wf = Scenario.defaultWorkflow;
+      const allReady = Scenario.isAllRequiredConfigured();
+      const requiredCount = wf.steps.filter(s => s.recordRequired).length;
+      const configuredCount = wf.steps.filter(s => s.recordRequired && State.scenario.stepActions[s.id]?.length > 0).length;
+
+      const renderStepBadge = (step) => {
+        const status = Scenario.getStepStatus(step.id);
+        switch (status) {
+          case 'configured': return '<span class="scenario-step-badge scenario-badge-configured">&#10003;</span>';
+          case 'auto': return '<span class="scenario-step-badge scenario-badge-auto">&#9881;</span>';
+          case 'optional': return '<span class="scenario-step-badge scenario-badge-optional">?</span>';
+          default: return '<span class="scenario-step-badge scenario-badge-unconfigured">&#9744;</span>';
+        }
+      };
+
+      const renderStepAction = (step) => {
+        const status = Scenario.getStepStatus(step.id);
+        if (step.type === 'marker') return '';
+        if (step.auto && !step.optional) return '<span style="font-size:11px;color:#1976d2;">Automatique</span>';
+        if (status === 'configured') return `<button class="btn-configure reconfigure" data-scenario-configure="${step.id}">Reconfigurer</button>`;
+        if (step.optional && status === 'optional') return `<button class="btn-configure" style="background:#f57c00;" data-scenario-configure="${step.id}">Configurer (opt.)</button>`;
+        if (step.recordRequired) return `<button class="btn-configure" data-scenario-configure="${step.id}">Configurer</button>`;
+        return '';
+      };
+
+      const renderStepDetail = (step) => {
+        const status = Scenario.getStepStatus(step.id);
+        if (step.type === 'wait') return `Délai: ${step.delay}ms`;
+        if (step.type === 'paste_rate') return State.scenario.rateModel === 'vendeur' ? 'Colle taux vendeur' : 'Colle taux acheteur';
+        if (status === 'configured') {
+          const act = State.scenario.stepActions[step.id]?.[0];
+          return act?.fingerprint?.selector ? `&#10003; ${act.fingerprint.selector.substring(0, 40)}` : '&#10003; Configuré';
+        }
+        return step.instruction || '';
+      };
+
+      let setupSteps = '';
+      let loopSteps = '';
+      let inLoop = false;
+
+      for (const step of wf.steps) {
+        if (step.type === 'marker') {
+          inLoop = true;
+          setupSteps += `
+            <div class="scenario-separator">Boucle (x${State.loopCount})</div>
+          `;
+          continue;
+        }
+
+        const row = `
+          <div class="scenario-step ${step.type === 'marker' ? 'is-marker' : ''}">
+            ${renderStepBadge(step)}
+            <div class="scenario-step-info">
+              <div class="scenario-step-name">${step.name}</div>
+              <div class="scenario-step-detail">${renderStepDetail(step)}</div>
+            </div>
+            <div class="scenario-step-action">
+              ${renderStepAction(step)}
+            </div>
+          </div>
+        `;
+
+        if (inLoop) {
+          loopSteps += row;
+        } else {
+          setupSteps += row;
+        }
+      }
+
+      return `
+        <div class="content">
+          <p style="font-size:12px;color:${Config.theme.textSecondary};margin:0 0 8px 0;text-align:center;">
+            Vous pouvez aussi enregistrer librement via l'onglet <strong>Enreg.</strong>
+          </p>
+
+          <div class="card">
+            <div class="card-header">${wf.name}</div>
+            <p style="font-size:13px;color:${Config.theme.textSecondary};margin:0 0 12px 0;">
+              ${wf.description}
+            </p>
+
+            <div style="margin-bottom:12px;font-size:13px;">
+              Progression: <strong>${configuredCount}/${requiredCount}</strong> étapes configurées
+              <div style="height:4px;background:#e9ecef;border-radius:2px;margin-top:6px;">
+                <div style="height:100%;width:${requiredCount > 0 ? (configuredCount/requiredCount)*100 : 0}%;background:${Config.theme.primary};border-radius:2px;transition:width 0.3s;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Quel taux coller?</div>
+            <div class="scenario-toggle-group">
+              <button class="scenario-toggle-btn ${State.scenario.rateModel === 'acheteur' ? 'active' : ''}" data-scenario-model="acheteur">
+                Taux acheteur
+              </button>
+              <button class="scenario-toggle-btn ${State.scenario.rateModel === 'vendeur' ? 'active' : ''}" data-scenario-model="vendeur">
+                Taux vendeur
+              </button>
+            </div>
+            <div style="font-size:11px; color:${Config.theme.textSecondary}; margin-top:6px; padding:0 4px;">
+              Le taux sélectionné sera collé dans le champ de saisie à chaque boucle.
+              Saisissez la valeur dans le champ correspondant ci-dessus.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Étapes</div>
+            ${setupSteps}
+            ${loopSteps}
+          </div>
+
+          <div class="btn-group" style="margin-top:12px;">
+            <button class="btn btn-primary" id="btn-launch-scenario" ${!allReady || State.isPlaying ? 'disabled' : ''}>
+              ${allReady ? '&#9654; Lancer le scénario' : '&#9744; Configurer les étapes d\'abord'}
+            </button>
+            <button class="btn btn-secondary" id="btn-reset-scenario">
+              Réinitialiser
+            </button>
+          </div>
+
+        </div>
+      `;
+    },
+
     renderRecordTab() {
       const progress = State.recordedActions.length > 0
         ? ((State.currentStep + 1) / State.recordedActions.length) * 100
@@ -2654,58 +3771,73 @@
 
       return `
         <div class="content">
-          <div class="card">
-            <div class="card-header">Contrôles</div>
-
-            <div class="checkbox-group">
-              <input type="checkbox" id="dry-run" ${State.dryRun ? 'checked' : ''}>
-              <label for="dry-run">Mode simulation (ne modifie rien)</label>
-            </div>
+          <div class="card" style="border-left: 3px solid #dc3545;">
+            <div class="card-header" style="color: #dc3545;">⏺ Enregistrement</div>
 
             <div class="btn-group">
               <button class="btn btn-primary tooltip-wrap" data-tip="Démarre l'enregistrement de vos clics" id="btn-record" ${State.isRecording ? 'disabled' : ''}
                 style="${State.isRecording ? 'animation: ai-recording-pulse 1.5s ease-in-out infinite; background: linear-gradient(135deg, #dc3545, #ff6b6b);' : ''}">
-                ${State.isRecording ? '🔴 Enregistrement...' : `⚫ Enregistrer (${State.settings.shortcuts.record})`}
+                ${State.isRecording ? '🔴 Enregistrement...' : `⏺ Enregistrer (${State.settings.shortcuts.record})`}
               </button>
               <button class="btn btn-danger tooltip-wrap" data-tip="Arrête l'enregistrement" id="btn-stop-record" ${!State.isRecording ? 'disabled' : ''}>
-                ⏹️ Arrêter
+                ⬛ Arrêter
               </button>
+            </div>
+            ${State.isRecording ? `
+              <div class="progress-bar-geek">
+                <div class="progress-fill-geek recording" style="width: 100%"></div>
+              </div>
+              <div style="text-align: center; font-size: 13px; color: #ff6b6b;">
+                ⏺ Enregistrement... ${State.recordedActions.length} action${State.recordedActions.length !== 1 ? 's' : ''}
+              </div>
+            ` : `<div style="font-size: 11px; color: ${Config.theme.textSecondary}; margin-top: 4px;">
+                Cliquez sur les éléments de la page pour les enregistrer.
+              </div>`}
+          </div>
+
+          <div class="card" style="border-left: 3px solid #198754;">
+            <div class="card-header" style="color: #198754;">▶ Lecture</div>
+
+            <div class="checkbox-group">
+              <input type="checkbox" id="dry-run" ${State.dryRun ? 'checked' : ''}>
+              <label for="dry-run">🧪 Mode simulation (ne modifie rien)</label>
             </div>
 
             <div class="btn-group">
-              <button class="btn btn-primary tooltip-wrap" data-tip="Lance la lecture des actions" id="btn-play" ${State.isPlaying || State.recordedActions.length === 0 ? 'disabled' : ''}>
-                ▶️ Lire (${State.settings.shortcuts.play})
+              <button class="btn btn-primary tooltip-wrap" data-tip="Lance la lecture des actions" id="btn-play" ${State.isPlaying || State.recordedActions.length === 0 ? 'disabled' : ''}
+                style="background: linear-gradient(135deg, #198754, #20c997);">
+                ▶ Lire (${State.settings.shortcuts.play})
               </button>
               <button class="btn btn-warning tooltip-wrap" data-tip="Met en pause la lecture" id="btn-pause" ${!State.isPlaying || State.isPaused ? 'disabled' : ''}>
-                ⏸️ Pause (${State.settings.shortcuts.pause})
+                ⏸ Pause (${State.settings.shortcuts.pause})
               </button>
               <button class="btn btn-danger tooltip-wrap" data-tip="Arrête la lecture" id="btn-stop" ${!State.isPlaying ? 'disabled' : ''}>
-                ⏹️ Stop (${State.settings.shortcuts.stop})
+                ⬛ Stop (${State.settings.shortcuts.stop})
               </button>
             </div>
 
-            ${State.isPlaying || State.isRecording ? `
+            ${State.isPlaying ? `
               <div class="progress-bar-geek">
-                <div class="progress-fill-geek ${State.isPlaying ? 'playing' : 'recording'}" style="width: ${State.isPlaying ? progress : 100}%"></div>
+                <div class="progress-fill-geek playing" style="width: ${progress}%"></div>
               </div>
-              ${State.isPlaying ? `<div class="playback-step-text" style="text-align: center; font-size: 13px; color: ${Config.theme.textSecondary};">
+              <div class="playback-step-text" style="text-align: center; font-size: 13px; color: ${Config.theme.textSecondary};">
                 Étape ${State.currentStep + 1} / ${State.recordedActions.length} · Boucle ${State.currentLoop} / ${State.loopCount}
-              </div>` : `<div style="text-align: center; font-size: 13px; color: #ff6b6b;">
-                Enregistrement... ${State.recordedActions.length} action${State.recordedActions.length !== 1 ? 's' : ''}
+              </div>
+            ` : `<div style="font-size: 11px; color: ${Config.theme.textSecondary}; margin-top: 4px;">
+                ${State.recordedActions.length > 0 ? `✅ ${State.recordedActions.length} actions prêtes à lire.` : '⚠️ Aucune action enregistrée.'}
               </div>`}
-            ` : ''}
           </div>
 
           <div class="card">
-            <div class="card-header">Paramètres</div>
+            <div class="card-header">⚡ Paramètres de lecture</div>
 
             <div class="input-group">
-              <label>Vitesse (${State.speed}x)</label>
+              <label>🏎️ Vitesse (${State.speed}x)</label>
               <input type="range" id="speed" min="0.25" max="8" step="0.25" value="${State.speed}">
             </div>
 
             <div class="input-group">
-              <label>Limite de temps (secondes, 0 = aucune)</label>
+              <label>⏱️ Limite de temps (secondes, 0 = aucune)</label>
               <input type="number" id="time-limit" min="0" value="${(State.timeLimit || 0) / 1000}">
             </div>
           </div>
@@ -3111,31 +4243,37 @@
     },
 
     renderSaveTab() {
+      const hasActions = State.recordedActions.length > 0;
+      const hasScenario = State.scenario.configured;
+
       return `
         <div class="content">
           <div class="card">
-            <div class="card-header">Sauvegarder</div>
-            <div class="btn-group">
-              <button class="btn btn-primary" id="save-local">💾 Sauvegarder localement</button>
+            <div class="card-header">💾 Sauvegarde locale <span class="info-tip" data-info="Sauvegarde dans le navigateur (localStorage). Persiste entre les sessions sur ce même poste. Aucun fichier à gérer.">i</span></div>
+            <div style="font-size: 11px; color: ${Config.theme.textSecondary}; margin-bottom: 8px;">
+              ${hasActions || hasScenario
+                ? '✅ ' + (hasActions ? State.recordedActions.length + ' actions' : '') + (hasActions && hasScenario ? ' + ' : '') + (hasScenario ? 'scénario configuré' : '') + ' en mémoire.'
+                : '⚠️ Aucune action ni scénario à sauvegarder.'}
             </div>
             <div class="btn-group">
-              <button class="btn btn-secondary" id="export-json">⬇️ Exporter JSON</button>
+              <button class="btn btn-primary" id="save-local" ${!hasActions && !hasScenario ? 'disabled' : ''}>💾 Sauvegarder</button>
+              <button class="btn btn-primary" id="load-local">📂 Charger</button>
             </div>
           </div>
 
           <div class="card">
-            <div class="card-header">Charger</div>
+            <div class="card-header">📁 Fichier JSON <span class="info-tip" data-info="Exportez en .json pour sauvegarder hors navigateur, partager avec un collègue ou transférer sur un autre poste.">i</span></div>
             <div class="btn-group">
-              <button class="btn btn-primary" id="load-local">📂 Charger depuis localStorage</button>
+              <button class="btn btn-secondary" id="export-json" ${!hasActions && !hasScenario ? 'disabled' : ''}>⬇️ Exporter .json</button>
             </div>
-            <div class="input-group">
-              <label>Ou importer un fichier JSON</label>
+            <div class="input-group" style="margin-top: 8px;">
+              <label>📤 Importer un fichier</label>
               <input type="file" id="import-json" accept=".json">
             </div>
           </div>
 
-          <div class="card">
-            <div class="card-header">Danger Zone</div>
+          <div class="card" style="border: 1px solid rgba(220,53,69,0.2);">
+            <div class="card-header" style="color: #dc3545;">⚠️ Danger <span class="info-tip" data-info="Supprime toutes les actions, scénarios et configurations. Irréversible.">i</span></div>
             <div class="btn-group">
               <button class="btn btn-danger" id="reset-all">🗑️ Tout réinitialiser</button>
             </div>
@@ -3217,6 +4355,26 @@
                 <input type="checkbox" id="setting-confirm-delete" ${State.settings.confirmBeforeDelete ? 'checked' : ''}>
                 <span class="toggle-slider"></span>
               </label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Emma Vibe Theme</div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+              ${Object.entries(Config.vibeThemes).map(([id, t]) => `
+                <button class="btn ${State.vibeTheme === id ? 'btn-primary' : 'btn-secondary'} btn-small" data-vibe-theme="${id}" style="flex:1;font-size:13px;">
+                  ${t.emoji} ${t.name}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Taille du texte</div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <button class="btn btn-secondary btn-small" id="font-size-down" style="width:36px;height:36px;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;">−</button>
+              <span style="font-size:15px;font-weight:600;min-width:40px;text-align:center;" id="font-size-display">${State.fontSize}px</span>
+              <button class="btn btn-secondary btn-small" id="font-size-up" style="width:36px;height:36px;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;">+</button>
             </div>
           </div>
 
@@ -3335,6 +4493,45 @@
     attachEventListeners() {
       const root = State.shadowRoot;
 
+      // Minimize button
+      const btnMinimize = root.querySelector('#btn-minimize');
+      if (btnMinimize) {
+        btnMinimize.addEventListener('click', (e) => {
+          e.stopPropagation();
+          State.isMinimized = true;
+          this.render();
+        });
+      }
+
+      // Action bar buttons
+      const abRec = root.querySelector('#ab-rec');
+      const abStopRec = root.querySelector('#ab-stop-rec');
+      const abPlay = root.querySelector('#ab-play');
+      const abPause = root.querySelector('#ab-pause');
+      const abStopPlay = root.querySelector('#ab-stop-play');
+      if (abRec) abRec.addEventListener('click', () => State.isRecording ? Recorder.stop() : Recorder.start());
+      if (abStopRec) abStopRec.addEventListener('click', () => { if (State.isRecording) Recorder.stop(); });
+      if (abPlay) abPlay.addEventListener('click', () => { if (!State.isPlaying) Player.start(); });
+      if (abPause) abPause.addEventListener('click', () => State.isPaused ? Player.resume() : Player.pause());
+      if (abStopPlay) abStopPlay.addEventListener('click', () => { if (State.isPlaying) Player.stop(); });
+
+      // Easter egg: double-click Emma avatar to cycle vibe themes
+      const avatar = root.querySelector('.header-avatar');
+      if (avatar) {
+        avatar.addEventListener('dblclick', (e) => {
+          e.stopPropagation();
+          const themes = Object.keys(Config.vibeThemes);
+          const idx = themes.indexOf(State.vibeTheme);
+          State.vibeTheme = themes[(idx + 1) % themes.length];
+          this.applyVibeTheme();
+          const t = Config.vibeThemes[State.vibeTheme];
+          this.flash('success', `${t.emoji} Thème ${t.name} activé!`);
+          this.render();
+        });
+        avatar.style.cursor = 'pointer';
+        avatar.title = 'Double-clic pour changer de thème';
+      }
+
       // P2: Delegated click handler for tabs, action rows, condition rows
       root.addEventListener('click', (e) => {
         const t = e.target;
@@ -3438,7 +4635,7 @@
       if (btnPause) btnPause.addEventListener('click', () => State.isPaused ? Player.resume() : Player.pause());
       if (btnStop) btnStop.addEventListener('click', () => Player.stop());
       if (speedInput) speedInput.addEventListener('input', (e) => { State.speed = parseFloat(e.target.value); this.render(); });
-      if (loopsInput) loopsInput.addEventListener('input', (e) => { State.loopCount = parseInt(e.target.value); this.render(); });
+      if (loopsInput) loopsInput.addEventListener('input', (e) => { State.loopCount = Math.max(1, parseInt(e.target.value) || 1); this.render(); });
       if (timeLimitInput) timeLimitInput.addEventListener('input', (e) => { State.timeLimit = parseInt(e.target.value) * 1000; });
 
       // Rate bar inputs
@@ -3446,8 +4643,14 @@
       const rateSellerInput = root.querySelector('#rate-seller');
       const countdownTimeInput = root.querySelector('#countdown-time');
 
-      if (rateBuyerInput) rateBuyerInput.addEventListener('input', (e) => { State.tauxAcheteur = e.target.value; });
-      if (rateSellerInput) rateSellerInput.addEventListener('input', (e) => { State.tauxVendeur = e.target.value; });
+      if (rateBuyerInput) rateBuyerInput.addEventListener('input', (e) => {
+        State.tauxAcheteur = e.target.value;
+        this._updateRateFieldVisuals(root);
+      });
+      if (rateSellerInput) rateSellerInput.addEventListener('input', (e) => {
+        State.tauxVendeur = e.target.value;
+        this._updateRateFieldVisuals(root);
+      });
       if (countdownTimeInput) {
         countdownTimeInput.addEventListener('change', (e) => {
           const val = e.target.value;
@@ -3465,6 +4668,80 @@
         });
       }
       if (dryRunCheckbox) dryRunCheckbox.addEventListener('change', (e) => { State.dryRun = e.target.checked; });
+
+      // Scenario tab
+      const btnLaunchScenario = root.querySelector('#btn-launch-scenario');
+      const btnResetScenario = root.querySelector('#btn-reset-scenario');
+
+      if (btnLaunchScenario) {
+        btnLaunchScenario.addEventListener('click', () => {
+          // === PRE-FLIGHT VALIDATION (all checks BEFORE launch, zero dialogs) ===
+          const errors = [];
+
+          // 1. All required steps configured
+          if (!Scenario.isAllRequiredConfigured()) {
+            errors.push('Étapes requises non configurées');
+          }
+
+          // 2. Only the selected rate must be set
+          const isVendeur = State.scenario.rateModel === 'vendeur';
+          const rateLabel = isVendeur ? 'vendeur' : 'acheteur';
+          const rateValue = isVendeur ? State.tauxVendeur : State.tauxAcheteur;
+          const rateNum = parseFloat(rateValue);
+          if (!rateValue || isNaN(rateNum) || rateNum <= 0) {
+            errors.push(`Taux ${rateLabel} non défini ou invalide`);
+          }
+
+          // 3. Rate range validation (warning, not blocking)
+          if (!isNaN(rateNum) && rateNum > 0) {
+            if (rateNum < Config.rateValidation.min || rateNum > Config.rateValidation.max) {
+              this.flash('warning', `⚠️ Taux ${rateLabel} ${rateNum} hors limites (${Config.rateValidation.min}-${Config.rateValidation.max})`);
+            }
+          }
+
+          // 4. Loop count must be valid
+          if (!State.loopCount || State.loopCount < 1) {
+            errors.push('Nombre de boucles invalide');
+          }
+
+          // Block launch if errors
+          if (errors.length > 0) {
+            this.flash('error', errors.join(' • '));
+            return;
+          }
+
+          // All validations passed — build and launch
+          this.flash('success', '🚀 Scénario lancé — ' + Scenario.defaultWorkflow.name);
+          State.recordedActions = Scenario.buildActionSequence();
+          Player.start();
+        });
+      }
+
+      if (btnResetScenario) {
+        btnResetScenario.addEventListener('click', () => {
+          State.scenario.stepActions = {};
+          Scenario.saveConfig();
+          this.render();
+          this.flash('info', 'Scénario réinitialisé');
+        });
+      }
+
+      // Scenario configure buttons (delegated)
+      root.querySelectorAll('[data-scenario-configure]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const stepId = btn.dataset.scenarioConfigure;
+          Scenario.startGuidedRecording(stepId);
+        });
+      });
+
+      // Scenario model toggle (delegated)
+      root.querySelectorAll('[data-scenario-model]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          State.scenario.rateModel = btn.dataset.scenarioModel;
+          Scenario.saveConfig();
+          this.render();
+        });
+      });
 
       // Conditions tab — inline form
       const btnAddCondition = root.querySelector('#add-condition');
@@ -3719,6 +4996,25 @@
           this.flash('success', 'Réglages réinitialisés');
         });
       }
+
+      // Vibe theme buttons
+      root.querySelectorAll('[data-vibe-theme]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          State.vibeTheme = btn.dataset.vibeTheme;
+          this.render();
+          this.flash('success', `Theme: ${Config.vibeThemes[State.vibeTheme].emoji} ${Config.vibeThemes[State.vibeTheme].name}`);
+        });
+      });
+
+      // Font size buttons
+      const fontDown = root.querySelector('#font-size-down');
+      const fontUp = root.querySelector('#font-size-up');
+      if (fontDown) fontDown.addEventListener('click', () => {
+        if (State.fontSize > 12) { State.fontSize -= 1; this.render(); }
+      });
+      if (fontUp) fontUp.addEventListener('click', () => {
+        if (State.fontSize < 20) { State.fontSize += 1; this.render(); }
+      });
 
       // Audit tab
       const btnExportJSON = root.querySelector('#export-audit-json');
@@ -4001,15 +5297,36 @@
 
     flash(type, message) {
       const colors = {
-        success: { bg: Config.theme.success, fg: '#fff' },
-        error: { bg: Config.theme.error, fg: '#fff' },
-        warning: { bg: Config.theme.warning, fg: Config.theme.text },
-        info: { bg: Config.theme.primary, fg: '#fff' }
+        success: { bg: Config.theme.success, fg: '#fff', icon: '✅' },
+        error: { bg: Config.theme.error, fg: '#fff', icon: '❌' },
+        warning: { bg: Config.theme.warning, fg: Config.theme.text, icon: '⚠️' },
+        info: { bg: Config.theme.primary, fg: '#fff', icon: 'ℹ️' }
       };
       const c = colors[type] || colors.info;
 
+      // Render inside panel (below action bar) if panel is open
+      const root = State.shadowRoot;
+      const flashArea = root?.querySelector('.flash-area');
+      if (flashArea) {
+        // Remove any existing flash in panel
+        flashArea.querySelectorAll('.flash-inline').forEach(el => el.remove());
+
+        const el = document.createElement('div');
+        el.className = 'flash-inline';
+        el.textContent = `${c.icon} ${message}`;
+        el.style.cssText = `
+          padding: 8px 14px; margin: 0; font-size: 12px; font-weight: 500;
+          background: ${c.bg}18; color: ${type === 'warning' ? Config.theme.text : c.bg};
+          border-left: 3px solid ${c.bg}; border-bottom: 1px solid ${c.bg}30;
+          animation: autoclicus-flash-in 0.25s ease-out;
+        `;
+        flashArea.appendChild(el);
+        setTimeout(() => { if (el.parentNode) el.remove(); }, 4000);
+      }
+
+      // Also show page-level flash for major events (visible when minimized)
       const flash = document.createElement('div');
-      flash.textContent = message;
+      flash.textContent = `${c.icon} ${message}`;
       flash.style.cssText = `
         position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
         padding: 12px 24px; border-radius: 10px; z-index: 1000000;
@@ -4022,16 +5339,252 @@
         border: 1px solid ${c.bg}60;
       `;
 
-      // Inject keyframes once
       if (!document.getElementById('autoclicus-flash-style')) {
         const style = document.createElement('style');
         style.id = 'autoclicus-flash-style';
-        style.textContent = `@keyframes autoclicus-flash { from { opacity:0; transform:translate(-50%,-20px); } to { opacity:1; transform:translate(-50%,0); } }`;
+        style.textContent = `
+          @keyframes autoclicus-flash { from { opacity:0; transform:translate(-50%,-20px); } to { opacity:1; transform:translate(-50%,0); } }
+          @keyframes autoclicus-flash-in { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+        `;
         document.head.appendChild(style);
       }
 
       document.body.appendChild(flash);
       setTimeout(() => flash.remove(), 3000);
+    },
+
+    // Page-wide visual feedback: green gradient wash for play, red border for record
+    pageBorderFlash(mode) {
+      this.pageBorderClear();
+
+      if (mode === 'play') {
+        // === PLAY MODE: Full-page dreamy green gradient wash ===
+        const overlay = document.createElement('div');
+        overlay.id = 'autoclicus-page-border';
+        overlay.style.cssText = `
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          pointer-events: none; z-index: 999990;
+          background: linear-gradient(180deg,
+            rgba(0, 135, 78, 0.12) 0%,
+            rgba(74, 222, 128, 0.06) 30%,
+            rgba(0, 135, 78, 0.03) 60%,
+            rgba(56, 189, 248, 0.08) 100%
+          );
+          border: 3px solid rgba(0, 135, 78, 0.35);
+          animation: autoclicus-play-breathe 3s ease-in-out infinite;
+        `;
+
+        // Soft top green glow bar
+        const topGlow = document.createElement('div');
+        topGlow.className = 'autoclicus-play-glow';
+        topGlow.style.cssText = `
+          position: fixed; top: 0; left: 0; right: 0; height: 120px;
+          pointer-events: none; z-index: 999990;
+          background: linear-gradient(180deg, rgba(0, 135, 78, 0.18) 0%, transparent 100%);
+        `;
+
+        // Soft bottom blue-green glow
+        const bottomGlow = document.createElement('div');
+        bottomGlow.className = 'autoclicus-play-glow';
+        bottomGlow.style.cssText = `
+          position: fixed; bottom: 0; left: 0; right: 0; height: 80px;
+          pointer-events: none; z-index: 999990;
+          background: linear-gradient(0deg, rgba(56, 189, 248, 0.12) 0%, transparent 100%);
+        `;
+
+        // Side edge glows
+        const leftGlow = document.createElement('div');
+        leftGlow.className = 'autoclicus-play-glow';
+        leftGlow.style.cssText = `
+          position: fixed; top: 0; left: 0; bottom: 0; width: 60px;
+          pointer-events: none; z-index: 999990;
+          background: linear-gradient(90deg, rgba(0, 135, 78, 0.1) 0%, transparent 100%);
+        `;
+
+        const rightGlow = document.createElement('div');
+        rightGlow.className = 'autoclicus-play-glow';
+        rightGlow.style.cssText = `
+          position: fixed; top: 0; right: 0; bottom: 0; width: 60px;
+          pointer-events: none; z-index: 999990;
+          background: linear-gradient(270deg, rgba(0, 135, 78, 0.1) 0%, transparent 100%);
+        `;
+
+        // Initial burst
+        const burst = document.createElement('div');
+        burst.className = 'autoclicus-play-glow';
+        burst.style.cssText = `
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          pointer-events: none; z-index: 999989;
+          background: rgba(0, 135, 78, 0.12);
+          animation: autoclicus-burst 0.8s ease-out forwards;
+        `;
+
+        const css = `
+          @keyframes autoclicus-play-breathe {
+            0%, 100% {
+              background: linear-gradient(180deg,
+                rgba(0, 135, 78, 0.10) 0%,
+                rgba(74, 222, 128, 0.04) 30%,
+                rgba(0, 135, 78, 0.02) 60%,
+                rgba(56, 189, 248, 0.06) 100%
+              );
+              border-color: rgba(0, 135, 78, 0.25);
+            }
+            50% {
+              background: linear-gradient(180deg,
+                rgba(0, 135, 78, 0.18) 0%,
+                rgba(74, 222, 128, 0.08) 30%,
+                rgba(0, 135, 78, 0.05) 60%,
+                rgba(56, 189, 248, 0.12) 100%
+              );
+              border-color: rgba(0, 135, 78, 0.50);
+            }
+          }
+          @keyframes autoclicus-burst {
+            from { opacity: 1; } to { opacity: 0; }
+          }
+        `;
+
+        this._setBorderStyle(css);
+        document.body.append(overlay, topGlow, bottomGlow, leftGlow, rightGlow, burst);
+        setTimeout(() => burst.remove(), 800);
+
+      } else {
+        // === RECORD MODE: Red pulsing border with corner indicators ===
+        const color = 'rgba(220, 53, 69,';
+
+        const border = document.createElement('div');
+        border.id = 'autoclicus-page-border';
+        border.style.cssText = `
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          pointer-events: none; z-index: 999990;
+          border: 5px solid ${color}0.8);
+          box-shadow: inset 0 0 60px ${color}0.35), inset 0 0 120px ${color}0.15);
+          animation: autoclicus-border-wave 1.5s ease-in-out infinite;
+        `;
+
+        // Corner pulses
+        [
+          { top: '0', left: '0', radius: '0 0 12px 0' },
+          { top: '0', right: '0', radius: '0 0 0 12px' },
+          { bottom: '0', left: '0', radius: '0 12px 0 0' },
+          { bottom: '0', right: '0', radius: '12px 0 0 0' }
+        ].forEach(pos => {
+          const corner = document.createElement('div');
+          corner.className = 'autoclicus-corner-pulse';
+          corner.style.cssText = `
+            position: fixed; width: 24px; height: 24px;
+            pointer-events: none; z-index: 999991;
+            background: #dc3545;
+            border-radius: ${pos.radius};
+            animation: autoclicus-corner-pulse 1s ease-in-out infinite;
+            ${pos.top !== undefined ? `top:${pos.top};` : ''}
+            ${pos.bottom !== undefined ? `bottom:${pos.bottom};` : ''}
+            ${pos.left !== undefined ? `left:${pos.left};` : ''}
+            ${pos.right !== undefined ? `right:${pos.right};` : ''}
+          `;
+          document.body.appendChild(corner);
+        });
+
+        // Burst
+        const burst = document.createElement('div');
+        burst.className = 'autoclicus-play-glow';
+        burst.style.cssText = `
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          pointer-events: none; z-index: 999989;
+          background: ${color}0.15);
+          animation: autoclicus-burst 0.6s ease-out forwards;
+        `;
+
+        const css = `
+          @keyframes autoclicus-border-wave {
+            0%, 100% { box-shadow: inset 0 0 40px ${color}0.25), inset 0 0 80px ${color}0.12); border-color: ${color}0.6); }
+            50% { box-shadow: inset 0 0 80px ${color}0.5), inset 0 0 150px ${color}0.25); border-color: ${color}0.95); }
+          }
+          @keyframes autoclicus-corner-pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+          }
+          @keyframes autoclicus-burst {
+            from { opacity: 1; } to { opacity: 0; }
+          }
+        `;
+
+        this._setBorderStyle(css);
+        document.body.append(border, burst);
+        setTimeout(() => burst.remove(), 600);
+      }
+    },
+
+    _setBorderStyle(css) {
+      const styleEl = document.getElementById('autoclicus-border-style');
+      if (!styleEl) {
+        const style = document.createElement('style');
+        style.id = 'autoclicus-border-style';
+        style.textContent = css;
+        document.head.appendChild(style);
+      } else {
+        styleEl.textContent = css;
+      }
+    },
+
+    pageBorderClear() {
+      const border = document.getElementById('autoclicus-page-border');
+      if (border) border.remove();
+      document.querySelectorAll('.autoclicus-corner-pulse, .autoclicus-play-glow').forEach(el => el.remove());
+    },
+
+    // Update minimized progress bar during playback (lightweight)
+    updateMinimizedProgress() {
+      if (!State.isMinimized) return;
+      const root = State.shadowRoot;
+      if (!root) return;
+      const fill = root.querySelector('.mini-progress-fill');
+      const status = root.querySelector('.mini-status');
+      if (fill && State.loopCount > 0) {
+        fill.style.width = `${Math.round((State.currentLoop / State.loopCount) * 100)}%`;
+      }
+      if (status) {
+        status.textContent = State.isPlaying
+          ? `${State.currentLoop}/${State.loopCount}`
+          : State.isRecording ? 'REC' : 'Prêt';
+      }
+    },
+
+    applyVibeTheme() {
+      const theme = Config.vibeThemes[State.vibeTheme] || Config.vibeThemes.neutre;
+      const ui = State.shadowRoot?.querySelector('#autoclicus-ui');
+      if (!ui) return;
+
+      // Apply header gradient
+      const header = ui.querySelector('.header');
+      if (header) header.style.background = theme.headerBg;
+
+      // Apply background & border colors
+      ui.style.background = theme.bg;
+      ui.style.borderColor = theme.borderGlow;
+
+      // Apply font size
+      ui.style.fontSize = `${State.fontSize}px`;
+
+      // Save preferences
+      try {
+        Storage.setItem('autoclicus_vibe', JSON.stringify({
+          theme: State.vibeTheme,
+          fontSize: State.fontSize
+        }));
+      } catch (e) { /* ignore */ }
+    },
+
+    loadVibePrefs() {
+      try {
+        const saved = Storage.getItem('autoclicus_vibe');
+        if (saved) {
+          const data = JSON.parse(saved);
+          if (data.theme && Config.vibeThemes[data.theme]) State.vibeTheme = data.theme;
+          if (data.fontSize >= 12 && data.fontSize <= 20) State.fontSize = data.fontSize;
+        }
+      } catch (e) { /* ignore */ }
     },
 
     startElementPicker(callback) {
@@ -4162,12 +5715,13 @@
 
     showPreflightResults(results) {
       const failed = results.filter(r => !r.passed);
+      const passed = results.filter(r => r.passed);
 
-      const message = results.map(r =>
-        `${r.passed ? '✅' : '❌'} ${r.condition.name}`
-      ).join('\n');
-
-      alert(`Vérifications préalables:\n\n${message}\n\n${failed.length > 0 ? '❌ Échec - impossible de continuer' : '✅ Succès'}`);
+      if (failed.length > 0) {
+        this.flash('error', `Préflight: ${failed.map(f => f.condition.name).join(', ')} — échec`);
+      } else {
+        this.flash('success', `Préflight: ${passed.length} vérifications réussies`);
+      }
     }
   };
 
@@ -4201,6 +5755,11 @@
     } catch (e) {
       console.warn('Failed to load saved data:', e);
     }
+
+    // Load scenario config + vibe preferences
+    Scenario.loadConfig();
+    UI.loadVibePrefs();
+    State.currentTab = 'scenario'; // Default to scenario tab
 
     // Initialize UI
     UI.init();
