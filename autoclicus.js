@@ -1590,21 +1590,34 @@
           background: ${Config.theme.bgSecondary};
           border-bottom: 1px solid ${Config.theme.border};
           overflow-x: auto;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(0,0,0,0.12) transparent;
+          -webkit-overflow-scrolling: touch;
+        }
+        .tabs::-webkit-scrollbar {
+          height: 3px;
+        }
+        .tabs::-webkit-scrollbar-thumb {
+          background: rgba(0,0,0,0.12);
+          border-radius: 2px;
         }
 
         .tab {
-          flex: 1;
-          padding: 12px 8px;
+          flex: 1 1 0;
+          min-width: 0;
+          padding: 9px 4px;
           text-align: center;
           cursor: pointer;
           border: none;
           background: transparent;
           color: ${Config.theme.textSecondary};
-          font-size: 13px;
+          font-size: 11px;
           font-weight: 500;
           transition: all 0.2s;
           position: relative;
           white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .tab:hover {
@@ -2561,13 +2574,13 @@
 
     renderTabs() {
       const tabs = [
-        { id: 'record', label: 'Enregistrer' },
+        { id: 'record', label: 'Enreg.' },
         { id: 'edit', label: 'Éditer' },
-        { id: 'conditions', label: 'Conditions' },
+        { id: 'conditions', label: 'Cond.' },
         { id: 'audit', label: 'Audit' },
         { id: 'stats', label: 'Stats' },
-        { id: 'save', label: 'Sauvegarder' },
-        { id: 'settings', label: 'Réglages' },
+        { id: 'save', label: 'Sauv.' },
+        { id: 'settings', label: 'Régl.' },
         { id: 'help', label: 'Aide' }
       ];
 
