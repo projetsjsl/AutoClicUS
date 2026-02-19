@@ -1222,7 +1222,9 @@
           position: fixed;
           top: 20px;
           right: 20px;
-          width: 450px;
+          width: 520px;
+          min-width: 380px;
+          max-width: 90vw;
           max-height: 90vh;
           background: ${Config.theme.bg};
           border: 2px solid rgba(0, 135, 78, 0.2);
@@ -1234,9 +1236,10 @@
           z-index: 999999;
           display: flex;
           flex-direction: column;
-          overflow: hidden;
+          overflow: auto;
           backdrop-filter: blur(10px);
           transition: border-color 0.4s, box-shadow 0.4s;
+          resize: horizontal;
         }
 
         #autoclicus-ui.state-recording {
@@ -1358,9 +1361,9 @@
         /* Rate bar */
         .rate-bar {
           display: flex;
-          align-items: center;
-          gap: 8px;
-          padding: 8px 14px;
+          align-items: flex-end;
+          gap: 10px;
+          padding: 6px 14px;
           background: ${Config.theme.bgSecondary};
           border-bottom: 1px solid ${Config.theme.border};
           font-size: 13px;
@@ -1368,28 +1371,29 @@
 
         .rate-field {
           flex: 1;
-          display: flex;
-          align-items: center;
-          gap: 6px;
+          min-width: 0;
         }
 
         .rate-field label {
-          font-size: 11px;
+          display: block;
+          font-size: 10px;
           font-weight: 600;
           color: ${Config.theme.textSecondary};
           text-transform: uppercase;
           letter-spacing: 0.3px;
           white-space: nowrap;
+          margin-bottom: 2px;
         }
 
         .rate-field input {
           width: 100%;
-          padding: 5px 8px;
+          min-width: 70px;
+          padding: 4px 6px;
           border: 1px solid ${Config.theme.border};
           border-radius: 5px;
           font-size: 14px;
           font-weight: 600;
-          font-family: 'Courier New', monospace;
+          font-family: 'SF Mono', 'Courier New', monospace;
           color: ${Config.theme.primary};
           text-align: center;
           background: white;
