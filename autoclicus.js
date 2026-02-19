@@ -1,4 +1,4 @@
-// AutoClicUS v5.1.0 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
+// AutoClicUS v5.2.0 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
 // Automation assistant for SmartD USD exchange rate operations
 // Paste this complete snippet into Chrome DevTools console
 
@@ -9,7 +9,7 @@
   // CONFIG
   // =============================================================================
   const Config = {
-    version: '5.1.0',
+    version: '5.2.0',
     emmaAvatar: 'data:image/jpeg;base64,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',
     theme: {
       bg: '#ffffff',
@@ -506,8 +506,15 @@
       };
 
       State.auditTrail.push(entry);
-      this.save();
-      this.pruneIfNeeded();
+      // P3: Debounced save — batch at loop boundaries instead of every action
+      if (!this._saveScheduled) {
+        this._saveScheduled = true;
+        setTimeout(() => {
+          this.save();
+          this.pruneIfNeeded();
+          this._saveScheduled = false;
+        }, 2000);
+      }
 
       return entry;
     },
@@ -768,7 +775,7 @@
           }
 
           State.currentStep = i;
-          UI.render();
+          UI.updatePlaybackDisplay(); // P1: targeted update, not full re-render
 
           const action = State.recordedActions[i];
 
@@ -808,6 +815,8 @@
 
         // Record loop completion for stats
         State.loopTimestamps.push(Date.now() - State.loopStartTime);
+        // P3: Flush audit at loop boundary
+        Audit.save();
 
         if (State.currentLoop < State.loopCount) {
           await this.sleep(State.settings.delayBetweenLoops / State.speed);
@@ -1139,6 +1148,7 @@
       State.isPlaying = false;
       State.isPaused = false;
       State.totalDuration = Date.now() - (State.startTime || Date.now());
+      Audit.save(); // P3: Final flush on stop
       UI.render();
     },
 
@@ -2356,6 +2366,46 @@
       this.attachResizeHandle();
     },
 
+    // P1: Lightweight update during playback — skip full re-render + re-attach
+    updatePlaybackDisplay() {
+      const root = State.shadowRoot;
+      if (!root) return;
+
+      // Update bottom strip (step/loop counter)
+      const strip = root.querySelector('.bottom-strip');
+      if (strip && State.isPlaying) {
+        const step = State.currentStep + 1;
+        const total = State.recordedActions.length;
+        strip.innerHTML = `<span class="status-icon">🟢</span> Lecture ${step}/${total} · Boucle ${State.currentLoop}/${State.loopCount}`;
+      }
+
+      // Update exec stats panel
+      const existingStats = root.querySelector('.exec-stats');
+      if (State.isPlaying) {
+        const statsHTML = this.renderExecStats();
+        if (existingStats) {
+          safeHTML(existingStats, existingStats.innerHTML); // clear
+          existingStats.outerHTML = statsHTML;
+        } else {
+          // Insert after rate-bar if not present
+          const rateBar = root.querySelector('.rate-bar');
+          if (rateBar) {
+            rateBar.insertAdjacentHTML('afterend', statsHTML);
+          }
+        }
+      }
+
+      // Update progress bar if on record tab
+      const progressBar = root.querySelector('.progress-bar-geek');
+      if (progressBar) {
+        const pct = State.recordedActions.length > 0
+          ? Math.round(((State.currentStep + 1) / State.recordedActions.length) * 100)
+          : 0;
+        progressBar.style.width = `${pct}%`;
+        progressBar.textContent = `${pct}%`;
+      }
+    },
+
     renderHeader() {
       const now = new Date();
       const time = now.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -2947,7 +2997,7 @@
 
     renderStatsTab() {
       const totalActions = State.recordedActions.length;
-      const estimatedTime = totalActions * (1000 / State.speed) / 1000;
+      const estimatedTime = totalActions * (State.settings.delayBetweenActions / State.speed) / 1000;
       const loops = State.loopCount;
 
       return `
@@ -3234,12 +3284,90 @@
     attachEventListeners() {
       const root = State.shadowRoot;
 
-      // Tabs
-      root.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', () => {
+      // P2: Delegated click handler for tabs, action rows, condition rows
+      root.addEventListener('click', (e) => {
+        const t = e.target;
+
+        // Tab clicks
+        const tab = t.closest('.tab');
+        if (tab && tab.dataset.tab) {
           State.currentTab = tab.dataset.tab;
           this.render();
-        });
+          return;
+        }
+
+        // Action delete
+        const delBtn = t.closest('[data-action-index]');
+        if (delBtn) {
+          const i = parseInt(delBtn.dataset.actionIndex);
+          if (State.settings.confirmBeforeDelete && !confirm('Supprimer cette action?')) return;
+          State.recordedActions.splice(i, 1);
+          State.editingActionIndex = null;
+          this.render();
+          return;
+        }
+
+        // Action move up
+        const upBtn = t.closest('[data-move-up]');
+        if (upBtn) {
+          const i = parseInt(upBtn.dataset.moveUp);
+          if (i > 0) {
+            [State.recordedActions[i - 1], State.recordedActions[i]] = [State.recordedActions[i], State.recordedActions[i - 1]];
+            this.render();
+          }
+          return;
+        }
+
+        // Action move down
+        const downBtn = t.closest('[data-move-down]');
+        if (downBtn) {
+          const i = parseInt(downBtn.dataset.moveDown);
+          if (i < State.recordedActions.length - 1) {
+            [State.recordedActions[i], State.recordedActions[i + 1]] = [State.recordedActions[i + 1], State.recordedActions[i]];
+            this.render();
+          }
+          return;
+        }
+
+        // Action duplicate
+        const dupBtn = t.closest('[data-duplicate]');
+        if (dupBtn) {
+          const i = parseInt(dupBtn.dataset.duplicate);
+          const clone = JSON.parse(JSON.stringify(State.recordedActions[i]));
+          clone.id = Date.now().toString(36) + Math.random().toString(36).substring(2, 9);
+          State.recordedActions.splice(i + 1, 0, clone);
+          this.render();
+          this.flash('success', 'Action dupliquée');
+          return;
+        }
+
+        // Action edit toggle
+        const editBtn = t.closest('[data-edit-action]');
+        if (editBtn) {
+          const i = parseInt(editBtn.dataset.editAction);
+          State.editingActionIndex = State.editingActionIndex === i ? null : i;
+          this.render();
+          return;
+        }
+
+        // Condition delete
+        const condBtn = t.closest('[data-condition-index]');
+        if (condBtn) {
+          const i = parseInt(condBtn.dataset.conditionIndex);
+          if (State.settings.confirmBeforeDelete && !confirm('Supprimer cette condition?')) return;
+          State.conditions.splice(i, 1);
+          this.render();
+          return;
+        }
+
+        // Shortcut capture
+        const shortcutBtn = t.closest('[data-capture-shortcut]');
+        if (shortcutBtn) {
+          const key = shortcutBtn.dataset.captureShortcut;
+          State.capturingShortcut = State.capturingShortcut === key ? null : key;
+          this.render();
+          return;
+        }
       });
 
       // Record tab
@@ -3351,14 +3479,7 @@
         });
       }
 
-      root.querySelectorAll('[data-condition-index]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const index = parseInt(btn.dataset.conditionIndex);
-          if (State.settings.confirmBeforeDelete && !confirm('Supprimer cette condition?')) return;
-          State.conditions.splice(index, 1);
-          this.render();
-        });
-      });
+      // P2: Condition delete handled by delegated handler above
 
       // Edit tab — inline forms
       const btnAddPrompt = root.querySelector('#add-prompt');
@@ -3493,55 +3614,7 @@
         });
       }
 
-      // Action row buttons: delete, move, duplicate, edit
-      root.querySelectorAll('[data-action-index]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const index = parseInt(btn.dataset.actionIndex);
-          if (State.settings.confirmBeforeDelete && !confirm('Supprimer cette action?')) return;
-          State.recordedActions.splice(index, 1);
-          State.editingActionIndex = null;
-          this.render();
-        });
-      });
-
-      root.querySelectorAll('[data-move-up]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const i = parseInt(btn.dataset.moveUp);
-          if (i > 0) {
-            [State.recordedActions[i - 1], State.recordedActions[i]] = [State.recordedActions[i], State.recordedActions[i - 1]];
-            this.render();
-          }
-        });
-      });
-
-      root.querySelectorAll('[data-move-down]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const i = parseInt(btn.dataset.moveDown);
-          if (i < State.recordedActions.length - 1) {
-            [State.recordedActions[i], State.recordedActions[i + 1]] = [State.recordedActions[i + 1], State.recordedActions[i]];
-            this.render();
-          }
-        });
-      });
-
-      root.querySelectorAll('[data-duplicate]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const i = parseInt(btn.dataset.duplicate);
-          const clone = JSON.parse(JSON.stringify(State.recordedActions[i]));
-          clone.id = Date.now().toString(36) + Math.random().toString(36).substring(2, 9);
-          State.recordedActions.splice(i + 1, 0, clone);
-          this.render();
-          this.flash('success', 'Action dupliquée');
-        });
-      });
-
-      root.querySelectorAll('[data-edit-action]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const i = parseInt(btn.dataset.editAction);
-          State.editingActionIndex = State.editingActionIndex === i ? null : i;
-          this.render();
-        });
-      });
+      // P2: Action row buttons (delete, move, duplicate, edit) handled by delegated handler above
 
       root.querySelectorAll('[data-edit-index]').forEach(input => {
         input.addEventListener('keydown', (e) => {
@@ -3567,13 +3640,7 @@
       });
 
       // Settings tab
-      root.querySelectorAll('[data-capture-shortcut]').forEach(key => {
-        key.addEventListener('click', () => {
-          const shortcutKey = key.dataset.captureShortcut;
-          State.capturingShortcut = State.capturingShortcut === shortcutKey ? null : shortcutKey;
-          this.render();
-        });
-      });
+      // P2: Shortcut capture handled by delegated handler above
 
       const delayActions = root.querySelector('#setting-delay-actions');
       const delayLoops = root.querySelector('#setting-delay-loops');
@@ -3945,6 +4012,14 @@
   // =============================================================================
   // INITIALIZATION
   // =============================================================================
+
+  // P0: Duplicate-instance guard — safe to paste snippet multiple times
+  const existingInstance = document.getElementById('autoclicus-container');
+  if (existingInstance) {
+    existingInstance.remove();
+    console.log('%c♻️ AutoClicUS: Instance précédente supprimée', 'color: #ffc107;');
+  }
+
   try {
     // Load saved data
     try {
