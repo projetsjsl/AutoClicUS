@@ -256,7 +256,7 @@
     cleanClassName(cn) {
       const str = typeof cn === 'string' ? cn : cn?.baseVal || '';
       return str.split(' ').filter(c =>
-        c.trim() && !c.match(/^(ng-|cdk-|mat-|_ngcontent|_nghost)/)
+        c.trim() && !c.match(/^(ng-tns-|ng-star-|ng-trigger-|ng-animating|_ngcontent|_nghost|cdk-focused|cdk-mouse)/)
       ).join(' ');
     },
 
@@ -268,14 +268,18 @@
         ? element.className
         : element.className?.baseVal || '';
       if (classStr) {
-        // Strip Angular/CDK/framework dynamic classes that change every session
+        // Strip Angular dynamic classes that change every session
+        // Keep stable ones: mat-* (Angular Material), cdk-overlay-* (stable positioning)
         const classes = classStr.split(' ').filter(c =>
           c.trim() &&
-          !c.match(/^ng-/) &&          // Angular: ng-tns-*, ng-star-inserted, ng-trigger-*
-          !c.match(/^cdk-/) &&          // Angular CDK: cdk-focused, cdk-overlay-*
-          !c.match(/^mat-/) &&          // Angular Material: mat-content, mat-ripple-*
-          !c.match(/^_ngcontent/) &&     // Angular view encapsulation
-          !c.match(/^_nghost/)           // Angular host element
+          !c.match(/^ng-tns-/) &&       // Angular template namespace (changes every compile)
+          !c.match(/^ng-star-/) &&       // Angular structural directive marker
+          !c.match(/^ng-trigger-/) &&    // Angular animation trigger
+          !c.match(/^ng-animating/) &&   // Angular animation state
+          !c.match(/^_ngcontent/) &&     // Angular view encapsulation hash
+          !c.match(/^_nghost/) &&        // Angular host element hash
+          !c.match(/^cdk-focused/) &&    // CDK focus state (dynamic)
+          !c.match(/^cdk-mouse/)         // CDK mouse state (dynamic)
         );
         if (classes.length > 0) {
           selector += '.' + classes.join('.');
