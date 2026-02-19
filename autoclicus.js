@@ -1349,10 +1349,10 @@
         .header-countdown {
           font-size: 12px;
           font-weight: 700;
-          color: #ffcdd2;
+          color: #ff4444;
           font-variant-numeric: tabular-nums;
           margin-top: 1px;
-          text-shadow: 0 0 8px rgba(255,107,107,0.6);
+          text-shadow: 0 0 10px rgba(255,68,68,0.8);
           letter-spacing: 0.5px;
         }
 
@@ -1605,7 +1605,7 @@
         .tab {
           flex: 1 1 0;
           min-width: 0;
-          padding: 9px 4px;
+          padding: 11px 4px;
           text-align: center;
           cursor: pointer;
           border: none;
@@ -2421,7 +2421,7 @@
 
     renderHeader() {
       const now = new Date();
-      const time = now.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const time = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
 
       let countdownHTML = '';
       if (State.countdownEnd) {
@@ -2430,10 +2430,10 @@
           const hrs = Math.floor(remaining / 3600000);
           const mins = Math.floor((remaining % 3600000) / 60000);
           const secs = Math.floor((remaining % 60000) / 1000);
-          const display = hrs > 0 ? `${hrs}h${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}` : `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+          const display = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
           countdownHTML = `<div class="header-countdown">⏱ ${display}</div>`;
         } else {
-          countdownHTML = `<div class="header-countdown expired">⏱ 00:00 TERMINÉ</div>`;
+          countdownHTML = `<div class="header-countdown expired">⏱ 00:00:00 TERMINÉ</div>`;
         }
       }
 
@@ -4061,7 +4061,7 @@
       const clock = State.shadowRoot?.querySelector('.header-clock');
       if (clock) {
         const now = new Date();
-        const time = now.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const time = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
         clock.textContent = time;
       }
       // Update countdown in header
@@ -4073,11 +4073,11 @@
             const hrs = Math.floor(remaining / 3600000);
             const mins = Math.floor((remaining % 3600000) / 60000);
             const secs = Math.floor((remaining % 60000) / 1000);
-            const display = hrs > 0 ? `${hrs}h${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}` : `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            const display = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
             cd.textContent = `⏱ ${display}`;
             cd.classList.remove('expired');
           } else {
-            cd.textContent = '⏱ 00:00 TERMINÉ';
+            cd.textContent = '⏱ 00:00:00 TERMINÉ';
             cd.classList.add('expired');
           }
         }
