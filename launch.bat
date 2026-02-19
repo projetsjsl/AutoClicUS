@@ -40,17 +40,22 @@ if "%CHROME_PATH%"=="" (
 echo  Chrome trouve: %CHROME_PATH%
 echo.
 
-:: --- Ask number of instances ---
-echo  Combien d'instances Chrome ouvrir?
+:: --- Main menu ---
+echo  Que voulez-vous faire?
 echo.
+echo    [0] J'ai deja Chrome ouvert (snippet seulement)
 echo    [1] 1 instance  (plein ecran)
 echo    [2] 2 instances (cote a cote)
 echo    [3] 3 instances (tiers d'ecran)
 echo    [4] 4 instances (quarts d'ecran)
 echo.
-set /p "NUM_INSTANCES=  Choix (1-4): "
+set /p "CHOICE=  Choix (0-4): "
 
-:: Validate input
+:: Option 0: snippet-only mode
+if "%CHOICE%"=="0" goto :SNIPPET_ONLY
+
+:: Validate input for instances
+set "NUM_INSTANCES=%CHOICE%"
 if "%NUM_INSTANCES%"=="" set "NUM_INSTANCES=2"
 if %NUM_INSTANCES% LSS 1 set "NUM_INSTANCES=1"
 if %NUM_INSTANCES% GTR 4 set "NUM_INSTANCES=4"
@@ -79,16 +84,52 @@ for /L %%i in (1,1,%NUM_INSTANCES%) do (
     call :LAUNCH_CHROME %%i
 )
 
+:SHOW_INSTRUCTIONS
 echo.
 echo  ╔════════════════════════════════════════════════╗
-echo  ║  %NUM_INSTANCES% instance(s) lancee(s)!                      ║
-echo  ║                                                ║
 echo  ║  Pour charger AutoClicUS dans chaque fenetre:  ║
+echo  ║                                                ║
 echo  ║  1. Appuyez sur F12 (DevTools)                 ║
 echo  ║  2. Onglet Console                             ║
 echo  ║  3. Collez le snippet autoclicus.js            ║
 echo  ║  4. Appuyez sur Entree                         ║
 echo  ╚════════════════════════════════════════════════╝
+echo.
+
+:: Copy snippet to clipboard if available
+if exist "%~dp0autoclicus.js" (
+    type "%~dp0autoclicus.js" | clip
+    echo  [OK] Le snippet a ete copie dans le presse-papiers!
+    echo       Faites Ctrl+V dans la console Chrome.
+) else (
+    echo  [INFO] Fichier autoclicus.js non trouve dans le meme dossier.
+    echo         Copiez-le manuellement.
+)
+echo.
+pause
+exit /b 0
+
+:SNIPPET_ONLY
+echo.
+echo  ╔════════════════════════════════════════════════╗
+echo  ║  Mode: Snippet seulement                      ║
+echo  ╚════════════════════════════════════════════════╝
+echo.
+
+:: Copy snippet to clipboard
+if exist "%~dp0autoclicus.js" (
+    type "%~dp0autoclicus.js" | clip
+    echo  [OK] Le snippet a ete copie dans le presse-papiers!
+    echo.
+    echo  Dans votre fenetre Chrome:
+    echo    1. Appuyez sur F12 (DevTools)
+    echo    2. Onglet Console
+    echo    3. Ctrl+V pour coller
+    echo    4. Appuyez sur Entree
+) else (
+    echo  [ERREUR] Fichier autoclicus.js non trouve!
+    echo           Placez-le dans le meme dossier que launch.bat
+)
 echo.
 pause
 exit /b 0

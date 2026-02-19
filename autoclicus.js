@@ -1,4 +1,4 @@
-// AutoClicUS v5.2.0 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
+// AutoClicUS v5.3.0 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
 // Automation assistant for SmartD USD exchange rate operations
 // Paste this complete snippet into Chrome DevTools console
 
@@ -9,7 +9,7 @@
   // CONFIG
   // =============================================================================
   const Config = {
-    version: '5.2.0',
+    version: '5.3.0',
     emmaAvatar: 'data:image/jpeg;base64,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',
     theme: {
       bg: '#ffffff',
@@ -359,8 +359,8 @@
       if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
         return false;
       }
-      // offsetParent is null for fixed/sticky elements and <body> — not actually hidden
-      if (element.offsetParent === null && style.position !== 'fixed' && style.position !== 'sticky' && element !== document.body) {
+      // offsetParent is null for fixed/sticky elements, <body>, and <html> — not actually hidden
+      if (element.offsetParent === null && style.position !== 'fixed' && style.position !== 'sticky' && element !== document.body && element !== document.documentElement) {
         return false;
       }
       return true;
@@ -368,15 +368,15 @@
 
     calculateConfidence(element, fingerprint) {
       let score = 0;
-      let checks = 0;
 
-      if (element.id && element.id === fingerprint.id) { score += 30; checks++; }
-      if (element.className === fingerprint.className) { score += 20; checks++; }
-      if (element.getAttribute('name') === fingerprint.name) { score += 15; checks++; }
-      if (element.textContent?.trim().includes(fingerprint.text.substring(0, 30))) { score += 15; checks++; }
-      if (element.tagName.toLowerCase() === fingerprint.tag) { score += 10; checks++; }
+      // ID match is the strongest signal — 40pts alone = high confidence
+      if (element.id && element.id === fingerprint.id) score += 40;
+      if (element.className === fingerprint.className) score += 20;
+      if (element.getAttribute('name') === fingerprint.name) score += 15;
+      if (fingerprint.text && element.textContent?.trim().includes(fingerprint.text.substring(0, 30))) score += 15;
+      if (element.tagName.toLowerCase() === fingerprint.tag) score += 10;
 
-      return checks > 0 ? score / checks : 0;
+      return score;  // out of 100
     }
   };
 
@@ -891,10 +891,12 @@
         const { element, confidence } = Fingerprint.resolve(action.fingerprint);
 
         if (!element) {
-          throw new Error(`Element not found: ${action.fingerprint.selector}`);
+          console.warn(`⏭️ Element not found, skipping: ${action.fingerprint.selector}`);
+          Audit.log(action, action.fingerprint?.selector, '', 'skipped', 0);
+          return;
         }
 
-        if (confidence < 50) {
+        if (confidence < 30) {
           console.warn(`Low confidence (${confidence}%) for element:`, action.fingerprint);
         }
 
@@ -1284,6 +1286,8 @@
           gap: 10px;
           position: relative;
           overflow: hidden;
+          cursor: move;
+          user-select: none;
         }
 
         .header::before {
@@ -1478,28 +1482,18 @@
         }
 
         /* Resize handle */
-        .resize-handle {
+        .resize-edge {
           position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 18px;
-          height: 18px;
-          cursor: ew-resize;
-          opacity: 0.4;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 10px;
-          color: ${Config.theme.textSecondary};
           z-index: 10;
-          border-radius: 0 8px 0 16px;
-          transition: opacity 0.2s;
         }
-
-        .resize-handle:hover {
-          opacity: 0.8;
-          background: rgba(0,0,0,0.05);
-        }
+        .resize-edge[data-dir="n"] { top:-3px; left:8px; right:8px; height:6px; cursor:ns-resize; }
+        .resize-edge[data-dir="s"] { bottom:-3px; left:8px; right:8px; height:6px; cursor:ns-resize; }
+        .resize-edge[data-dir="w"] { left:-3px; top:8px; bottom:8px; width:6px; cursor:ew-resize; }
+        .resize-edge[data-dir="e"] { right:-3px; top:8px; bottom:8px; width:6px; cursor:ew-resize; }
+        .resize-edge[data-dir="nw"] { top:-3px; left:-3px; width:12px; height:12px; cursor:nw-resize; }
+        .resize-edge[data-dir="ne"] { top:-3px; right:-3px; width:12px; height:12px; cursor:ne-resize; }
+        .resize-edge[data-dir="sw"] { bottom:-3px; left:-3px; width:12px; height:12px; cursor:sw-resize; }
+        .resize-edge[data-dir="se"] { bottom:-3px; right:-3px; width:12px; height:12px; cursor:se-resize; }
 
         /* Execution stats */
         .exec-stats {
@@ -1709,8 +1703,31 @@
         }
 
         .btn-danger {
-          background: ${Config.theme.error};
+          background: linear-gradient(135deg, ${Config.theme.error}, #ff4444);
           color: white;
+        }
+
+        .btn-danger:hover {
+          box-shadow: 0 4px 16px rgba(220, 53, 69, 0.4);
+          transform: translateY(-1px);
+        }
+
+        .btn-warning {
+          background: linear-gradient(135deg, #e6a800, #ffc107);
+          color: #1a1a1a;
+          font-weight: 600;
+        }
+
+        .btn-warning:hover {
+          box-shadow: 0 4px 16px rgba(255, 193, 7, 0.4);
+          transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+          transform: none !important;
+          box-shadow: none !important;
         }
 
         .btn-small {
@@ -2373,11 +2390,19 @@
         ${this.renderTabs()}
         ${this.renderContent()}
         ${this.renderBottomStrip()}
-        <div class="resize-handle" id="resize-handle">⇔</div>
+        <div class="resize-edge" data-dir="n"></div>
+        <div class="resize-edge" data-dir="s"></div>
+        <div class="resize-edge" data-dir="w"></div>
+        <div class="resize-edge" data-dir="e"></div>
+        <div class="resize-edge" data-dir="nw"></div>
+        <div class="resize-edge" data-dir="ne"></div>
+        <div class="resize-edge" data-dir="sw"></div>
+        <div class="resize-edge" data-dir="se"></div>
       `);
 
       this.attachEventListeners();
-      this.attachResizeHandle();
+      this.attachDragHandle();
+      this.attachResizeHandles();
     },
 
     // P1: Lightweight update during playback — skip full re-render + re-attach
@@ -2409,14 +2434,19 @@
         }
       }
 
-      // Update progress bar if on record tab
-      const progressBar = root.querySelector('.progress-bar-geek');
-      if (progressBar) {
+      // Update progress bar fill if on record tab
+      const progressFill = root.querySelector('.progress-fill-geek');
+      if (progressFill) {
         const pct = State.recordedActions.length > 0
           ? Math.round(((State.currentStep + 1) / State.recordedActions.length) * 100)
           : 0;
-        progressBar.style.width = `${pct}%`;
-        progressBar.textContent = `${pct}%`;
+        progressFill.style.width = `${pct}%`;
+      }
+
+      // Update step text
+      const stepText = root.querySelector('.playback-step-text');
+      if (stepText) {
+        stepText.textContent = `Étape ${State.currentStep + 1} / ${State.recordedActions.length} · Boucle ${State.currentLoop} / ${State.loopCount}`;
       }
     },
 
@@ -2630,7 +2660,7 @@
                 style="${State.isRecording ? 'animation: ai-recording-pulse 1.5s ease-in-out infinite; background: linear-gradient(135deg, #dc3545, #ff6b6b);' : ''}">
                 ${State.isRecording ? '🔴 Enregistrement...' : `⚫ Enregistrer (${State.settings.shortcuts.record})`}
               </button>
-              <button class="btn btn-secondary tooltip-wrap" data-tip="Arrête l'enregistrement" id="btn-stop-record" ${!State.isRecording ? 'disabled' : ''}>
+              <button class="btn btn-danger tooltip-wrap" data-tip="Arrête l'enregistrement" id="btn-stop-record" ${!State.isRecording ? 'disabled' : ''}>
                 ⏹️ Arrêter
               </button>
             </div>
@@ -2639,10 +2669,10 @@
               <button class="btn btn-primary tooltip-wrap" data-tip="Lance la lecture des actions" id="btn-play" ${State.isPlaying || State.recordedActions.length === 0 ? 'disabled' : ''}>
                 ▶️ Lire (${State.settings.shortcuts.play})
               </button>
-              <button class="btn btn-secondary tooltip-wrap" data-tip="Met en pause la lecture" id="btn-pause" ${!State.isPlaying || State.isPaused ? 'disabled' : ''}>
+              <button class="btn btn-warning tooltip-wrap" data-tip="Met en pause la lecture" id="btn-pause" ${!State.isPlaying || State.isPaused ? 'disabled' : ''}>
                 ⏸️ Pause (${State.settings.shortcuts.pause})
               </button>
-              <button class="btn btn-secondary tooltip-wrap" data-tip="Arrête la lecture" id="btn-stop" ${!State.isPlaying ? 'disabled' : ''}>
+              <button class="btn btn-danger tooltip-wrap" data-tip="Arrête la lecture" id="btn-stop" ${!State.isPlaying ? 'disabled' : ''}>
                 ⏹️ Stop (${State.settings.shortcuts.stop})
               </button>
             </div>
@@ -2651,7 +2681,7 @@
               <div class="progress-bar-geek">
                 <div class="progress-fill-geek ${State.isPlaying ? 'playing' : 'recording'}" style="width: ${State.isPlaying ? progress : 100}%"></div>
               </div>
-              ${State.isPlaying ? `<div style="text-align: center; font-size: 13px; color: ${Config.theme.textSecondary};">
+              ${State.isPlaying ? `<div class="playback-step-text" style="text-align: center; font-size: 13px; color: ${Config.theme.textSecondary};">
                 Étape ${State.currentStep + 1} / ${State.recordedActions.length} · Boucle ${State.currentLoop} / ${State.loopCount}
               </div>` : `<div style="text-align: center; font-size: 13px; color: #ff6b6b;">
                 Enregistrement... ${State.recordedActions.length} action${State.recordedActions.length !== 1 ? 's' : ''}
@@ -3821,21 +3851,33 @@
       }
     },
 
-    attachResizeHandle() {
+    attachDragHandle() {
       const root = State.shadowRoot;
-      const handle = root.querySelector('#resize-handle');
+      const header = root.querySelector('.header');
       const ui = root.querySelector('#autoclicus-ui');
-      if (!handle || !ui) return;
+      if (!header || !ui) return;
 
-      handle.addEventListener('mousedown', (e) => {
+      header.addEventListener('mousedown', (e) => {
+        if (e.target.closest('button, a, input')) return;
         e.preventDefault();
         const startX = e.clientX;
-        const startW = ui.offsetWidth;
+        const startY = e.clientY;
+        const rect = ui.getBoundingClientRect();
+        const startLeft = rect.left;
+        const startTop = rect.top;
+
+        // Switch from right-positioned to left-positioned for drag
+        ui.style.left = startLeft + 'px';
+        ui.style.top = startTop + 'px';
+        ui.style.right = 'auto';
 
         const onMove = (ev) => {
-          const delta = startX - ev.clientX; // drag left = wider (panel is right-aligned)
-          const newW = Math.max(380, Math.min(window.innerWidth * 0.9, startW + delta));
-          ui.style.width = newW + 'px';
+          const dx = ev.clientX - startX;
+          const dy = ev.clientY - startY;
+          const newLeft = Math.max(0, Math.min(window.innerWidth - 100, startLeft + dx));
+          const newTop = Math.max(0, Math.min(window.innerHeight - 50, startTop + dy));
+          ui.style.left = newLeft + 'px';
+          ui.style.top = newTop + 'px';
         };
 
         const onUp = () => {
@@ -3845,6 +3887,65 @@
 
         document.addEventListener('mousemove', onMove);
         document.addEventListener('mouseup', onUp);
+      });
+    },
+
+    attachResizeHandles() {
+      const root = State.shadowRoot;
+      const ui = root.querySelector('#autoclicus-ui');
+      if (!ui) return;
+
+      const edges = root.querySelectorAll('.resize-edge');
+      edges.forEach(edge => {
+        edge.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const dir = edge.dataset.dir;
+          const startX = e.clientX;
+          const startY = e.clientY;
+          const rect = ui.getBoundingClientRect();
+          const startW = rect.width;
+          const startH = rect.height;
+          const startLeft = rect.left;
+          const startTop = rect.top;
+
+          // Ensure left/top positioning
+          ui.style.left = startLeft + 'px';
+          ui.style.top = startTop + 'px';
+          ui.style.right = 'auto';
+
+          const onMove = (ev) => {
+            const dx = ev.clientX - startX;
+            const dy = ev.clientY - startY;
+
+            if (dir.includes('e')) {
+              ui.style.width = Math.max(340, Math.min(window.innerWidth * 0.95, startW + dx)) + 'px';
+            }
+            if (dir.includes('w')) {
+              const newW = Math.max(340, startW - dx);
+              ui.style.width = newW + 'px';
+              ui.style.left = (startLeft + startW - newW) + 'px';
+            }
+            if (dir.includes('s')) {
+              ui.style.maxHeight = 'none';
+              ui.style.height = Math.max(200, Math.min(window.innerHeight * 0.95, startH + dy)) + 'px';
+            }
+            if (dir.includes('n')) {
+              const newH = Math.max(200, startH - dy);
+              ui.style.maxHeight = 'none';
+              ui.style.height = newH + 'px';
+              ui.style.top = (startTop + startH - newH) + 'px';
+            }
+          };
+
+          const onUp = () => {
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+          };
+
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
+        });
       });
     },
 
@@ -3978,38 +4079,78 @@
 
     highlightElement(element, dryRun = false) {
       const rect = element.getBoundingClientRect();
+      const color = dryRun ? '255, 193, 7' : '0, 135, 78';
+      const colorHex = dryRun ? '#ffc107' : '#00874e';
 
+      // Inject keyframes once
+      if (!document.getElementById('autoclicus-highlight-styles')) {
+        const style = document.createElement('style');
+        style.id = 'autoclicus-highlight-styles';
+        style.textContent = `
+          @keyframes ac-highlight-in { 0% { opacity:0; transform:scale(0.95); } 100% { opacity:1; transform:scale(1); } }
+          @keyframes ac-highlight-out { 0% { opacity:1; } 100% { opacity:0; transform:scale(1.02); } }
+          @keyframes ac-ripple { 0% { transform:scale(0.5); opacity:0.8; } 100% { transform:scale(2.5); opacity:0; } }
+          @keyframes ac-step-in { 0% { opacity:0; transform:translateY(8px) scale(0.8); } 100% { opacity:1; transform:translateY(0) scale(1); } }
+          @keyframes ac-step-out { 0% { opacity:1; } 100% { opacity:0; transform:translateY(-8px); } }
+        `;
+        document.head.appendChild(style);
+      }
+
+      // Highlight box
       const highlight = document.createElement('div');
       highlight.style.cssText = `
-        position: fixed;
-        top: ${rect.top - 2}px;
-        left: ${rect.left - 2}px;
-        width: ${rect.width + 4}px;
-        height: ${rect.height + 4}px;
-        border: 2px solid ${dryRun ? Config.theme.warning : Config.theme.primary};
-        background: ${dryRun ? 'rgba(255, 193, 7, 0.08)' : 'rgba(0, 135, 78, 0.08)'};
-        box-shadow: 0 0 12px ${dryRun ? 'rgba(255, 193, 7, 0.4)' : 'rgba(0, 135, 78, 0.4)'}, inset 0 0 8px ${dryRun ? 'rgba(255, 193, 7, 0.1)' : 'rgba(0, 135, 78, 0.1)'};
-        pointer-events: none;
-        z-index: 999998;
-        border-radius: 6px;
-        animation: pulse 0.6s;
+        position:fixed; top:${rect.top - 3}px; left:${rect.left - 3}px;
+        width:${rect.width + 6}px; height:${rect.height + 6}px;
+        border: 2px solid rgba(${color}, 0.9);
+        background: rgba(${color}, 0.08);
+        box-shadow: 0 0 20px rgba(${color}, 0.5), 0 0 40px rgba(${color}, 0.2), inset 0 0 10px rgba(${color}, 0.1);
+        pointer-events:none; z-index:999998; border-radius:6px;
+        animation: ac-highlight-in 0.2s ease-out;
       `;
 
-      const style = document.createElement('style');
-      style.textContent = `
-        @keyframes pulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.5; transform: scale(1.05); }
-        }
+      // Ripple effect at center of element
+      const ripple = document.createElement('div');
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const rippleSize = Math.max(rect.width, rect.height);
+      ripple.style.cssText = `
+        position:fixed; top:${cy - rippleSize/2}px; left:${cx - rippleSize/2}px;
+        width:${rippleSize}px; height:${rippleSize}px;
+        border-radius:50%; border: 2px solid rgba(${color}, 0.6);
+        pointer-events:none; z-index:999997;
+        animation: ac-ripple 0.6s ease-out forwards;
       `;
 
-      document.head.appendChild(style);
+      // Step counter badge
+      const step = State.currentStep + 1;
+      const total = State.recordedActions.length;
+      const badge = document.createElement('div');
+      badge.style.cssText = `
+        position:fixed; top:${rect.top - 28}px; left:${rect.left}px;
+        background:${colorHex}; color:white;
+        padding:3px 10px; border-radius:10px; font-size:11px; font-weight:700;
+        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+        pointer-events:none; z-index:999999; white-space:nowrap;
+        box-shadow: 0 2px 8px rgba(${color}, 0.4);
+        animation: ac-step-in 0.2s ease-out;
+      `;
+      badge.textContent = `${step}/${total}`;
+
+      document.body.appendChild(ripple);
       document.body.appendChild(highlight);
+      document.body.appendChild(badge);
+
+      // Fade out
+      setTimeout(() => {
+        highlight.style.animation = 'ac-highlight-out 0.3s ease-in forwards';
+        badge.style.animation = 'ac-step-out 0.3s ease-in forwards';
+      }, 500);
 
       setTimeout(() => {
         highlight.remove();
-        style.remove();
-      }, 600);
+        ripple.remove();
+        badge.remove();
+      }, 800);
     },
 
     showPreflightResults(results) {
