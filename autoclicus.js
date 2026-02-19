@@ -3274,13 +3274,15 @@
       const existingStats = root.querySelector('.exec-stats');
       if (State.isPlaying) {
         const statsHTML = this.renderExecStats();
+        const temp = document.createElement('div');
+        safeHTML(temp, statsHTML);
         if (existingStats) {
-          existingStats.outerHTML = statsHTML;
+          existingStats.replaceWith(...temp.childNodes);
         } else {
           // Insert after rate-bar if not present
           const rateBar = root.querySelector('.rate-bar');
           if (rateBar) {
-            rateBar.insertAdjacentHTML('afterend', statsHTML);
+            rateBar.after(...temp.childNodes);
           }
         }
       }
