@@ -704,14 +704,21 @@
         timestamp: Date.now()
       };
 
-      // Debounce input events
-      if (eventType === 'input') {
-        const lastAction = State.recordedActions[State.recordedActions.length - 1];
-        if (lastAction &&
-            lastAction.eventType === 'input' &&
-            lastAction.fingerprint.selector === fingerprint.selector &&
-            action.timestamp - lastAction.timestamp < 500) {
-          // Update last action instead of adding new one
+      // Deduplicate: checkbox/radio clicks fire click + input + change
+      // Keep only the click, skip redundant input/change on same element within 100ms
+      const lastAction = State.recordedActions[State.recordedActions.length - 1];
+      if (lastAction && lastAction.fingerprint.selector === fingerprint.selector) {
+        const timeDelta = action.timestamp - lastAction.timestamp;
+
+        // Same element within 100ms — likely same user gesture
+        if (timeDelta < 100 && (eventType === 'input' || eventType === 'change')) {
+          // Update value on the existing action but don't add a new one
+          lastAction.value = action.value;
+          return;
+        }
+
+        // Debounce rapid input typing (500ms window)
+        if (eventType === 'input' && lastAction.eventType === 'input' && timeDelta < 500) {
           lastAction.value = action.value;
           lastAction.timestamp = action.timestamp;
           UI.render();
