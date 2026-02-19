@@ -1201,6 +1201,7 @@
       if (!State.isRecording) {
         State.isRecording = true;
         document.addEventListener('click', Recorder.onEvent, true);
+        document.addEventListener('dblclick', Recorder.onEvent, true);
         document.addEventListener('input', Recorder.onEvent, true);
         document.addEventListener('change', Recorder.onEvent, true);
         document.addEventListener('keydown', Recorder.onEvent, true);
@@ -1215,6 +1216,7 @@
       // Stop recorder
       State.isRecording = false;
       document.removeEventListener('click', Recorder.onEvent, true);
+      document.removeEventListener('dblclick', Recorder.onEvent, true);
       document.removeEventListener('input', Recorder.onEvent, true);
       document.removeEventListener('change', Recorder.onEvent, true);
       document.removeEventListener('keydown', Recorder.onEvent, true);
@@ -1360,6 +1362,7 @@
         State.scenario.guidedStep = null;
         State.isRecording = false;
         document.removeEventListener('click', Recorder.onEvent, true);
+        document.removeEventListener('dblclick', Recorder.onEvent, true);
         document.removeEventListener('input', Recorder.onEvent, true);
         document.removeEventListener('change', Recorder.onEvent, true);
         document.removeEventListener('keydown', Recorder.onEvent, true);
@@ -1388,6 +1391,7 @@
 
       // Attach event listeners
       document.addEventListener('click', this.onEvent, true);
+      document.addEventListener('dblclick', this.onEvent, true);
       document.addEventListener('input', this.onEvent, true);
       document.addEventListener('change', this.onEvent, true);
       document.addEventListener('keydown', this.onEvent, true);
@@ -1404,6 +1408,7 @@
 
       // Remove event listeners
       document.removeEventListener('click', this.onEvent, true);
+      document.removeEventListener('dblclick', this.onEvent, true);
       document.removeEventListener('input', this.onEvent, true);
       document.removeEventListener('change', this.onEvent, true);
       document.removeEventListener('keydown', this.onEvent, true);
@@ -1426,6 +1431,32 @@
       if (eventType === 'keydown' && !['Enter', 'Tab'].includes(event.key)) return;
 
       const fingerprint = Fingerprint.capture(target, eventType);
+
+      // DBLCLICK: Replace the preceding click(s) on the same element with a single dblclick action
+      // Browser fires: click(detail:1) → click(detail:2) → dblclick
+      // We want to record just ONE dblclick action, not click+click+dblclick
+      if (eventType === 'dblclick') {
+        // Remove recent click actions on the same element (last 500ms)
+        const now = Date.now();
+        while (State.recordedActions.length > 0) {
+          const last = State.recordedActions[State.recordedActions.length - 1];
+          if (last.eventType === 'click' && last.fingerprint.selector === fingerprint.selector && (now - last.timestamp) < 500) {
+            State.recordedActions.pop();
+          } else {
+            break;
+          }
+        }
+        // Also clean guided mode
+        if (State.scenario.isGuided && State.scenario.guidedStep) {
+          const stepId = State.scenario.guidedStep;
+          if (State.scenario.stepActions[stepId]?.length) {
+            const last = State.scenario.stepActions[stepId][0];
+            if (last.eventType === 'click' && last.fingerprint.selector === fingerprint.selector) {
+              State.scenario.stepActions[stepId] = [];
+            }
+          }
+        }
+      }
 
       const action = {
         id: Date.now().toString(36) + Math.random().toString(36).substring(2, 9),
@@ -1886,6 +1917,55 @@
                 // mat-sidenav typically takes 200-400ms to animate open
                 await this.sleep(500);
                 console.log('🔲 AG Grid click dispatched with coords + row click');
+              }
+              break;
+            }
+            case 'dblclick': {
+              // Full double-click sequence: two clicks + dblclick event
+              // Browser expects: mousedown→mouseup→click(detail:1) → mousedown→mouseup→click(detail:2) → dblclick
+              const rect2 = element.getBoundingClientRect();
+              const cx2 = rect2.left + rect2.width / 2;
+              const cy2 = rect2.top + rect2.height / 2;
+              const evtOpts2 = { bubbles: true, cancelable: true, clientX: cx2, clientY: cy2, view: window };
+              const isGridCell2 = !!action.fingerprint.grid?.isGrid;
+
+              element.focus();
+
+              // Hover
+              element.dispatchEvent(new MouseEvent('mouseover', evtOpts2));
+              element.dispatchEvent(new MouseEvent('mouseenter', { ...evtOpts2, bubbles: false }));
+              if (isGridCell2) await this.sleep(30);
+
+              // First click (detail: 1)
+              element.dispatchEvent(new PointerEvent('pointerdown', evtOpts2));
+              element.dispatchEvent(new MouseEvent('mousedown', evtOpts2));
+              await this.sleep(40);
+              element.dispatchEvent(new PointerEvent('pointerup', evtOpts2));
+              element.dispatchEvent(new MouseEvent('mouseup', evtOpts2));
+              element.dispatchEvent(new MouseEvent('click', { ...evtOpts2, detail: 1, button: 0, buttons: 1 }));
+
+              // Brief pause between clicks (human-like: 80-120ms)
+              await this.sleep(100);
+
+              // Second click (detail: 2)
+              element.dispatchEvent(new PointerEvent('pointerdown', evtOpts2));
+              element.dispatchEvent(new MouseEvent('mousedown', evtOpts2));
+              await this.sleep(40);
+              element.dispatchEvent(new PointerEvent('pointerup', evtOpts2));
+              element.dispatchEvent(new MouseEvent('mouseup', evtOpts2));
+              element.dispatchEvent(new MouseEvent('click', { ...evtOpts2, detail: 2, button: 0, buttons: 1 }));
+
+              // dblclick event (fires after second click)
+              element.dispatchEvent(new MouseEvent('dblclick', { ...evtOpts2, detail: 2, button: 0, buttons: 1 }));
+
+              // Also dispatch on row for AG Grid
+              if (isGridCell2) {
+                const agRow2 = element.closest('.ag-row, [row-index]');
+                if (agRow2 && agRow2 !== element) {
+                  agRow2.dispatchEvent(new MouseEvent('dblclick', { ...evtOpts2, detail: 2, button: 0, buttons: 1 }));
+                }
+                await this.sleep(500);
+                console.log('🔲 AG Grid dblclick dispatched with full sequence');
               }
               break;
             }
