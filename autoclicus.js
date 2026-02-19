@@ -245,6 +245,9 @@
         type: element.getAttribute('type') || '',
         placeholder: element.getAttribute('placeholder') || '',
         ariaLabel: element.getAttribute('aria-label') || element.closest('[aria-label]')?.getAttribute('aria-label') || '',
+        role: element.getAttribute('role') || '',
+        ariaExpanded: element.getAttribute('aria-expanded') || '',
+        isInOverlay: !!element.closest('.cdk-overlay-container'),
         dataAttrs: this.getDataAttrs(element),
         path: path,
         coords: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
@@ -337,7 +340,7 @@
         path.unshift({
           tag: current.tagName.toLowerCase(),
           id: current.id || '',
-          className: current.className || ''
+          className: this.cleanClassName(current.className || '')
         });
         current = current.parentElement;
       }
@@ -401,13 +404,20 @@
     findByText(text, tag) {
       if (!text) return null;
 
+      const searchText = text.substring(0, 50);
       const elements = tag ? document.getElementsByTagName(tag) : document.querySelectorAll('*');
+      let best = null;
+      let bestLen = Infinity;
+
+      // Prefer the deepest/most specific element (smallest textContent length)
       for (let el of elements) {
-        if (el.textContent?.trim().includes(text.substring(0, 50))) {
-          return el;
+        const content = el.textContent?.trim();
+        if (content && content.includes(searchText) && content.length < bestLen) {
+          best = el;
+          bestLen = content.length;
         }
       }
-      return null;
+      return best;
     },
 
     findByDataAttrs(dataAttrs) {
@@ -427,9 +437,16 @@
       for (let step of path) {
         const children = Array.from(current.children);
         const match = children.find(child => {
-          return child.tagName.toLowerCase() === step.tag &&
-                 (!step.id || child.id === step.id) &&
-                 (!step.className || child.className === step.className);
+          if (child.tagName.toLowerCase() !== step.tag) return false;
+          if (step.id && child.id !== step.id) return false;
+          // Subset matching: all recorded (cleaned) classes must be present in live element
+          if (step.className) {
+            const liveClean = this.cleanClassName(child.className || '');
+            const recordedClasses = step.className.split(' ').filter(c => c.trim());
+            const liveClasses = liveClean.split(' ').filter(c => c.trim());
+            if (!recordedClasses.every(rc => liveClasses.includes(rc))) return false;
+          }
+          return true;
         });
 
         if (!match) return null;
@@ -463,8 +480,8 @@
 
       // ID match is the strongest signal — 40pts
       if (element.id && element.id === fingerprint.id) score += 40;
-      // Class match — 15pts (reduced: generic classes are common)
-      if (element.className === fingerprint.className) score += 15;
+      // Class match — 15pts (compare cleaned classNames for Angular compatibility)
+      if (this.cleanClassName(element.className || '') === fingerprint.className) score += 15;
       // Name attribute — 15pts
       if (element.getAttribute('name') === fingerprint.name) score += 15;
       // Text content match — 25pts (strong differentiator for similar elements)
@@ -476,6 +493,8 @@
         const elLabel = element.getAttribute('aria-label') || element.closest('[aria-label]')?.getAttribute('aria-label') || '';
         if (elLabel === fingerprint.ariaLabel) score += 15;
       }
+      // Role match — 10pts (important for Angular Material components)
+      if (fingerprint.role && element.getAttribute('role') === fingerprint.role) score += 10;
       // XPath positional match — 20pts (unique positional identity)
       if (fingerprint.xpath) {
         try {
@@ -1318,7 +1337,7 @@
           if (action.type === 'condition_check') {
             try {
               const { element } = Fingerprint.resolve(action.fingerprint);
-              if (element && element.offsetParent !== null) {
+              if (element && Fingerprint.isVisible(element)) {
                 // Error detected — execute recovery action if configured
                 const recoveryAction = loopActions.find(a => a.type === 'error_recovery');
                 if (recoveryAction) {
@@ -1465,14 +1484,39 @@
           return;
         }
 
-        // Regular action — resolve with retry (Angular/SPA may still be rendering)
+        // Regular action — resolve with MutationObserver-driven retry (Angular/SPA rendering)
         let resolved = Fingerprint.resolve(action.fingerprint);
         if (!resolved.element) {
-          // Retry up to 3 times with increasing delays
-          for (let retry = 0; retry < 3 && !resolved.element; retry++) {
-            await this.sleep(500 * (retry + 1));
-            resolved = Fingerprint.resolve(action.fingerprint);
-          }
+          // Use MutationObserver to wait for DOM changes, then re-resolve
+          resolved = await new Promise((resolvePromise) => {
+            let attempts = 0;
+            const maxWait = 8000; // 8s total budget
+            const observer = new MutationObserver(() => {
+              attempts++;
+              const r = Fingerprint.resolve(action.fingerprint);
+              if (r.element) {
+                observer.disconnect();
+                resolvePromise(r);
+              }
+            });
+            observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+
+            // Fallback: periodic check + hard timeout
+            const interval = setInterval(() => {
+              const r = Fingerprint.resolve(action.fingerprint);
+              if (r.element) {
+                clearInterval(interval);
+                observer.disconnect();
+                resolvePromise(r);
+              }
+            }, 500);
+
+            setTimeout(() => {
+              clearInterval(interval);
+              observer.disconnect();
+              resolvePromise(Fingerprint.resolve(action.fingerprint)); // Final attempt
+            }, maxWait);
+          });
         }
         const { element, confidence } = resolved;
 
@@ -1482,9 +1526,24 @@
           return;
         }
 
+        // Stale element check — verify still in DOM (Angular *ngIf may have removed it)
+        if (!element.isConnected) {
+          console.warn('⏭️ Stale element (detached from DOM), re-resolving:', action.fingerprint.selector);
+          resolved = Fingerprint.resolve(action.fingerprint);
+          if (!resolved.element || !resolved.element.isConnected) {
+            Audit.log(action, action.fingerprint?.selector, '', 'skipped', 0);
+            return;
+          }
+        }
+
         if (confidence < 30) {
           console.warn(`Low confidence (${confidence}%) for element:`, action.fingerprint);
         }
+
+        // Scroll into view before interaction (handles off-screen elements / virtual scroll)
+        try {
+          element.scrollIntoView({ block: 'center', behavior: 'instant' });
+        } catch (e) { /* scrollIntoView not supported on detached/special elements */ }
 
         // Visual feedback
         UI.highlightElement(element, State.dryRun);
@@ -1497,19 +1556,31 @@
 
           // Execute action
           switch (action.eventType) {
-            case 'click':
+            case 'click': {
+              // Full pointer event sequence for Angular Material compatibility
+              const rect = element.getBoundingClientRect();
+              const cx = rect.left + rect.width / 2;
+              const cy = rect.top + rect.height / 2;
+              const evtOpts = { bubbles: true, cancelable: true, clientX: cx, clientY: cy, view: window };
+
+              element.dispatchEvent(new PointerEvent('pointerdown', evtOpts));
+              element.dispatchEvent(new MouseEvent('mousedown', evtOpts));
+              element.dispatchEvent(new PointerEvent('pointerup', evtOpts));
+              element.dispatchEvent(new MouseEvent('mouseup', evtOpts));
+
               if (typeof element.click === 'function') {
                 element.click();
               } else {
-                element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+                element.dispatchEvent(new MouseEvent('click', evtOpts));
               }
               break;
+            }
             case 'input':
             case 'change':
               this.setInputValue(element, action.value);
               break;
             case 'keydown':
-              element.dispatchEvent(new KeyboardEvent('keydown', { key: action.value }));
+              element.dispatchEvent(new KeyboardEvent('keydown', { key: action.value, bubbles: true, composed: true }));
               break;
           }
         }
@@ -1529,6 +1600,9 @@
     },
 
     setInputValue(element, value) {
+      // Focus the element first (Angular form controls need focus)
+      element.focus();
+
       const proto = element instanceof HTMLTextAreaElement
         ? window.HTMLTextAreaElement.prototype
         : window.HTMLInputElement.prototype;
@@ -1542,9 +1616,16 @@
         element.value = value;
       }
 
-      // Trigger events
-      element.dispatchEvent(new Event('input', { bubbles: true }));
+      // Trigger events — use InputEvent for Angular compatibility
+      try {
+        element.dispatchEvent(new InputEvent('input', { bubbles: true, data: value, inputType: 'insertText' }));
+      } catch (e) {
+        element.dispatchEvent(new Event('input', { bubbles: true }));
+      }
       element.dispatchEvent(new Event('change', { bubbles: true }));
+      // Blur + focusout for Angular updateOn: 'blur' forms
+      element.dispatchEvent(new FocusEvent('blur', { bubbles: false }));
+      element.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
     },
 
     async showPrompt(action) {
@@ -2031,14 +2112,15 @@
           background-size: 200% 200%;
           animation: ai-gradient 6s ease infinite;
           color: white;
-          padding: 10px 14px;
+          padding: 14px 14px;
           display: flex;
           align-items: center;
           gap: 10px;
           position: relative;
-          overflow: hidden;
+          overflow: visible;
           cursor: move;
           user-select: none;
+          min-height: 52px;
         }
 
         .header::before {
@@ -2106,13 +2188,14 @@
           font-weight: 800;
           color: #ff2222;
           font-variant-numeric: tabular-nums;
-          margin-top: 1px;
+          margin-top: 3px;
           text-shadow: 0 1px 0 rgba(0,0,0,0.6), 0 0 4px rgba(255,34,34,0.4);
           letter-spacing: 0.8px;
           background: rgba(255,255,255,0.92);
-          padding: 1px 6px;
+          padding: 2px 8px;
           border-radius: 4px;
           border: 1px solid rgba(255,34,34,0.4);
+          line-height: 1.3;
         }
 
         .header-countdown.expired {
