@@ -1,4 +1,4 @@
-// AutoClicUS v4.0.1 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
+// AutoClicUS v4.0.2 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
 // Automation assistant for SmartD USD exchange rate operations
 // Paste this complete snippet into Chrome DevTools console
 
@@ -9,7 +9,8 @@
   // CONFIG
   // =============================================================================
   const Config = {
-    version: '4.0.1',
+    version: '4.0.2',
+    emmaAvatar: 'data:image/jpeg;base64,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',
     theme: {
       bg: '#ffffff',
       bgSecondary: '#f7f9f8',
@@ -1112,6 +1113,46 @@
           box-sizing: border-box;
         }
 
+        @keyframes ai-gradient {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+
+        @keyframes ai-pulse {
+          0%, 100% { box-shadow: 0 0 8px rgba(0, 135, 78, 0.3); }
+          50% { box-shadow: 0 0 20px rgba(0, 135, 78, 0.6), 0 0 40px rgba(0, 166, 90, 0.2); }
+        }
+
+        @keyframes ai-glow-ring {
+          0%, 100% { box-shadow: 0 0 0 2px rgba(255,255,255,0.6); }
+          50% { box-shadow: 0 0 0 2px rgba(255,255,255,0.9), 0 0 12px rgba(255,255,255,0.4); }
+        }
+
+        @keyframes ai-dot-pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(0.7); }
+        }
+
+        @keyframes ai-recording-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+          50% { box-shadow: 0 0 0 8px rgba(220, 53, 69, 0); }
+        }
+
+        @keyframes ai-progress-sweep {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+
+        @keyframes ai-shimmer {
+          0% { background-position: -100% 0; }
+          100% { background-position: 200% 0; }
+        }
+
+        @keyframes ai-float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-3px); }
+        }
+
         #autoclicus-ui {
           position: fixed;
           top: 20px;
@@ -1119,9 +1160,9 @@
           width: 450px;
           max-height: 90vh;
           background: ${Config.theme.bg};
-          border: 1px solid ${Config.theme.border};
-          border-radius: 12px;
-          box-shadow: 0 10px 40px ${Config.theme.shadow};
+          border: 1px solid rgba(0, 135, 78, 0.2);
+          border-radius: 16px;
+          box-shadow: 0 10px 40px ${Config.theme.shadow}, 0 0 0 1px rgba(0, 135, 78, 0.05);
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           font-size: 14px;
           color: ${Config.theme.text};
@@ -1129,19 +1170,41 @@
           display: flex;
           flex-direction: column;
           overflow: hidden;
+          animation: ai-pulse 4s ease-in-out infinite;
+          backdrop-filter: blur(10px);
         }
 
         .header {
-          background: linear-gradient(135deg, ${Config.theme.primary} 0%, ${Config.theme.primaryLight} 100%);
+          background: linear-gradient(135deg, ${Config.theme.primary} 0%, #005a34 40%, ${Config.theme.primaryLight} 100%);
+          background-size: 200% 200%;
+          animation: ai-gradient 6s ease infinite;
           color: white;
           padding: 16px 20px;
           display: flex;
           align-items: center;
           gap: 12px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .header::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 50%);
+          pointer-events: none;
         }
 
         .header-avatar {
           flex-shrink: 0;
+          position: relative;
+        }
+
+        .header-avatar img {
+          animation: ai-glow-ring 3s ease-in-out infinite;
         }
 
         .header-info {
@@ -1152,6 +1215,8 @@
           font-size: 18px;
           font-weight: 600;
           margin-bottom: 2px;
+          letter-spacing: 0.5px;
+          text-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .header-subtitle {
@@ -1159,10 +1224,42 @@
           opacity: 0.9;
         }
 
+        .header-ai-badge {
+          display: inline-block;
+          padding: 1px 6px;
+          background: rgba(255,255,255,0.2);
+          border-radius: 8px;
+          font-size: 10px;
+          font-weight: 600;
+          letter-spacing: 1px;
+          vertical-align: middle;
+          margin-left: 4px;
+          backdrop-filter: blur(4px);
+        }
+
         .header-clock {
           font-size: 12px;
           opacity: 0.9;
           font-variant-numeric: tabular-nums;
+          text-align: right;
+        }
+
+        .header-ai-status {
+          font-size: 10px;
+          opacity: 0.8;
+          margin-top: 2px;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          justify-content: flex-end;
+        }
+
+        .ai-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #4ade80;
+          animation: ai-dot-pulse 2s ease-in-out infinite;
         }
 
         .tabs {
@@ -1204,7 +1301,9 @@
           left: 0;
           right: 0;
           height: 3px;
-          background: ${Config.theme.primary};
+          background: linear-gradient(90deg, ${Config.theme.primary}, ${Config.theme.primaryLight}, ${Config.theme.primary});
+          background-size: 200% 100%;
+          animation: ai-shimmer 2s linear infinite;
         }
 
         .content {
@@ -1227,10 +1326,27 @@
         .btn-primary {
           background: linear-gradient(135deg, ${Config.theme.primary} 0%, ${Config.theme.primaryLight} 100%);
           color: white;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .btn-primary::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+          transition: left 0.5s;
+        }
+
+        .btn-primary:hover::after {
+          left: 100%;
         }
 
         .btn-primary:hover {
-          box-shadow: 0 4px 12px rgba(0, 135, 78, 0.3);
+          box-shadow: 0 4px 16px rgba(0, 135, 78, 0.4), 0 0 8px rgba(0, 166, 90, 0.2);
           transform: translateY(-1px);
         }
 
@@ -1314,9 +1430,15 @@
         .card {
           background: white;
           border: 1px solid ${Config.theme.border};
-          border-radius: 8px;
+          border-radius: 10px;
           padding: 16px;
           margin-bottom: 16px;
+          transition: all 0.25s ease;
+        }
+
+        .card:hover {
+          border-color: rgba(0, 135, 78, 0.3);
+          box-shadow: 0 2px 12px rgba(0, 135, 78, 0.08);
         }
 
         .card-header {
@@ -1343,8 +1465,10 @@
         }
 
         .action-item.active {
-          background: rgba(0, 135, 78, 0.05);
+          background: linear-gradient(135deg, rgba(0, 135, 78, 0.05), rgba(0, 166, 90, 0.08));
           border-color: ${Config.theme.primary};
+          box-shadow: 0 0 0 1px rgba(0, 135, 78, 0.1), 0 2px 8px rgba(0, 135, 78, 0.1);
+          animation: ai-float 2s ease-in-out infinite;
         }
 
         .action-item.prompt {
@@ -1396,8 +1520,11 @@
 
         .progress-fill {
           height: 100%;
-          background: linear-gradient(90deg, ${Config.theme.primary} 0%, ${Config.theme.primaryLight} 100%);
+          background: linear-gradient(90deg, ${Config.theme.primary}, ${Config.theme.primaryLight}, #4ade80, ${Config.theme.primaryLight}, ${Config.theme.primary});
+          background-size: 400% 100%;
+          animation: ai-progress-sweep 2s linear infinite;
           transition: width 0.3s;
+          border-radius: 3px;
         }
 
         .status-badge {
@@ -1546,11 +1673,21 @@
           text-align: center;
         }
 
+        .stat-card {
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 135, 78, 0.1);
+        }
+
         .stat-value {
           font-size: 28px;
           font-weight: 700;
           color: ${Config.theme.primary};
           margin-bottom: 4px;
+          text-shadow: 0 0 20px rgba(0, 135, 78, 0.15);
         }
 
         .stat-label {
@@ -1608,17 +1745,17 @@
       return `
         <div class="header">
           <div class="header-avatar">
-            <svg viewBox="0 0 40 40" width="40" height="40">
-              <circle cx="20" cy="20" r="20" fill="#fff" opacity="0.2"/>
-              <circle cx="20" cy="14" r="7" fill="#fff"/>
-              <ellipse cx="20" cy="32" rx="12" ry="10" fill="#fff"/>
-            </svg>
+            <img src="${Config.emmaAvatar}" alt="Emma IA" width="44" height="44"
+                 style="border-radius: 50%; border: 2px solid rgba(255,255,255,0.6); object-fit: cover;">
           </div>
           <div class="header-info">
-            <div class="header-title">Emma IA</div>
+            <div class="header-title">Emma IA <span class="header-ai-badge">AI</span></div>
             <div class="header-subtitle">Assistante · Taux de change</div>
           </div>
-          <div class="header-clock">${time}</div>
+          <div>
+            <div class="header-clock">${time}</div>
+            <div class="header-ai-status"><span class="ai-dot"></span> En ligne</div>
+          </div>
         </div>
       `;
     },
@@ -1672,7 +1809,8 @@
             </div>
 
             <div class="btn-group">
-              <button class="btn btn-primary" id="btn-record" ${State.isRecording ? 'disabled' : ''}>
+              <button class="btn btn-primary" id="btn-record" ${State.isRecording ? 'disabled' : ''}
+                style="${State.isRecording ? 'animation: ai-recording-pulse 1.5s ease-in-out infinite; background: linear-gradient(135deg, #dc3545, #ff6b6b);' : ''}">
                 ${State.isRecording ? '🔴 Enregistrement...' : '⚫ Enregistrer (F6)'}
               </button>
               <button class="btn btn-secondary" id="btn-stop-record" ${!State.isRecording ? 'disabled' : ''}>
@@ -2296,12 +2434,14 @@
       flash.textContent = message;
       flash.style.cssText = `
         position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-        padding: 12px 20px; border-radius: 6px; z-index: 1000000;
+        padding: 12px 24px; border-radius: 10px; z-index: 1000000;
         font-weight: 500; font-size: 14px;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        box-shadow: 0 4px 12px ${Config.theme.shadow};
+        box-shadow: 0 4px 20px ${Config.theme.shadow}, 0 0 15px ${c.bg}40;
         background: ${c.bg}; color: ${c.fg};
         animation: autoclicus-flash 0.3s ease-out;
+        backdrop-filter: blur(8px);
+        border: 1px solid ${c.bg}60;
       `;
 
       // Inject keyframes once
@@ -2322,15 +2462,16 @@
       const highlight = document.createElement('div');
       highlight.style.cssText = `
         position: fixed;
-        top: ${rect.top}px;
-        left: ${rect.left}px;
-        width: ${rect.width}px;
-        height: ${rect.height}px;
-        border: 3px solid ${dryRun ? Config.theme.warning : Config.theme.primary};
-        background: ${dryRun ? 'rgba(255, 193, 7, 0.1)' : 'rgba(0, 135, 78, 0.1)'};
+        top: ${rect.top - 2}px;
+        left: ${rect.left - 2}px;
+        width: ${rect.width + 4}px;
+        height: ${rect.height + 4}px;
+        border: 2px solid ${dryRun ? Config.theme.warning : Config.theme.primary};
+        background: ${dryRun ? 'rgba(255, 193, 7, 0.08)' : 'rgba(0, 135, 78, 0.08)'};
+        box-shadow: 0 0 12px ${dryRun ? 'rgba(255, 193, 7, 0.4)' : 'rgba(0, 135, 78, 0.4)'}, inset 0 0 8px ${dryRun ? 'rgba(255, 193, 7, 0.1)' : 'rgba(0, 135, 78, 0.1)'};
         pointer-events: none;
         z-index: 999998;
-        border-radius: 4px;
+        border-radius: 6px;
         animation: pulse 0.6s;
       `;
 
