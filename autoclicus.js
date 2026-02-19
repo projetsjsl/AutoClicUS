@@ -1593,6 +1593,7 @@
           scrollbar-width: thin;
           scrollbar-color: rgba(0,0,0,0.12) transparent;
           -webkit-overflow-scrolling: touch;
+          padding: 0 2px;
         }
         .tabs::-webkit-scrollbar {
           height: 3px;
