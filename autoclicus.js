@@ -1,4 +1,4 @@
-// AutoClicUS v4.0.0 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
+// AutoClicUS v4.0.1 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
 // Automation assistant for SmartD USD exchange rate operations
 // Paste this complete snippet into Chrome DevTools console
 
@@ -9,7 +9,7 @@
   // CONFIG
   // =============================================================================
   const Config = {
-    version: '4.0.0',
+    version: '4.0.1',
     theme: {
       bg: '#ffffff',
       bgSecondary: '#f7f9f8',
@@ -42,6 +42,62 @@
       audit: 'autoclicus_audit_v4'
     }
   };
+
+  // =============================================================================
+  // STORAGE — Safe localStorage wrapper (banking sites may block storage)
+  // =============================================================================
+  const Storage = (() => {
+    const memoryFallback = {};
+    let useMemory = false;
+
+    // Test localStorage availability once
+    try {
+      const testKey = '__autoclicus_test__';
+      localStorage.setItem(testKey, '1');
+      localStorage.removeItem(testKey);
+    } catch (e) {
+      useMemory = true;
+      console.warn('AutoClicUS: localStorage unavailable — using in-memory storage (data lost on page reload)');
+    }
+
+    return {
+      getItem(key) {
+        if (useMemory) return memoryFallback[key] || null;
+        try { return localStorage.getItem(key); } catch (e) { return memoryFallback[key] || null; }
+      },
+      setItem(key, value) {
+        if (useMemory) { memoryFallback[key] = value; return; }
+        try { localStorage.setItem(key, value); } catch (e) { memoryFallback[key] = value; }
+      },
+      removeItem(key) {
+        if (useMemory) { delete memoryFallback[key]; return; }
+        try { localStorage.removeItem(key); } catch (e) { delete memoryFallback[key]; }
+      },
+      get isMemoryMode() { return useMemory; }
+    };
+  })();
+
+  // =============================================================================
+  // SAFE HTML — Trusted Types compatible innerHTML setter
+  // =============================================================================
+  const safeHTML = (() => {
+    let policy = null;
+    try {
+      if (window.trustedTypes?.createPolicy) {
+        policy = window.trustedTypes.createPolicy('autoclicus', { createHTML: s => s });
+      }
+    } catch (e) { /* Trusted Types not enforced or already created — fine */ }
+
+    return function(element, html) {
+      try {
+        element.innerHTML = policy ? policy.createHTML(html) : html;
+      } catch (e) {
+        // Last resort: use DOMParser
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        element.replaceChildren(...doc.body.childNodes);
+      }
+    };
+  })();
 
   // =============================================================================
   // STATE
@@ -449,7 +505,7 @@
           version: Config.version,
           sessions: this.groupBySessions()
         };
-        localStorage.setItem(Config.storage.audit, JSON.stringify(data));
+        Storage.setItem(Config.storage.audit, JSON.stringify(data));
       } catch (e) {
         console.error('Failed to save audit trail:', e);
       }
@@ -457,7 +513,7 @@
 
     load() {
       try {
-        const data = localStorage.getItem(Config.storage.audit);
+        const data = Storage.getItem(Config.storage.audit);
         if (data) {
           const parsed = JSON.parse(data);
           return parsed.sessions || [];
@@ -531,17 +587,17 @@
 
     clear() {
       State.auditTrail = [];
-      localStorage.removeItem(Config.storage.audit);
+      Storage.removeItem(Config.storage.audit);
     },
 
     pruneIfNeeded() {
       try {
-        const data = localStorage.getItem(Config.storage.audit);
+        const data = Storage.getItem(Config.storage.audit);
         if (data && data.length > Config.limits.maxAuditSize) {
           const parsed = JSON.parse(data);
           // Keep only last 50% of sessions
           parsed.sessions = parsed.sessions.slice(-Math.floor(parsed.sessions.length / 2));
-          localStorage.setItem(Config.storage.audit, JSON.stringify(parsed));
+          Storage.setItem(Config.storage.audit, JSON.stringify(parsed));
         }
       } catch (e) {
         console.error('Failed to prune audit trail:', e);
@@ -819,7 +875,7 @@
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         `;
 
-        modal.innerHTML = `
+        safeHTML(modal, `
           <h3 style="margin: 0 0 10px 0; color: ${Config.theme.primary}; font-size: 20px;">
             ${action.title || 'Entrée requise'}
           </h3>
@@ -840,7 +896,7 @@
               Confirmer
             </button>
           </div>
-        `;
+        `);
 
         const overlay = document.createElement('div');
         overlay.style.cssText = `
@@ -928,7 +984,7 @@
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         `;
 
-        modal.innerHTML = `
+        safeHTML(modal, `
           <h3 style="margin: 0 0 10px 0; color: ${Config.theme.primary}; font-size: 20px;">
             ${action.title || 'Confirmation'}
           </h3>
@@ -946,7 +1002,7 @@
               ${action.okLabel || 'Oui'}
             </button>
           </div>
-        `;
+        `);
 
         const overlay = document.createElement('div');
         overlay.style.cssText = `
@@ -1024,8 +1080,13 @@
       const container = document.createElement('div');
       container.id = 'autoclicus-container';
 
-      // Attach shadow DOM
-      State.shadowRoot = container.attachShadow({ mode: 'open' });
+      // Attach shadow DOM with fallback to regular DOM (some banking sites restrict Shadow DOM)
+      try {
+        State.shadowRoot = container.attachShadow({ mode: 'open' });
+      } catch (e) {
+        console.warn('AutoClicUS: Shadow DOM unavailable — using scoped regular DOM');
+        State.shadowRoot = container;
+      }
 
       // Create styles
       const style = document.createElement('style');
@@ -1531,11 +1592,11 @@
       const ui = State.shadowRoot.querySelector('#autoclicus-ui');
       if (!ui) return;
 
-      ui.innerHTML = `
+      safeHTML(ui, `
         ${this.renderHeader()}
         ${this.renderTabs()}
         ${this.renderContent()}
-      `;
+      `);
 
       this.attachEventListeners();
     },
@@ -2091,9 +2152,9 @@
       if (btnSaveLocal) {
         btnSaveLocal.addEventListener('click', () => {
           try {
-            localStorage.setItem(Config.storage.actions, JSON.stringify(State.recordedActions));
-            localStorage.setItem(Config.storage.conditions, JSON.stringify(State.conditions));
-            localStorage.setItem(Config.storage.config, JSON.stringify({
+            Storage.setItem(Config.storage.actions, JSON.stringify(State.recordedActions));
+            Storage.setItem(Config.storage.conditions, JSON.stringify(State.conditions));
+            Storage.setItem(Config.storage.config, JSON.stringify({
               speed: State.speed,
               loopCount: State.loopCount,
               timeLimit: State.timeLimit
@@ -2108,9 +2169,9 @@
       if (btnLoadLocal) {
         btnLoadLocal.addEventListener('click', () => {
           try {
-            const actions = localStorage.getItem(Config.storage.actions);
-            const conditions = localStorage.getItem(Config.storage.conditions);
-            const config = localStorage.getItem(Config.storage.config);
+            const actions = Storage.getItem(Config.storage.actions);
+            const conditions = Storage.getItem(Config.storage.conditions);
+            const config = Storage.getItem(Config.storage.config);
 
             if (actions) State.recordedActions = JSON.parse(actions);
             if (conditions) State.conditions = JSON.parse(conditions);
@@ -2189,9 +2250,9 @@
             State.loopCount = 1;
             State.timeLimit = null;
             Audit.clear();
-            localStorage.removeItem(Config.storage.actions);
-            localStorage.removeItem(Config.storage.conditions);
-            localStorage.removeItem(Config.storage.config);
+            Storage.removeItem(Config.storage.actions);
+            Storage.removeItem(Config.storage.conditions);
+            Storage.removeItem(Config.storage.config);
             this.flash('success', 'Réinitialisé');
             this.render();
           }
@@ -2307,9 +2368,9 @@
   try {
     // Load saved data
     try {
-      const savedActions = localStorage.getItem(Config.storage.actions);
-      const savedConditions = localStorage.getItem(Config.storage.conditions);
-      const savedConfig = localStorage.getItem(Config.storage.config);
+      const savedActions = Storage.getItem(Config.storage.actions);
+      const savedConditions = Storage.getItem(Config.storage.conditions);
+      const savedConfig = Storage.getItem(Config.storage.config);
 
       if (savedActions) State.recordedActions = JSON.parse(savedActions);
       if (savedConditions) State.conditions = JSON.parse(savedConditions);
@@ -2337,7 +2398,10 @@
     }, 1000);
 
     console.log(`%c✨ AutoClicUS v${Config.version} - Propulsé par JSLAI`, 'color: #00874e; font-size: 14px; font-weight: bold;');
-    console.log('%cF6=Enregistrer | F7=Lire | F8=Arrêter', 'color: #6c757d; font-size: 12px;');
+    console.log('%cF6=Enregistrer/Arrêter | F7=Lire | F8=Stop', 'color: #6c757d; font-size: 12px;');
+    if (Storage.isMemoryMode) {
+      console.log('%c⚠️ localStorage indisponible — stockage en mémoire uniquement', 'color: #ffc107; font-size: 12px;');
+    }
 
   } catch (e) {
     console.error('AutoClicUS initialization error:', e);
