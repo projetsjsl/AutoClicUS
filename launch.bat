@@ -1,4 +1,5 @@
 @echo off
+setlocal enabledelayedexpansion
 chcp 65001 >nul 2>&1
 title AutoClicUS Launcher — JSLAI
 
@@ -74,8 +75,8 @@ echo  Lancement de %NUM_INSTANCES% instance(s)...
 echo.
 
 :: --- Get screen resolution via PowerShell ---
-for /f "tokens=*" %%a in ('powershell -command "[System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Width"') do set "SCREEN_W=%%a"
-for /f "tokens=*" %%a in ('powershell -command "[System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Height"') do set "SCREEN_H=%%a"
+for /f "tokens=*" %%a in ('powershell -command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Width"') do set "SCREEN_W=%%a"
+for /f "tokens=*" %%a in ('powershell -command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea.Height"') do set "SCREEN_H=%%a"
 
 :: Fallback if PowerShell fails
 if "%SCREEN_W%"=="" set "SCREEN_W=1920"
@@ -145,13 +146,13 @@ exit /b 0
 
 :LAUNCH_CHROME
 set "INSTANCE_NUM=%1"
-set /a "XPOS=(%INSTANCE_NUM% - 1) * %WIN_W%"
+set /a "XPOS=(!INSTANCE_NUM! - 1) * !WIN_W!"
 
 :: Launch Chrome with window position
-start "" "%CHROME_PATH%" --new-window --window-size=%WIN_W%,%WIN_H% --window-position=%XPOS%,0 "%TARGET_URL%"
+start "" "%CHROME_PATH%" --new-window --window-size=!WIN_W!,!WIN_H! --window-position=!XPOS!,0 "%TARGET_URL%"
 
 :: Brief delay between launches to prevent conflicts
 timeout /t 1 /nobreak >nul 2>&1
 
-echo  [OK] Instance %INSTANCE_NUM% lancee — Position: %XPOS%,0 — Taille: %WIN_W%x%WIN_H%
+echo  [OK] Instance !INSTANCE_NUM! lancee — Position: !XPOS!,0 — Taille: !WIN_W!x!WIN_H!
 goto :eof

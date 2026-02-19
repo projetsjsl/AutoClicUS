@@ -1273,8 +1273,15 @@
         for (let i = 0; i < loopActions.length; i++) {
           if (!State.isPlaying) break;
 
-          while (State.isPaused) {
+          // Pause with safety: max 30 min to prevent infinite hang
+          let pauseStart = Date.now();
+          while (State.isPaused && State.isPlaying) {
             await this.sleep(100);
+            if (Date.now() - pauseStart > 1800000) {
+              UI.flash('warning', 'Pause expirée après 30 min — arrêt');
+              this.stop();
+              return;
+            }
           }
 
           State.currentStep = (hasLoop ? setupActions.length + 1 : 0) + i;
@@ -1310,7 +1317,7 @@
           }
 
           try {
-            await this.execAction(action);
+            await this.execActionWithTimeout(action, 15000);
           } catch (e) {
             console.error('Action execution error:', e);
             Audit.log(action, action.fingerprint, action.value, 'error', 0);
@@ -1321,9 +1328,9 @@
             if (condition && condition.fallbackActions) {
               await this.executeFallback(condition.fallbackActions);
             } else {
-              UI.flash('error', `Erreur: ${e.message}`);
-              this.stop();
-              return;
+              // Log error but continue to next action instead of killing entire loop
+              UI.flash('warning', `⏭️ Action échouée, passage à la suivante`);
+              console.warn(`Skipping failed action [${i}]: ${e.message}`);
             }
           }
 
@@ -1450,6 +1457,11 @@
         UI.highlightElement(element, State.dryRun);
 
         if (!State.dryRun) {
+          // Warn if element is disabled (click will silently fail)
+          if (element.disabled || element.getAttribute('aria-disabled') === 'true') {
+            console.warn('⚠️ Clicking disabled element:', action.fingerprint.selector);
+          }
+
           // Execute action
           switch (action.eventType) {
             case 'click':
@@ -1474,6 +1486,13 @@
         Audit.log(action, action.fingerprint, action.value, 'error', Date.now() - startTime);
         throw e;
       }
+    },
+
+    async execActionWithTimeout(action, timeoutMs) {
+      return Promise.race([
+        this.execAction(action),
+        new Promise((_, reject) => setTimeout(() => reject(new Error(`Action timeout (${timeoutMs/1000}s)`)), timeoutMs))
+      ]);
     },
 
     setInputValue(element, value) {
@@ -5611,11 +5630,28 @@
           return;
         }
 
-        // Ignore if typing in input
-        if (e.target.matches('input, textarea, select')) return;
-
         const key = e.key;
         const shortcuts = State.settings.shortcuts;
+
+        // F8 (Stop) and F9 (Pause) ALWAYS work — even when focused on input
+        // This is critical: user must NEVER be locked out during playback
+        if (key === shortcuts.stop) {
+          e.preventDefault();
+          if (State.isPlaying) Player.stop();
+          if (State.isRecording) Recorder.stop();
+          return;
+        }
+
+        if (key === shortcuts.pause) {
+          e.preventDefault();
+          if (State.isPlaying) {
+            State.isPaused ? Player.resume() : Player.pause();
+          }
+          return;
+        }
+
+        // Other shortcuts ignored when typing in input
+        if (e.target.matches('input, textarea, select')) return;
 
         if (key === shortcuts.record) {
           e.preventDefault();
@@ -5625,19 +5661,6 @@
         if (key === shortcuts.play) {
           e.preventDefault();
           if (!State.isPlaying && State.recordedActions.length > 0) Player.start();
-        }
-
-        if (key === shortcuts.stop) {
-          e.preventDefault();
-          if (State.isPlaying) Player.stop();
-          if (State.isRecording) Recorder.stop();
-        }
-
-        if (key === shortcuts.pause) {
-          e.preventDefault();
-          if (State.isPlaying) {
-            State.isPaused ? Player.resume() : Player.pause();
-          }
         }
       });
     },
