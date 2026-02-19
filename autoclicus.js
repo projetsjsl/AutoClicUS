@@ -259,6 +259,7 @@
     },
 
     // AG Grid context capture — stable identifiers for virtual-scrolled grid cells
+    // Captures SEMANTIC context: what column, what relative position, what the row looks like
     captureGridContext(element) {
       // Detect if element is inside an AG Grid
       const gridEl = element.closest('.ag-root-wrapper, .ag-root, [ref="eRootWrapper"]');
@@ -270,10 +271,10 @@
 
       const ctx = {
         isGrid: true,
-        // Cell identity
+        // Cell identity (STABLE — column definitions don't change)
         colId: cell?.getAttribute('col-id') || '',
         compId: cell?.getAttribute('comp-id') || '',
-        // Row identity
+        // Row identity (VOLATILE — changes as data updates and user scrolls)
         rowIndex: row?.getAttribute('row-index') || '',
         rowId: row?.getAttribute('row-id') || '',
         // ARIA (stable across AG Grid versions)
@@ -284,8 +285,30 @@
         // Row text content (first few cells — fingerprint of the entire row)
         rowText: '',
         // Grid container identity (to distinguish multiple grids on same page)
-        gridId: gridEl.id || gridEl.getAttribute('grid-id') || ''
+        gridId: gridEl.id || gridEl.getAttribute('grid-id') || '',
+
+        // === SEMANTIC CONTEXT (NEW) — position-independent, survives data changes ===
+        // Visible row position: which row among currently rendered rows (0-indexed)
+        // This is what matters in loops: "click the 1st visible row", "click the 3rd visible row"
+        visibleRowPosition: -1,
+        // Total visible rows at capture time (for proportion-based matching)
+        visibleRowCount: 0,
+        // Is this a header row vs data row?
+        isHeader: !!element.closest('.ag-header-row, .ag-header-cell')
       };
+
+      // Calculate visible row position (relative, not absolute)
+      if (row && !ctx.isHeader) {
+        const viewport = gridEl.querySelector('.ag-body-viewport, .ag-center-cols-viewport');
+        const allVisibleRows = (viewport || gridEl).querySelectorAll('.ag-row:not(.ag-row-loading)');
+        ctx.visibleRowCount = allVisibleRows.length;
+        for (let i = 0; i < allVisibleRows.length; i++) {
+          if (allVisibleRows[i] === row || allVisibleRows[i].contains(row)) {
+            ctx.visibleRowPosition = i;
+            break;
+          }
+        }
+      }
 
       // Capture row fingerprint: first 3 cell texts joined
       if (row) {
@@ -296,6 +319,12 @@
           if (t) texts.push(t.substring(0, 30));
         }
         ctx.rowText = texts.join(' | ');
+      }
+
+      // Log semantic context for user visibility during recording
+      if (ctx.colId) {
+        const posLabel = ctx.visibleRowPosition >= 0 ? `row #${ctx.visibleRowPosition + 1}/${ctx.visibleRowCount}` : `row-idx ${ctx.rowIndex}`;
+        console.log(`📋 Recorded: [${ctx.colId}] ${posLabel}${ctx.isHeader ? ' (header)' : ''} — "${ctx.cellText?.substring(0, 40) || ''}"`);
       }
 
       return ctx;
@@ -498,13 +527,21 @@
       } catch (e) { return []; }
     },
 
-    // AG Grid resolution — finds cells by col-id + row data matching (virtual scroll safe)
-    // PRIORITY: Data-driven matching FIRST (live-updating lists shift row positions constantly)
+    // AG Grid resolution — SEMANTIC approach: understand what the user MEANT, not literal element
+    // Key insight: in live-updating lists, row DATA varies between sessions. What stays constant:
+    //   - The COLUMN clicked (col-id)
+    //   - The RELATIVE POSITION (Nth visible row)
+    //   - In loops: the SEQUENCE (1st iteration = 1st row, 2nd = 2nd row, etc.)
     resolveGridCell(grid, fingerprint) {
       const noMatch = { element: null, confidence: 0 };
       if (!grid || !grid.colId) return noMatch;
 
-      // Helper: extract rowText fingerprint from a live row element
+      // Get all currently visible data rows (not headers, not loading rows)
+      const gridEl = document.querySelector('.ag-root-wrapper, .ag-root, [ref="eRootWrapper"]');
+      const viewport = gridEl?.querySelector('.ag-body-viewport, .ag-center-cols-viewport');
+      const allVisibleRows = Array.from((viewport || document).querySelectorAll('.ag-row:not(.ag-row-loading):not(.ag-row-pinned-top):not(.ag-row-pinned-bottom)'));
+
+      // Helper: extract row text fingerprint
       const getRowText = (row) => {
         const cells = row.querySelectorAll('[col-id]');
         const texts = [];
@@ -515,77 +552,96 @@
         return texts.join(' | ');
       };
 
+      // Helper: get cell from row by col-id
+      const getCellFromRow = (row) => {
+        const cell = row.querySelector(`[col-id="${grid.colId}"]`);
+        return (cell && this.isVisible(cell)) ? cell : null;
+      };
+
       try {
-        // Strategy 1: DATA-DRIVEN match FIRST — most reliable for live-updating lists
-        // Row position changes as new transactions flow in, but row CONTENT stays stable
-        if (grid.rowText && grid.colId) {
-          const allRows = document.querySelectorAll('.ag-row, [row-index]');
-          for (const row of allRows) {
-            const liveRowText = getRowText(row);
-            if (liveRowText === grid.rowText) {
-              const cell = row.querySelector(`[col-id="${grid.colId}"]`);
-              if (cell && this.isVisible(cell)) {
+        // ──────────────────────────────────────────────────────────
+        // Strategy 1: EXACT DATA match (same row content still visible)
+        // Works when: the specific transaction is still on screen
+        // ──────────────────────────────────────────────────────────
+        if (grid.rowText) {
+          for (const row of allVisibleRows) {
+            if (getRowText(row) === grid.rowText) {
+              const cell = getCellFromRow(row);
+              if (cell) {
+                console.log(`✅ Grid S1 (exact data): found row "${grid.rowText.substring(0, 40)}"`);
                 return { element: cell, confidence: 95 };
               }
             }
           }
-          // Partial match: check if live row starts with same text (data may have extra fields)
-          for (const row of allRows) {
-            const liveRowText = getRowText(row);
-            if (liveRowText && grid.rowText && liveRowText.startsWith(grid.rowText.substring(0, 40))) {
-              const cell = row.querySelector(`[col-id="${grid.colId}"]`);
-              if (cell && this.isVisible(cell)) {
-                return { element: cell, confidence: 80 };
-              }
+        }
+
+        // ──────────────────────────────────────────────────────────
+        // Strategy 2: VISIBLE POSITION (Nth visible row + same column)
+        // Works when: data changed but layout is the same.
+        // This is the KEY strategy for loops and live-updating lists:
+        //   "click the 3rd visible row" — doesn't matter what data is in it.
+        // In LOOP mode: offset by currentLoop to process rows sequentially.
+        // ──────────────────────────────────────────────────────────
+        if (grid.visibleRowPosition >= 0 && grid.colId) {
+          // In loop mode: advance to next row each iteration
+          // Loop 0 → original position, Loop 1 → position+1, etc.
+          const loopOffset = (State.isPlaying && State.currentLoop > 0) ? (State.currentLoop - 1) : 0;
+          const targetPos = grid.visibleRowPosition + loopOffset;
+
+          if (targetPos < allVisibleRows.length) {
+            const row = allVisibleRows[targetPos];
+            const cell = getCellFromRow(row);
+            if (cell) {
+              const rowPreview = getRowText(row).substring(0, 50);
+              console.log(`✅ Grid S2 (position #${targetPos + 1}/${allVisibleRows.length}${loopOffset > 0 ? `, loop offset +${loopOffset}` : ''}): "${rowPreview}"`);
+              return { element: cell, confidence: 88 };
             }
+          }
+
+          // If loop overflowed visible rows, we've processed all visible — stop gracefully
+          if (targetPos >= allVisibleRows.length && loopOffset > 0) {
+            console.warn(`⏭️ Grid: loop offset ${targetPos} exceeds visible rows (${allVisibleRows.length}) — all visible rows processed`);
+            return noMatch;
           }
         }
 
-        // Strategy 2: Position match (col-id + row-index) with data verification
-        // Only reliable when list is NOT live-updating
+        // ──────────────────────────────────────────────────────────
+        // Strategy 3: row-index match (AG Grid internal index)
+        // Works when: grid data hasn't been sorted/filtered since recording
+        // ──────────────────────────────────────────────────────────
         if (grid.rowIndex) {
           const row = document.querySelector(`[row-index="${grid.rowIndex}"]`);
           if (row) {
-            const cell = row.querySelector(`[col-id="${grid.colId}"]`);
-            if (cell && this.isVisible(cell)) {
-              if (grid.rowText) {
-                const liveRowText = getRowText(row);
-                if (liveRowText === grid.rowText) {
-                  return { element: cell, confidence: 90 };
-                }
-                // Position exists but data doesn't match — skip (data-driven already failed)
-              } else {
-                return { element: cell, confidence: 70 };
-              }
-            }
-          }
-        }
-
-        // Strategy 3: ARIA-based (aria-rowindex + aria-colindex)
-        if (grid.ariaRowIndex && grid.ariaColIndex) {
-          const row = document.querySelector(`[aria-rowindex="${grid.ariaRowIndex}"]`);
-          if (row) {
-            const cell = row.querySelector(`[aria-colindex="${grid.ariaColIndex}"]`);
-            if (cell && this.isVisible(cell)) {
+            const cell = getCellFromRow(row);
+            if (cell) {
+              console.log(`✅ Grid S3 (row-index ${grid.rowIndex})`);
               return { element: cell, confidence: 75 };
             }
           }
         }
 
-        // Strategy 4: col-id + cell text match (when row identity is lost)
-        if (grid.colId && grid.cellText) {
-          const allCells = document.querySelectorAll(`[col-id="${grid.colId}"]`);
-          for (const cell of allCells) {
-            if (cell.textContent?.trim().substring(0, 80) === grid.cellText && this.isVisible(cell)) {
-              return { element: cell, confidence: 70 };
+        // ──────────────────────────────────────────────────────────
+        // Strategy 4: ARIA-based (aria-rowindex + aria-colindex)
+        // ──────────────────────────────────────────────────────────
+        if (grid.ariaRowIndex && grid.ariaColIndex) {
+          const row = document.querySelector(`[aria-rowindex="${grid.ariaRowIndex}"]`);
+          if (row) {
+            const cell = row.querySelector(`[aria-colindex="${grid.ariaColIndex}"]`);
+            if (cell && this.isVisible(cell)) {
+              console.log(`✅ Grid S4 (ARIA row=${grid.ariaRowIndex}, col=${grid.ariaColIndex})`);
+              return { element: cell, confidence: 65 };
             }
           }
         }
 
-        // Strategy 5: Just col-id on same row-index (weaker, but still better than generic CSS)
-        if (grid.colId) {
-          const cell = document.querySelector(`[col-id="${grid.colId}"]`);
-          if (cell && this.isVisible(cell)) {
+        // ──────────────────────────────────────────────────────────
+        // Strategy 5: Just col-id on FIRST visible row (last resort)
+        // "I know which column, just give me any row"
+        // ──────────────────────────────────────────────────────────
+        if (grid.colId && allVisibleRows.length > 0) {
+          const cell = getCellFromRow(allVisibleRows[0]);
+          if (cell) {
+            console.log(`⚠️ Grid S5 (first visible row, col=${grid.colId})`);
             return { element: cell, confidence: 40 };
           }
         }
@@ -1501,6 +1557,24 @@
       }
 
       State.recordedActions.push(action);
+
+      // Semantic analysis log — help user understand what was captured
+      const fp = action.fingerprint;
+      const parts = [`🔴 #${State.recordedActions.length} ${eventType}`];
+      if (fp.grid?.isGrid) {
+        const pos = fp.grid.visibleRowPosition >= 0 ? `row #${fp.grid.visibleRowPosition + 1}` : `row-idx ${fp.grid.rowIndex}`;
+        parts.push(`[AG Grid: ${fp.grid.colId} @ ${pos}]`);
+      } else if (fp.isInSidenav) {
+        parts.push('[Side Panel]');
+      } else if (fp.isInOverlay) {
+        parts.push('[Overlay/Modal]');
+      }
+      if (fp.ariaLabel) parts.push(`aria: "${fp.ariaLabel}"`);
+      else if (fp.text) parts.push(`text: "${fp.text.substring(0, 40)}"`);
+      else if (fp.id) parts.push(`#${fp.id}`);
+      else parts.push(fp.selector.substring(0, 60));
+      console.log(parts.join(' '));
+
       UI.render();
     }
   };
