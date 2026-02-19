@@ -41,7 +41,8 @@
       conditions: 'autoclicus_conditions_v4',
       config: 'autoclicus_config_v4',
       audit: 'autoclicus_audit_v4',
-      scenario: 'autoclicus_scenario_v1'
+      scenario: 'autoclicus_scenario_v1',
+      dirHandle: 'autoclicus_dir_handle_v1'
     },
     // Emma Vibe Themes
     vibeThemes: {
@@ -333,8 +334,16 @@
     },
 
     resolve(fingerprint) {
+      // ID match is definitive — return immediately
+      if (fingerprint.id) {
+        const el = document.getElementById(fingerprint.id);
+        if (el && this.isVisible(el)) {
+          return { element: el, confidence: this.calculateConfidence(el, fingerprint) };
+        }
+      }
+
+      // Try ALL strategies, pick the best confidence match
       const strategies = [
-        () => fingerprint.id ? document.getElementById(fingerprint.id) : null,
         () => document.querySelector(fingerprint.selector),
         () => this.evaluateXPath(fingerprint.xpath),
         () => this.findByText(fingerprint.text, fingerprint.tag),
@@ -343,18 +352,25 @@
         () => this.findByCoords(fingerprint.coords)
       ];
 
+      let best = { element: null, confidence: 0 };
+
       for (let strategy of strategies) {
         try {
           const element = strategy();
           if (element && this.isVisible(element)) {
-            return { element, confidence: this.calculateConfidence(element, fingerprint) };
+            const confidence = this.calculateConfidence(element, fingerprint);
+            if (confidence > best.confidence) {
+              best = { element, confidence };
+            }
+            // Perfect match — stop early
+            if (confidence >= 85) return best;
           }
         } catch (e) {
           // Strategy failed, try next
         }
       }
 
-      return { element: null, confidence: 0 };
+      return best;
     },
 
     evaluateXPath(xpath) {
@@ -425,14 +441,25 @@
     calculateConfidence(element, fingerprint) {
       let score = 0;
 
-      // ID match is the strongest signal — 40pts alone = high confidence
+      // ID match is the strongest signal — 40pts
       if (element.id && element.id === fingerprint.id) score += 40;
-      if (element.className === fingerprint.className) score += 20;
+      // Class match — 15pts (reduced: generic classes are common)
+      if (element.className === fingerprint.className) score += 15;
+      // Name attribute — 15pts
       if (element.getAttribute('name') === fingerprint.name) score += 15;
-      if (fingerprint.text && element.textContent?.trim().includes(fingerprint.text.substring(0, 30))) score += 15;
-      if (element.tagName.toLowerCase() === fingerprint.tag) score += 10;
+      // Text content match — 25pts (strong differentiator for similar elements)
+      if (fingerprint.text && element.textContent?.trim().includes(fingerprint.text.substring(0, 30))) score += 25;
+      // Tag match — 5pts (very generic)
+      if (element.tagName.toLowerCase() === fingerprint.tag) score += 5;
+      // XPath positional match — 20pts (unique positional identity)
+      if (fingerprint.xpath) {
+        try {
+          const xpathEl = this.evaluateXPath(fingerprint.xpath);
+          if (xpathEl === element) score += 20;
+        } catch (e) {}
+      }
 
-      return score;  // out of 100
+      return Math.min(score, 100);
     }
   };
 
@@ -701,6 +728,140 @@
 
     getTrail() {
       return State.auditTrail;
+    }
+  };
+
+  // =============================================================================
+  // FILE MANAGER — Local directory browser for .json scenario files
+  // =============================================================================
+  const FileManager = {
+    dirHandle: null,
+    files: [],
+    dbName: 'autoclicus_fs',
+    storeName: 'handles',
+
+    async openDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(this.dbName, 1);
+        req.onupgradeneeded = () => req.result.createObjectStore(this.storeName);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    },
+
+    async saveDirHandle(handle) {
+      try {
+        const db = await this.openDB();
+        const tx = db.transaction(this.storeName, 'readwrite');
+        tx.objectStore(this.storeName).put(handle, 'dir');
+        await new Promise((r, f) => { tx.oncomplete = r; tx.onerror = f; });
+        db.close();
+      } catch (e) { /* IndexedDB unavailable */ }
+    },
+
+    async loadDirHandle() {
+      try {
+        const db = await this.openDB();
+        const tx = db.transaction(this.storeName, 'readonly');
+        const handle = await new Promise((r, f) => {
+          const req = tx.objectStore(this.storeName).get('dir');
+          req.onsuccess = () => r(req.result);
+          req.onerror = () => f(req.error);
+        });
+        db.close();
+        return handle || null;
+      } catch (e) { return null; }
+    },
+
+    async pickDirectory() {
+      if (!window.showDirectoryPicker) return false;
+      try {
+        this.dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+        await this.saveDirHandle(this.dirHandle);
+        await this.listFiles();
+        return true;
+      } catch (e) { return false; }
+    },
+
+    async restoreDirectory() {
+      try {
+        const handle = await this.loadDirHandle();
+        if (!handle) return false;
+        const perm = await handle.queryPermission({ mode: 'read' });
+        if (perm === 'granted') {
+          this.dirHandle = handle;
+          await this.listFiles();
+          return true;
+        }
+        // Need to re-request (requires user gesture)
+        this.dirHandle = handle;
+        return 'needs_permission';
+      } catch (e) { return false; }
+    },
+
+    async requestPermission() {
+      if (!this.dirHandle) return false;
+      try {
+        const perm = await this.dirHandle.requestPermission({ mode: 'read' });
+        if (perm === 'granted') {
+          await this.listFiles();
+          return true;
+        }
+        return false;
+      } catch (e) { return false; }
+    },
+
+    async listFiles() {
+      if (!this.dirHandle) return;
+      this.files = [];
+      try {
+        for await (const entry of this.dirHandle.values()) {
+          if (entry.kind === 'file' && entry.name.endsWith('.json')) {
+            const file = await entry.getFile();
+            this.files.push({
+              name: entry.name,
+              size: file.size,
+              lastModified: file.lastModified,
+              handle: entry
+            });
+          }
+        }
+        this.files.sort((a, b) => b.lastModified - a.lastModified);
+      } catch (e) { this.files = []; }
+    },
+
+    async loadFile(fileInfo) {
+      try {
+        const file = await fileInfo.handle.getFile();
+        const text = await file.text();
+        return JSON.parse(text);
+      } catch (e) { return null; }
+    },
+
+    async saveToDirectory(filename, data) {
+      if (!this.dirHandle) return false;
+      try {
+        const perm = await this.dirHandle.queryPermission({ mode: 'readwrite' });
+        if (perm !== 'granted') {
+          await this.dirHandle.requestPermission({ mode: 'readwrite' });
+        }
+        const fileHandle = await this.dirHandle.getFileHandle(filename, { create: true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(JSON.stringify(data, null, 2));
+        await writable.close();
+        await this.listFiles();
+        return true;
+      } catch (e) { return false; }
+    },
+
+    formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' o';
+      return (bytes / 1024).toFixed(1) + ' Ko';
+    },
+
+    formatDate(ts) {
+      const d = new Date(ts);
+      return d.toLocaleDateString('fr-CA') + ' ' + d.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
     }
   };
 
@@ -1292,7 +1453,11 @@
           // Execute action
           switch (action.eventType) {
             case 'click':
-              element.click();
+              if (typeof element.click === 'function') {
+                element.click();
+              } else {
+                element.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+              }
               break;
             case 'input':
             case 'change':
@@ -1885,19 +2050,25 @@
         }
 
         .header-countdown {
-          font-size: 12px;
-          font-weight: 700;
-          color: #ff4444;
+          font-size: 13px;
+          font-weight: 800;
+          color: #ff2222;
           font-variant-numeric: tabular-nums;
           margin-top: 1px;
-          text-shadow: 0 0 10px rgba(255,68,68,0.8);
-          letter-spacing: 0.5px;
+          text-shadow: 0 1px 0 rgba(0,0,0,0.6), 0 0 4px rgba(255,34,34,0.4);
+          letter-spacing: 0.8px;
+          background: rgba(255,255,255,0.92);
+          padding: 1px 6px;
+          border-radius: 4px;
+          border: 1px solid rgba(255,34,34,0.4);
         }
 
         .header-countdown.expired {
-          color: #ff6b6b;
+          color: #cc0000;
           animation: ai-recording-pulse 0.8s ease-in-out infinite;
-          text-shadow: 0 0 12px rgba(255,107,107,0.9);
+          text-shadow: none;
+          background: rgba(255,255,255,0.95);
+          border-color: rgba(255,0,0,0.6);
         }
 
         .header-ai-status {
@@ -2326,6 +2497,74 @@
           margin-bottom: 12px;
           color: ${Config.theme.text};
           font-size: 15px;
+        }
+
+        .file-browser {
+          max-height: 260px;
+          overflow-y: auto;
+          margin-top: 8px;
+        }
+
+        .file-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 10px;
+          border: 1px solid ${Config.theme.border};
+          border-radius: 6px;
+          margin-bottom: 4px;
+          cursor: pointer;
+          transition: all 0.15s;
+          background: ${Config.theme.bg};
+        }
+
+        .file-item:hover {
+          border-color: ${Config.theme.primary};
+          background: rgba(0,135,78,0.04);
+          transform: translateX(2px);
+        }
+
+        .file-item-icon {
+          font-size: 18px;
+          flex-shrink: 0;
+        }
+
+        .file-item-name {
+          font-weight: 600;
+          font-size: 12px;
+          color: ${Config.theme.text};
+          flex: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .file-item-meta {
+          font-size: 10px;
+          color: ${Config.theme.textSecondary};
+          text-align: right;
+          flex-shrink: 0;
+          line-height: 1.4;
+        }
+
+        .file-browser-dir {
+          font-size: 10px;
+          color: ${Config.theme.textSecondary};
+          margin-top: 4px;
+          padding: 3px 6px;
+          background: rgba(0,0,0,0.03);
+          border-radius: 4px;
+          font-family: 'SF Mono', monospace;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .file-browser-empty {
+          text-align: center;
+          padding: 16px;
+          color: ${Config.theme.textSecondary};
+          font-size: 12px;
         }
 
         .action-list {
@@ -4274,6 +4513,40 @@
             </div>
           </div>
 
+          <div class="card" style="border: 1px solid rgba(0,135,78,0.25);">
+            <div class="card-header">📂 Dossier local <span class="info-tip" data-info="Choisissez un dossier (ex: C:\\autoclicus) pour voir et charger vos fichiers .json sauvegardés.">i</span></div>
+            ${FileManager.dirHandle ? `
+              <div class="file-browser-dir" title="${FileManager.dirHandle.name}">📁 ${FileManager.dirHandle.name}</div>
+              ${FileManager.files.length > 0 ? `
+                <div class="file-browser">
+                  ${FileManager.files.map((f, i) => `
+                    <div class="file-item" data-file-idx="${i}">
+                      <span class="file-item-icon">📄</span>
+                      <span class="file-item-name" title="${f.name}">${f.name}</span>
+                      <span class="file-item-meta">${FileManager.formatSize(f.size)}<br>${FileManager.formatDate(f.lastModified)}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : `
+                <div class="file-browser-empty">Aucun fichier .json trouvé</div>
+              `}
+              <div class="btn-group" style="margin-top: 8px;">
+                <button class="btn btn-secondary btn-small" id="fm-refresh">🔄 Rafraîchir</button>
+                <button class="btn btn-secondary btn-small" id="fm-change-dir">📁 Changer</button>
+                <button class="btn btn-primary btn-small" id="fm-save-here" ${!hasActions && !hasScenario ? 'disabled' : ''}>💾 Sauvegarder ici</button>
+              </div>
+            ` : `
+              <div class="file-browser-empty">
+                ${window.showDirectoryPicker ? 'Choisissez un dossier pour parcourir vos fichiers .json' : '⚠️ API File System non disponible dans ce navigateur'}
+              </div>
+              ${window.showDirectoryPicker ? `
+                <div class="btn-group" style="margin-top: 8px;">
+                  <button class="btn btn-primary" id="fm-pick-dir">📂 Choisir un dossier</button>
+                </div>
+              ` : ''}
+            `}
+          </div>
+
           <div class="card" style="border: 1px solid rgba(220,53,69,0.2);">
             <div class="card-header" style="color: #dc3545;">⚠️ Danger <span class="info-tip" data-info="Supprime toutes les actions, scénarios et configurations. Irréversible.">i</span></div>
             <div class="btn-group">
@@ -5137,6 +5410,78 @@
         });
       }
 
+      // File Manager handlers
+      const btnFmPick = root.querySelector('#fm-pick-dir');
+      const btnFmRefresh = root.querySelector('#fm-refresh');
+      const btnFmChangeDir = root.querySelector('#fm-change-dir');
+      const btnFmSaveHere = root.querySelector('#fm-save-here');
+      const fileItems = root.querySelectorAll('.file-item[data-file-idx]');
+
+      if (btnFmPick) {
+        btnFmPick.addEventListener('click', async () => {
+          const ok = await FileManager.pickDirectory();
+          if (ok) { this.flash('success', `📂 ${FileManager.files.length} fichier(s) trouvé(s)`); this.render(); }
+        });
+      }
+
+      if (btnFmRefresh) {
+        btnFmRefresh.addEventListener('click', async () => {
+          await FileManager.listFiles();
+          this.flash('success', `🔄 ${FileManager.files.length} fichier(s)`);
+          this.render();
+        });
+      }
+
+      if (btnFmChangeDir) {
+        btnFmChangeDir.addEventListener('click', async () => {
+          const ok = await FileManager.pickDirectory();
+          if (ok) { this.flash('success', `📂 ${FileManager.files.length} fichier(s) trouvé(s)`); this.render(); }
+        });
+      }
+
+      if (btnFmSaveHere) {
+        btnFmSaveHere.addEventListener('click', async () => {
+          const data = {
+            version: Config.version,
+            actions: State.recordedActions,
+            conditions: State.conditions,
+            scenario: State.scenario,
+            config: { speed: State.speed, loopCount: State.loopCount, timeLimit: State.timeLimit, settings: State.settings }
+          };
+          const filename = `autoclicus-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+          const ok = await FileManager.saveToDirectory(filename, data);
+          if (ok) { this.flash('success', `💾 ${filename}`); this.render(); }
+          else { this.flash('error', 'Erreur de sauvegarde'); }
+        });
+      }
+
+      fileItems.forEach(item => {
+        item.addEventListener('click', async () => {
+          const idx = parseInt(item.dataset.fileIdx);
+          const fileInfo = FileManager.files[idx];
+          if (!fileInfo) return;
+
+          item.style.opacity = '0.5';
+          const data = await FileManager.loadFile(fileInfo);
+          item.style.opacity = '1';
+
+          if (!data) { this.flash('error', 'Fichier invalide'); return; }
+
+          if (data.actions) State.recordedActions = data.actions;
+          if (data.conditions) State.conditions = data.conditions;
+          if (data.scenario) Object.assign(State.scenario, data.scenario);
+          if (data.config) {
+            State.speed = data.config.speed || 1;
+            State.loopCount = data.config.loopCount || 1;
+            State.timeLimit = data.config.timeLimit || null;
+            if (data.config.settings) Object.assign(State.settings, data.config.settings);
+          }
+
+          this.flash('success', `📄 ${fileInfo.name} chargé`);
+          this.render();
+        });
+      });
+
       if (btnResetAll) {
         btnResetAll.addEventListener('click', () => {
           if (confirm('Tout réinitialiser? Cette action est irréversible.')) {
@@ -5762,6 +6107,14 @@
     Scenario.loadConfig();
     UI.loadVibePrefs();
     State.currentTab = 'scenario'; // Default to scenario tab
+
+    // Restore saved directory handle (async, non-blocking)
+    FileManager.restoreDirectory().then(result => {
+      if (result === true || result === 'needs_permission') {
+        // Re-render to show file list (or permission button)
+        if (State.currentTab === 'save') UI.render();
+      }
+    });
 
     // Initialize UI
     UI.init();
