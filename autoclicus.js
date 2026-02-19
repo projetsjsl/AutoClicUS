@@ -253,6 +253,15 @@
         dataAttrs: this.getDataAttrs(element),
         path: path,
         coords: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
+        // Element size at capture time (for small-target detection)
+        elementSize: { width: Math.round(rect.width), height: Math.round(rect.height) },
+        // Viewport context at capture time (for zoom/resolution mismatch detection)
+        viewport: {
+          width: window.innerWidth,
+          height: window.innerHeight,
+          devicePixelRatio: window.devicePixelRatio || 1,
+          zoom: parseFloat(document.body.style.zoom) || 1
+        },
         index: this.getElementIndex(element),
         eventType: eventType
       };
@@ -452,6 +461,15 @@
     },
 
     resolve(fingerprint) {
+      // Viewport mismatch warning (SWAT: zoom/resolution awareness)
+      if (fingerprint.viewport) {
+        const dprDiff = Math.abs((window.devicePixelRatio || 1) - fingerprint.viewport.devicePixelRatio);
+        const widthDiff = Math.abs(window.innerWidth - fingerprint.viewport.width) / fingerprint.viewport.width;
+        if (dprDiff > 0.1 || widthDiff > 0.15) {
+          console.warn(`⚠️ Viewport mismatch: recorded ${fingerprint.viewport.width}x${fingerprint.viewport.height} @${fingerprint.viewport.devicePixelRatio}x, current ${window.innerWidth}x${window.innerHeight} @${window.devicePixelRatio}x — element-relative targeting active, coords ignored`);
+        }
+      }
+
       // ID match is definitive — return immediately
       if (fingerprint.id) {
         const el = document.getElementById(fingerprint.id);
@@ -464,19 +482,31 @@
       if (fingerprint.grid?.isGrid) {
         const gridResult = this.resolveGridCell(fingerprint.grid, fingerprint);
         if (gridResult.element && gridResult.confidence >= 60) {
-          return gridResult;
+          // SWAT: For ACTIONS column (small icons), find the clickable descendant
+          let resolved = gridResult.element;
+          const isActionsCol = fingerprint.grid.colId?.toLowerCase().includes('action') ||
+                               fingerprint.elementSize?.width < 30 || fingerprint.elementSize?.height < 30;
+          if (isActionsCol) {
+            const clickable = this.findClickableDescendant(resolved);
+            if (clickable) {
+              console.log(`🎯 Small target: found clickable ${clickable.tagName} inside ${resolved.tagName}[col-id="${fingerprint.grid.colId}"]`);
+              resolved = clickable;
+            }
+          }
+          // SWAT: Verify element is actually at its computed center (not obscured)
+          resolved = this.verifyHitTarget(resolved);
+          return { element: resolved, confidence: gridResult.confidence };
         }
       }
 
-      // Try ALL strategies, pick the best confidence match
-      // XPath FIRST — most reliable for Angular/SPA (positional, survives class changes)
+      // Try ALL semantic strategies, pick the best confidence match
+      // SWAT: Removed findByCoords — coordinates are unreliable across zoom/resolution/panel states
       const strategies = [
         () => this.evaluateXPath(fingerprint.xpath),
         () => this.findBySelectorAll(fingerprint.selector, fingerprint),
         () => this.findByText(fingerprint.text, fingerprint.tag),
         () => this.findByDataAttrs(fingerprint.dataAttrs),
-        () => this.findByPath(fingerprint.path),
-        () => this.findByCoords(fingerprint.coords)
+        () => this.findByPath(fingerprint.path)
       ];
 
       let best = { element: null, confidence: 0 };
@@ -493,12 +523,32 @@
                 best = { element, confidence };
               }
               // Perfect match — stop early
-              if (confidence >= 85) return best;
+              if (confidence >= 85) {
+                // SWAT: For small elements, find clickable descendant
+                if (fingerprint.elementSize && (fingerprint.elementSize.width < 30 || fingerprint.elementSize.height < 30)) {
+                  const clickable = this.findClickableDescendant(best.element);
+                  if (clickable) {
+                    console.log(`🎯 Small target: redirecting click to ${clickable.tagName} inside ${best.element.tagName}`);
+                    best.element = clickable;
+                  }
+                }
+                best.element = this.verifyHitTarget(best.element);
+                return best;
+              }
             }
           }
         } catch (e) {
           // Strategy failed, try next
         }
+      }
+
+      // SWAT: Final hit verification on best match
+      if (best.element) {
+        if (fingerprint.elementSize && (fingerprint.elementSize.width < 30 || fingerprint.elementSize.height < 30)) {
+          const clickable = this.findClickableDescendant(best.element);
+          if (clickable) best.element = clickable;
+        }
+        best.element = this.verifyHitTarget(best.element);
       }
 
       return best;
@@ -732,9 +782,53 @@
       return current;
     },
 
-    findByCoords(coords) {
-      const element = document.elementFromPoint(coords.x, coords.y);
+    // SWAT: Removed findByCoords as resolution strategy.
+    // Coordinates are unreliable across zoom/resolution/panel states.
+    // Element-first resolution via semantic strategies is the only path.
+
+    // Verify resolved element is actually at its computed center (not obscured by overlay)
+    verifyHitTarget(element) {
+      if (!element || !element.isConnected) return element;
+      try {
+        const rect = element.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return element; // hidden element, trust resolution
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const atPoint = document.elementFromPoint(cx, cy);
+        if (!atPoint) return element; // off-screen, trust resolution
+        // Exact match or descendant/ancestor = good
+        if (atPoint === element || element.contains(atPoint) || atPoint.contains(element)) return element;
+        // Point check returned different element — the target may be obscured
+        // Check if the element at point is a clickable descendant (icon inside button, etc.)
+        if (element.contains(atPoint) || atPoint.closest('button, a, [role="button"], mat-icon-button')) {
+          return atPoint; // click the actual visible element instead
+        }
+        console.warn(`⚠️ Hit verification: expected ${element.tagName}, got ${atPoint.tagName} at (${Math.round(cx)},${Math.round(cy)}). Using resolved element.`);
+      } catch (e) { /* verification failed, use resolved element */ }
       return element;
+    },
+
+    // For AG Grid ACTIONS columns (small pencil/edit icons ~20px):
+    // Resolve the cell, then find the actual clickable descendant (button, icon, link)
+    findClickableDescendant(cell) {
+      if (!cell) return null;
+      // Priority order: explicit buttons, icon buttons, role=button, links, svg/mat-icon
+      const selectors = [
+        'button:not([disabled])',
+        'mat-icon-button:not([disabled])',
+        '[role="button"]:not([disabled])',
+        'a[href]',
+        'mat-icon',
+        'svg',
+        '.ag-icon',
+        'span[class*="icon"]',
+        'i[class*="icon"]'
+      ];
+      for (const sel of selectors) {
+        const found = cell.querySelector(sel);
+        if (found && this.isVisible(found)) return found;
+      }
+      return null; // no clickable descendant, click the cell itself
     },
 
     isVisible(element) {
@@ -1619,6 +1713,57 @@
     async run() {
       const actions = State.recordedActions;
 
+      // ═══════════════════════════════════════════════════════════════════
+      // SWAT: Pre-flight panel normalization
+      // Close COLONNES/FILTRES side panels to normalize AG Grid layout
+      // ═══════════════════════════════════════════════════════════════════
+      try {
+        // Detect open side panels (Angular Material sidenav / SmartD COLONNES/FILTRES)
+        const openPanels = document.querySelectorAll(
+          'mat-sidenav.mat-drawer-opened, mat-sidenav[style*="visible"], ' +
+          '.mat-drawer-opened, [class*="sidenav"][class*="open"], ' +
+          '[class*="panel"][class*="expanded"], [class*="sidebar"][class*="open"]'
+        );
+        for (const panel of openPanels) {
+          // Don't close the main content sidenav (only close utility panels like COLONNES/FILTRES)
+          const isMainContent = panel.getAttribute('mode') === 'side' && panel.querySelector('.ag-root-wrapper');
+          if (!isMainContent) {
+            // Try to find and click the panel's close button
+            const closeBtn = panel.querySelector('button[aria-label*="close" i], button[aria-label*="fermer" i], .close-btn, [class*="close"]') ||
+                             panel.closest('[class*="panel"]')?.querySelector('button');
+            if (closeBtn) {
+              closeBtn.click();
+              console.log('📐 Pre-flight: closed side panel for layout normalization');
+              await this.sleep(400); // wait for animation
+            }
+          }
+        }
+      } catch (e) { /* panel normalization is best-effort */ }
+
+      // ═══════════════════════════════════════════════════════════════════
+      // SWAT: Pre-flight AG Grid col-id validation
+      // Verify all recorded AG Grid col-ids exist in current page
+      // ═══════════════════════════════════════════════════════════════════
+      try {
+        const gridColIds = new Set();
+        for (const action of actions) {
+          if (action.fingerprint?.grid?.isGrid && action.fingerprint.grid.colId) {
+            gridColIds.add(action.fingerprint.grid.colId);
+          }
+        }
+        if (gridColIds.size > 0) {
+          const liveHeaders = document.querySelectorAll('.ag-header-cell[col-id]');
+          const liveCols = new Set(Array.from(liveHeaders).map(h => h.getAttribute('col-id')));
+          const missing = [...gridColIds].filter(id => !liveCols.has(id));
+          if (missing.length > 0) {
+            console.warn(`⚠️ Pre-flight: AG Grid columns not found: ${missing.join(', ')}. Actions targeting these columns may fail.`);
+            UI.flash('warning', `Colonnes AG Grid manquantes: ${missing.join(', ')}`);
+          } else {
+            console.log(`✅ Pre-flight: all ${gridColIds.size} recorded AG Grid columns verified`);
+          }
+        }
+      } catch (e) { /* validation is best-effort */ }
+
       // Detect loop_start marker — split into setup + loop actions
       const loopIdx = actions.findIndex(a => a.type === 'loop_start');
       const hasLoop = loopIdx >= 0;
@@ -2050,6 +2195,34 @@
             case 'keydown':
               element.dispatchEvent(new KeyboardEvent('keydown', { key: action.value, bubbles: true, composed: true }));
               break;
+          }
+
+          // ═══════════════════════════════════════════════════════════════
+          // SWAT: Post-action error monitoring
+          // After click/dblclick actions that may trigger form submissions,
+          // check for concurrency errors ("L'ordre a été modifié entre temps")
+          // ═══════════════════════════════════════════════════════════════
+          if (action.eventType === 'click' || action.eventType === 'dblclick') {
+            // Brief wait for Angular to render error state
+            await this.sleep(300);
+            const errorIndicators = document.querySelectorAll(
+              '.error, .alert-danger, .alert-warning, .mat-snack-bar-container, ' +
+              '[class*="error-banner"], [class*="error-message"], [class*="notification-error"]'
+            );
+            for (const indicator of errorIndicators) {
+              const text = indicator.textContent?.trim() || '';
+              if (text && (
+                text.includes('rejet') || text.includes('erreur') || text.includes('modifi') ||
+                text.includes('error') || text.includes('failed') || text.includes('conflit')
+              )) {
+                console.warn(`🚨 Error detected after action: "${text.substring(0, 80)}"`);
+                UI.flash('warning', `Erreur détectée: ${text.substring(0, 60)}`);
+                // Don't auto-stop — let the scenario's condition_check handle recovery
+                // But flag it for the audit trail
+                Audit.log(action, action.fingerprint, text.substring(0, 100), 'error_detected', Date.now() - startTime);
+                break;
+              }
+            }
           }
         }
 
