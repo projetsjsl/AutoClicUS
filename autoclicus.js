@@ -1,4 +1,4 @@
-// AutoClicUS v4.0.2 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
+// AutoClicUS v5.0.0 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
 // Automation assistant for SmartD USD exchange rate operations
 // Paste this complete snippet into Chrome DevTools console
 
@@ -9,7 +9,7 @@
   // CONFIG
   // =============================================================================
   const Config = {
-    version: '4.0.2',
+    version: '5.0.0',
     emmaAvatar: 'data:image/jpeg;base64,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',
     theme: {
       bg: '#ffffff',
@@ -135,7 +135,26 @@
     startTime: null,
     totalDuration: 0,
     timeLimit: null,
-    deadlineTime: null
+    deadlineTime: null,
+
+    // Settings (user-configurable)
+    settings: {
+      shortcuts: { record: 'F6', play: 'F7', stop: 'F8', pause: 'F9' },
+      delayBetweenActions: 1000,
+      delayBetweenLoops: 2000,
+      autoSave: true,
+      showTooltips: true,
+      confirmBeforeDelete: true
+    },
+
+    // UI state for forms
+    showConditionForm: false,
+    showPromptForm: false,
+    showConfirmForm: false,
+    capturingShortcut: null,
+    elementPickerActive: false,
+    pickedElement: null,
+    editingActionIndex: null
   };
 
   // =============================================================================
@@ -769,11 +788,11 @@
           }
 
           // Delay between actions
-          await this.sleep(1000 / State.speed);
+          await this.sleep(State.settings.delayBetweenActions / State.speed);
         }
 
         if (State.currentLoop < State.loopCount) {
-          await this.sleep(2000 / State.speed);
+          await this.sleep(State.settings.delayBetweenLoops / State.speed);
         }
       }
 
@@ -787,6 +806,20 @@
       const startTime = Date.now();
 
       try {
+        if (action.type === 'wait') {
+          await this.sleep(action.delay || 1000);
+          Audit.log(action, 'wait', `${action.delay}ms`, 'success', Date.now() - startTime);
+          return;
+        }
+
+        if (action.type === 'navigate') {
+          if (!State.dryRun) {
+            window.location.href = action.url;
+          }
+          Audit.log(action, 'navigate', action.url, 'success', Date.now() - startTime);
+          return;
+        }
+
         if (action.type === 'prompt') {
           await this.showPrompt(action);
           Audit.log(action, action.targetSelector, 'user_input', 'success', Date.now() - startTime);
@@ -1722,6 +1755,292 @@
         .table tr:last-child td {
           border-bottom: none;
         }
+
+        /* Tooltip system */
+        .tooltip-wrap {
+          position: relative;
+          display: inline-block;
+        }
+        .tooltip-wrap::after {
+          content: attr(data-tip);
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          padding: 6px 10px;
+          background: ${Config.theme.text};
+          color: white;
+          font-size: 11px;
+          border-radius: 4px;
+          white-space: nowrap;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.2s;
+          z-index: 10;
+          margin-bottom: 4px;
+        }
+        .tooltip-wrap:hover::after {
+          opacity: 1;
+        }
+
+        /* Inline forms */
+        .inline-form {
+          padding: 16px;
+          background: ${Config.theme.bgSecondary};
+          border-radius: 8px;
+          border: 1px solid ${Config.theme.border};
+          margin-bottom: 16px;
+        }
+        .inline-form .form-row {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 12px;
+          align-items: flex-end;
+        }
+        .inline-form .form-field {
+          flex: 1;
+        }
+        .inline-form .form-field label {
+          display: block;
+          font-size: 12px;
+          font-weight: 500;
+          color: ${Config.theme.textSecondary};
+          margin-bottom: 4px;
+        }
+        .inline-form .form-field input,
+        .inline-form .form-field select {
+          width: 100%;
+          padding: 8px;
+          border: 1px solid ${Config.theme.border};
+          border-radius: 6px;
+          font-size: 13px;
+          font-family: inherit;
+          background: white;
+        }
+        .inline-form .form-field input:focus,
+        .inline-form .form-field select:focus {
+          outline: none;
+          border-color: ${Config.theme.primary};
+          box-shadow: 0 0 0 2px rgba(0, 135, 78, 0.1);
+        }
+        .form-actions {
+          display: flex;
+          gap: 8px;
+          justify-content: flex-end;
+        }
+
+        /* Action row buttons */
+        .action-btns {
+          display: flex;
+          gap: 2px;
+          flex-shrink: 0;
+        }
+        .action-btn-mini {
+          width: 28px;
+          height: 28px;
+          border: none;
+          background: transparent;
+          cursor: pointer;
+          border-radius: 4px;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.15s;
+          color: ${Config.theme.textSecondary};
+        }
+        .action-btn-mini:hover {
+          background: ${Config.theme.bgSecondary};
+          color: ${Config.theme.text};
+        }
+        .action-btn-mini.danger:hover {
+          background: rgba(220, 53, 69, 0.1);
+          color: ${Config.theme.error};
+        }
+
+        /* Inline edit input */
+        .inline-edit {
+          padding: 4px 8px;
+          border: 1px solid ${Config.theme.primary};
+          border-radius: 4px;
+          font-size: 12px;
+          width: 120px;
+          font-family: inherit;
+        }
+        .inline-edit:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(0, 135, 78, 0.2);
+        }
+
+        /* Settings */
+        .shortcut-key {
+          display: inline-block;
+          padding: 4px 10px;
+          background: ${Config.theme.bgSecondary};
+          border: 1px solid ${Config.theme.border};
+          border-radius: 6px;
+          font-family: 'Courier New', monospace;
+          font-size: 13px;
+          font-weight: 600;
+          min-width: 50px;
+          text-align: center;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .shortcut-key:hover {
+          border-color: ${Config.theme.primary};
+          background: rgba(0, 135, 78, 0.05);
+        }
+        .shortcut-key.capturing {
+          border-color: ${Config.theme.primary};
+          background: rgba(0, 135, 78, 0.1);
+          animation: ai-pulse 1s ease-in-out infinite;
+        }
+        .setting-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 12px 0;
+          border-bottom: 1px solid ${Config.theme.border};
+        }
+        .setting-row:last-child {
+          border-bottom: none;
+        }
+        .setting-label {
+          font-size: 13px;
+          color: ${Config.theme.text};
+        }
+        .setting-desc {
+          font-size: 11px;
+          color: ${Config.theme.textSecondary};
+          margin-top: 2px;
+        }
+
+        /* Help */
+        .help-section {
+          margin-bottom: 20px;
+        }
+        .help-title {
+          font-size: 15px;
+          font-weight: 600;
+          margin-bottom: 10px;
+          color: ${Config.theme.primary};
+        }
+        .help-step {
+          display: flex;
+          gap: 12px;
+          padding: 10px 0;
+          border-bottom: 1px solid ${Config.theme.border};
+        }
+        .help-step:last-child {
+          border-bottom: none;
+        }
+        .help-step-num {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          background: ${Config.theme.primary};
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 13px;
+          font-weight: 600;
+          flex-shrink: 0;
+        }
+        .help-step-text {
+          font-size: 13px;
+          color: ${Config.theme.text};
+          line-height: 1.5;
+        }
+        .help-kbd {
+          display: inline-block;
+          padding: 2px 6px;
+          background: ${Config.theme.bgSecondary};
+          border: 1px solid ${Config.theme.border};
+          border-radius: 3px;
+          font-family: 'Courier New', monospace;
+          font-size: 11px;
+          font-weight: 600;
+        }
+
+        /* Element picker */
+        .picker-bar {
+          padding: 10px 16px;
+          background: linear-gradient(135deg, ${Config.theme.primary}, ${Config.theme.primaryLight});
+          color: white;
+          font-size: 13px;
+          text-align: center;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+        .picker-bar:hover {
+          filter: brightness(1.1);
+        }
+        .picker-result {
+          padding: 8px 12px;
+          background: ${Config.theme.bgSecondary};
+          border: 1px solid ${Config.theme.border};
+          border-radius: 6px;
+          font-family: 'Courier New', monospace;
+          font-size: 12px;
+          margin-top: 8px;
+          word-break: break-all;
+        }
+
+        /* Toggle switch */
+        .toggle {
+          position: relative;
+          width: 44px;
+          height: 24px;
+          cursor: pointer;
+        }
+        .toggle input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+        .toggle-slider {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: ${Config.theme.border};
+          border-radius: 24px;
+          transition: 0.3s;
+        }
+        .toggle-slider::before {
+          content: '';
+          position: absolute;
+          height: 18px;
+          width: 18px;
+          left: 3px;
+          bottom: 3px;
+          background: white;
+          border-radius: 50%;
+          transition: 0.3s;
+        }
+        .toggle input:checked + .toggle-slider {
+          background: ${Config.theme.primary};
+        }
+        .toggle input:checked + .toggle-slider::before {
+          transform: translateX(20px);
+        }
+
+        /* Wait action badge */
+        .wait-badge {
+          display: inline-block;
+          padding: 2px 8px;
+          background: rgba(255, 193, 7, 0.15);
+          color: #b8860b;
+          border-radius: 4px;
+          font-size: 11px;
+          font-weight: 600;
+        }
       `;
     },
 
@@ -1763,11 +2082,13 @@
     renderTabs() {
       const tabs = [
         { id: 'record', label: 'Enregistrer' },
-        { id: 'conditions', label: 'Conditions' },
         { id: 'edit', label: 'Éditer' },
+        { id: 'conditions', label: 'Conditions' },
         { id: 'audit', label: 'Audit' },
         { id: 'stats', label: 'Stats' },
-        { id: 'save', label: 'Sauvegarder' }
+        { id: 'save', label: 'Sauvegarder' },
+        { id: 'settings', label: 'Réglages' },
+        { id: 'help', label: 'Aide' }
       ];
 
       return `
@@ -1784,11 +2105,13 @@
     renderContent() {
       switch (State.currentTab) {
         case 'record': return this.renderRecordTab();
-        case 'conditions': return this.renderConditionsTab();
         case 'edit': return this.renderEditTab();
+        case 'conditions': return this.renderConditionsTab();
         case 'audit': return this.renderAuditTab();
         case 'stats': return this.renderStatsTab();
         case 'save': return this.renderSaveTab();
+        case 'settings': return this.renderSettingsTab();
+        case 'help': return this.renderHelpTab();
         default: return '';
       }
     },
@@ -1809,24 +2132,24 @@
             </div>
 
             <div class="btn-group">
-              <button class="btn btn-primary" id="btn-record" ${State.isRecording ? 'disabled' : ''}
+              <button class="btn btn-primary tooltip-wrap" data-tip="Démarre l'enregistrement de vos clics" id="btn-record" ${State.isRecording ? 'disabled' : ''}
                 style="${State.isRecording ? 'animation: ai-recording-pulse 1.5s ease-in-out infinite; background: linear-gradient(135deg, #dc3545, #ff6b6b);' : ''}">
-                ${State.isRecording ? '🔴 Enregistrement...' : '⚫ Enregistrer (F6)'}
+                ${State.isRecording ? '🔴 Enregistrement...' : `⚫ Enregistrer (${State.settings.shortcuts.record})`}
               </button>
-              <button class="btn btn-secondary" id="btn-stop-record" ${!State.isRecording ? 'disabled' : ''}>
+              <button class="btn btn-secondary tooltip-wrap" data-tip="Arrête l'enregistrement" id="btn-stop-record" ${!State.isRecording ? 'disabled' : ''}>
                 ⏹️ Arrêter
               </button>
             </div>
 
             <div class="btn-group">
-              <button class="btn btn-primary" id="btn-play" ${State.isPlaying || State.recordedActions.length === 0 ? 'disabled' : ''}>
-                ▶️ Lire (F7)
+              <button class="btn btn-primary tooltip-wrap" data-tip="Lance la lecture des actions" id="btn-play" ${State.isPlaying || State.recordedActions.length === 0 ? 'disabled' : ''}>
+                ▶️ Lire (${State.settings.shortcuts.play})
               </button>
-              <button class="btn btn-secondary" id="btn-pause" ${!State.isPlaying || State.isPaused ? 'disabled' : ''}>
-                ⏸️ Pause
+              <button class="btn btn-secondary tooltip-wrap" data-tip="Met en pause la lecture" id="btn-pause" ${!State.isPlaying || State.isPaused ? 'disabled' : ''}>
+                ⏸️ Pause (${State.settings.shortcuts.pause})
               </button>
-              <button class="btn btn-secondary" id="btn-stop" ${!State.isPlaying ? 'disabled' : ''}>
-                ⏹️ Arrêter (F8)
+              <button class="btn btn-secondary tooltip-wrap" data-tip="Arrête la lecture" id="btn-stop" ${!State.isPlaying ? 'disabled' : ''}>
+                ⏹️ Stop (${State.settings.shortcuts.stop})
               </button>
             </div>
 
@@ -1895,37 +2218,112 @@
     },
 
     renderConditionsTab() {
+      const typeLabels = {
+        visible: 'Élément visible',
+        hidden: 'Élément caché',
+        hasText: 'Contient le texte',
+        notHasText: 'Ne contient pas le texte',
+        hasColor: 'A la couleur',
+        hasClass: 'A la classe CSS',
+        exists: 'Élément existe',
+        urlContains: 'URL contient',
+        count: 'Nombre d\'éléments',
+        value: 'Valeur du champ',
+        checked: 'Case cochée',
+        enabled: 'Élément activé'
+      };
+
       return `
         <div class="content">
           <div class="card">
             <div class="card-header">Conditions</div>
+            <div style="font-size: 12px; color: ${Config.theme.textSecondary}; margin-bottom: 12px;">
+              Les conditions vérifient l'état de la page avant ou pendant l'exécution.
+            </div>
             <div class="btn-group">
-              <button class="btn btn-primary btn-small" id="add-condition">+ Ajouter</button>
-              <button class="btn btn-secondary btn-small" id="test-conditions">🧪 Tester toutes</button>
+              <button class="btn btn-primary btn-small tooltip-wrap" data-tip="Ajouter une nouvelle condition" id="add-condition">+ Ajouter</button>
+              <button class="btn btn-secondary btn-small tooltip-wrap" data-tip="Vérifie toutes les conditions maintenant" id="test-conditions">🧪 Tester toutes</button>
             </div>
           </div>
 
-          ${State.conditions.length === 0 ? `
+          ${State.showConditionForm ? `
+            <div class="inline-form">
+              <div style="font-weight: 600; margin-bottom: 12px;">Nouvelle condition</div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label>Nom (description)</label>
+                  <input type="text" id="form-cond-name" placeholder="Ex: Bouton Appliquer visible">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label>Type de vérification</label>
+                  <select id="form-cond-type">
+                    ${Conditions.types.map(t => `<option value="${t}">${typeLabels[t] || t}</option>`).join('')}
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field" style="flex: 2;">
+                  <label>Sélecteur CSS</label>
+                  <div style="display: flex; gap: 6px;">
+                    <input type="text" id="form-cond-selector" placeholder="Ex: #btn-appliquer, .rate-input" style="flex: 1;">
+                    <button class="btn btn-secondary btn-small" id="pick-element-cond" title="Cliquer sur un élément de la page">🎯 Cibler</button>
+                  </div>
+                  ${State.pickedElement ? `<div class="picker-result">${State.pickedElement}</div>` : ''}
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label>Valeur (optionnel)</label>
+                  <input type="text" id="form-cond-value" placeholder="Dépend du type choisi">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label class="checkbox-group" style="margin: 0;">
+                    <input type="checkbox" id="form-cond-preflight">
+                    <span>Vérification préalable (avant exécution)</span>
+                  </label>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-secondary btn-small" id="cancel-condition-form">Annuler</button>
+                <button class="btn btn-primary btn-small" id="submit-condition-form">Ajouter</button>
+              </div>
+            </div>
+          ` : ''}
+
+          ${State.conditions.length === 0 && !State.showConditionForm ? `
             <div class="empty-state">
               <div class="empty-state-icon">🎯</div>
               <div>Aucune condition configurée</div>
+              <div style="font-size: 12px; margin-top: 8px; color: ${Config.theme.textSecondary};">
+                Les conditions permettent de vérifier que la page est prête avant d'exécuter les actions
+              </div>
             </div>
           ` : `
             <div class="condition-list">
-              ${State.conditions.map((condition, index) => `
-                <div class="condition-item ${condition.preflight ? 'preflight' : ''}">
-                  <div class="condition-header">
-                    <div class="condition-name">
-                      ${condition.preflight ? '🔒 ' : ''}${condition.name}
+              ${State.conditions.map((condition, index) => {
+                const live = Conditions.check(condition);
+                return `
+                  <div class="condition-item ${condition.preflight ? 'preflight' : ''}">
+                    <div class="condition-header">
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 16px;">${live ? '✅' : '❌'}</span>
+                        <div class="condition-name">
+                          ${condition.preflight ? '🔒 ' : ''}${condition.name}
+                        </div>
+                      </div>
+                      <button class="action-btn-mini danger" data-condition-index="${index}">×</button>
                     </div>
-                    <button class="action-delete" data-condition-index="${index}">×</button>
+                    <div class="condition-details">
+                      ${typeLabels[condition.type] || condition.type} · <code>${condition.selector}</code>
+                      ${condition.value ? ` · "${condition.value}"` : ''}
+                    </div>
                   </div>
-                  <div class="condition-details">
-                    Type: ${condition.type} · Sélecteur: ${condition.selector}
-                    ${condition.value ? ` · Valeur: ${condition.value}` : ''}
-                  </div>
-                </div>
-              `).join('')}
+                `;
+              }).join('')}
             </div>
           `}
         </div>
@@ -1933,34 +2331,123 @@
     },
 
     renderEditTab() {
+      const actionLabel = (action) => {
+        if (action.type === 'prompt') return `📝 ${action.title || 'Saisie utilisateur'}`;
+        if (action.type === 'confirm') return `❓ ${action.title || 'Confirmation'}`;
+        if (action.type === 'wait') return `⏳ Attendre ${action.delay || 1000}ms`;
+        if (action.type === 'navigate') return `🌐 ${action.url || ''}`;
+        const sel = action.fingerprint?.selector || '';
+        const val = action.value ? ` = "${action.value.substring(0, 20)}"` : '';
+        return `${action.eventType} → ${sel.substring(0, 30)}${val}`;
+      };
+
+      const actionTypeIcon = (action) => {
+        const icons = { click: '👆', input: '⌨️', change: '🔄', keydown: '⌨️', prompt: '📝', confirm: '❓', wait: '⏳', navigate: '🌐' };
+        return icons[action.type] || icons[action.eventType] || '▶️';
+      };
+
       return `
         <div class="content">
           <div class="card">
             <div class="card-header">Actions (${State.recordedActions.length})</div>
-            <div class="btn-group">
-              <button class="btn btn-primary btn-small" id="add-prompt">+ Prompt</button>
-              <button class="btn btn-primary btn-small" id="add-confirm">+ Confirmation</button>
-              <button class="btn btn-danger btn-small" id="clear-actions">🗑️ Tout effacer</button>
+            <div class="btn-group" style="flex-wrap: wrap;">
+              <button class="btn btn-primary btn-small tooltip-wrap" data-tip="Ajouter une saisie utilisateur" id="add-prompt">+ Saisie</button>
+              <button class="btn btn-primary btn-small tooltip-wrap" data-tip="Ajouter une confirmation Oui/Non" id="add-confirm">+ Confirmation</button>
+              <button class="btn btn-secondary btn-small tooltip-wrap" data-tip="Ajouter une pause/attente" id="add-wait">+ Attente</button>
+              <button class="btn btn-secondary btn-small tooltip-wrap" data-tip="Ajouter une navigation URL" id="add-navigate">+ Navigation</button>
+              <button class="btn btn-danger btn-small tooltip-wrap" data-tip="Supprime toutes les actions" id="clear-actions">🗑️ Tout effacer</button>
             </div>
           </div>
+
+          ${State.showPromptForm ? `
+            <div class="inline-form">
+              <div style="font-weight: 600; margin-bottom: 12px;">Nouvelle saisie utilisateur</div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label>Titre</label>
+                  <input type="text" id="form-prompt-title" placeholder="Ex: Entrez le taux USD" value="Entrée requise">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label>Message affiché</label>
+                  <input type="text" id="form-prompt-msg" placeholder="Ex: Veuillez entrer le taux de change">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label>Placeholder</label>
+                  <input type="text" id="form-prompt-ph" placeholder="Ex: 1.4250">
+                </div>
+                <div class="form-field">
+                  <label>Sélecteur cible (optionnel)</label>
+                  <input type="text" id="form-prompt-sel" placeholder="Champ où injecter la valeur">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-secondary btn-small" id="cancel-prompt-form">Annuler</button>
+                <button class="btn btn-primary btn-small" id="submit-prompt-form">Ajouter</button>
+              </div>
+            </div>
+          ` : ''}
+
+          ${State.showConfirmForm ? `
+            <div class="inline-form">
+              <div style="font-weight: 600; margin-bottom: 12px;">Nouvelle confirmation</div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label>Titre</label>
+                  <input type="text" id="form-confirm-title" placeholder="Ex: Confirmer l'application" value="Confirmation">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label>Message</label>
+                  <input type="text" id="form-confirm-msg" placeholder="Ex: Voulez-vous appliquer ce taux?">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label>Détails (optionnel)</label>
+                  <input type="text" id="form-confirm-details" placeholder="Informations supplémentaires">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-secondary btn-small" id="cancel-confirm-form">Annuler</button>
+                <button class="btn btn-primary btn-small" id="submit-confirm-form">Ajouter</button>
+              </div>
+            </div>
+          ` : ''}
 
           ${State.recordedActions.length === 0 ? `
             <div class="empty-state">
               <div class="empty-state-icon">📝</div>
               <div>Aucune action enregistrée</div>
+              <div style="font-size: 12px; margin-top: 8px; color: ${Config.theme.textSecondary};">
+                Allez dans l'onglet "Enregistrer" et cliquez sur le bouton Enregistrer pour capturer vos actions
+              </div>
             </div>
           ` : `
             <div class="action-list">
               ${State.recordedActions.map((action, index) => `
-                <div class="action-item ${State.currentStep === index ? 'active' : ''} ${action.type === 'prompt' ? 'prompt' : ''} ${action.type === 'confirm' ? 'confirm' : ''}">
+                <div class="action-item ${State.currentStep === index && State.isPlaying ? 'active' : ''} ${action.type === 'prompt' ? 'prompt' : ''} ${action.type === 'confirm' ? 'confirm' : ''}">
                   <div class="action-index">${index + 1}</div>
-                  <div class="action-type">${action.type}</div>
-                  <div class="action-details">
-                    ${action.type === 'prompt' ? `📝 ${action.title || 'Prompt'}` :
-                      action.type === 'confirm' ? `❓ ${action.title || 'Confirmation'}` :
-                      `${action.eventType} · ${action.fingerprint.selector}`}
+                  <div style="font-size: 16px;">${actionTypeIcon(action)}</div>
+                  <div class="action-details" style="flex: 1; min-width: 0;">
+                    <div style="font-size: 12px; color: ${Config.theme.textSecondary}; text-transform: uppercase; letter-spacing: 0.5px;">${action.type === 'action' ? action.eventType : action.type}</div>
+                    <div style="font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                      ${State.editingActionIndex === index ? `
+                        <input class="inline-edit" type="text" data-edit-index="${index}" value="${(action.value || action.title || '').replace(/"/g, '&quot;')}">
+                      ` : actionLabel(action)}
+                    </div>
                   </div>
-                  <button class="action-delete" data-action-index="${index}">×</button>
+                  <div class="action-btns">
+                    ${index > 0 ? `<button class="action-btn-mini tooltip-wrap" data-tip="Monter" data-move-up="${index}">↑</button>` : ''}
+                    ${index < State.recordedActions.length - 1 ? `<button class="action-btn-mini tooltip-wrap" data-tip="Descendre" data-move-down="${index}">↓</button>` : ''}
+                    <button class="action-btn-mini tooltip-wrap" data-tip="Dupliquer" data-duplicate="${index}">⧉</button>
+                    <button class="action-btn-mini tooltip-wrap" data-tip="Modifier" data-edit-action="${index}">✎</button>
+                    <button class="action-btn-mini danger tooltip-wrap" data-tip="Supprimer" data-action-index="${index}">×</button>
+                  </div>
                 </div>
               `).join('')}
             </div>
@@ -2125,6 +2612,194 @@
       `;
     },
 
+    renderSettingsTab() {
+      const shortcutNames = {
+        record: 'Enregistrer / Arrêter',
+        play: 'Lancer la lecture',
+        stop: 'Arrêter tout',
+        pause: 'Pause / Reprendre'
+      };
+
+      return `
+        <div class="content">
+          <div class="card">
+            <div class="card-header">Raccourcis clavier</div>
+            <div style="font-size: 12px; color: ${Config.theme.textSecondary}; margin-bottom: 12px;">
+              Cliquez sur une touche pour la modifier, puis appuyez sur la nouvelle touche souhaitée.
+            </div>
+            ${Object.entries(State.settings.shortcuts).map(([key, value]) => `
+              <div class="setting-row">
+                <div>
+                  <div class="setting-label">${shortcutNames[key]}</div>
+                </div>
+                <span class="shortcut-key ${State.capturingShortcut === key ? 'capturing' : ''}" data-capture-shortcut="${key}">
+                  ${State.capturingShortcut === key ? '...' : value}
+                </span>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="card">
+            <div class="card-header">Délais</div>
+            <div class="input-group">
+              <label>Délai entre actions (ms)</label>
+              <input type="number" id="setting-delay-actions" min="100" max="10000" step="100" value="${State.settings.delayBetweenActions}">
+            </div>
+            <div class="input-group">
+              <label>Délai entre boucles (ms)</label>
+              <input type="number" id="setting-delay-loops" min="500" max="30000" step="500" value="${State.settings.delayBetweenLoops}">
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Préférences</div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Sauvegarde automatique</div>
+                <div class="setting-desc">Sauvegarde les actions après chaque modification</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="setting-autosave" ${State.settings.autoSave ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Infobulles</div>
+                <div class="setting-desc">Affiche des descriptions au survol des boutons</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="setting-tooltips" ${State.settings.showTooltips ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Confirmer avant suppression</div>
+                <div class="setting-desc">Demande confirmation avant de supprimer des actions</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="setting-confirm-delete" ${State.settings.confirmBeforeDelete ? 'checked' : ''}>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Réinitialiser</div>
+            <button class="btn btn-secondary btn-small" id="reset-settings">Restaurer les valeurs par défaut</button>
+          </div>
+        </div>
+      `;
+    },
+
+    renderHelpTab() {
+      return `
+        <div class="content">
+          <div class="help-section">
+            <div class="help-title">Guide rapide</div>
+            <div class="help-step">
+              <div class="help-step-num">1</div>
+              <div class="help-step-text">
+                <strong>Enregistrez</strong> vos actions en cliquant sur <strong>Enregistrer</strong> ou avec <span class="help-kbd">${State.settings.shortcuts.record}</span>.
+                Effectuez vos clics et saisies sur la page, puis arrêtez l'enregistrement.
+              </div>
+            </div>
+            <div class="help-step">
+              <div class="help-step-num">2</div>
+              <div class="help-step-text">
+                <strong>Éditez</strong> vos actions dans l'onglet "Éditer": réorganisez (↑↓), dupliquez (⧉),
+                modifiez (✎), supprimez (×), ou ajoutez des pauses et confirmations.
+              </div>
+            </div>
+            <div class="help-step">
+              <div class="help-step-num">3</div>
+              <div class="help-step-text">
+                <strong>Testez</strong> en mode simulation (case à cocher "Mode simulation") pour voir le déroulement
+                sans modifier la page.
+              </div>
+            </div>
+            <div class="help-step">
+              <div class="help-step-num">4</div>
+              <div class="help-step-text">
+                <strong>Lancez</strong> la lecture avec <span class="help-kbd">${State.settings.shortcuts.play}</span>.
+                Ajustez la vitesse et le nombre de boucles selon vos besoins.
+              </div>
+            </div>
+            <div class="help-step">
+              <div class="help-step-num">5</div>
+              <div class="help-step-text">
+                <strong>Sauvegardez</strong> dans l'onglet "Sauvegarder" pour réutiliser vos automatisations.
+                Exportez en JSON pour les partager.
+              </div>
+            </div>
+          </div>
+
+          <div class="help-section">
+            <div class="help-title">Raccourcis clavier actuels</div>
+            <div class="card" style="margin-bottom: 0;">
+              <div class="setting-row">
+                <span>Enregistrer / Arrêter</span>
+                <span class="help-kbd">${State.settings.shortcuts.record}</span>
+              </div>
+              <div class="setting-row">
+                <span>Lancer la lecture</span>
+                <span class="help-kbd">${State.settings.shortcuts.play}</span>
+              </div>
+              <div class="setting-row">
+                <span>Arrêter</span>
+                <span class="help-kbd">${State.settings.shortcuts.stop}</span>
+              </div>
+              <div class="setting-row">
+                <span>Pause / Reprendre</span>
+                <span class="help-kbd">${State.settings.shortcuts.pause}</span>
+              </div>
+            </div>
+            <div style="font-size: 12px; color: ${Config.theme.textSecondary}; margin-top: 8px;">
+              Modifiables dans l'onglet "Réglages"
+            </div>
+          </div>
+
+          <div class="help-section">
+            <div class="help-title">Types d'actions</div>
+            <div class="card" style="margin-bottom: 0;">
+              <div class="setting-row">
+                <span>👆 Clic</span>
+                <span style="font-size: 12px; color: ${Config.theme.textSecondary};">Clic sur un élément de la page</span>
+              </div>
+              <div class="setting-row">
+                <span>⌨️ Saisie</span>
+                <span style="font-size: 12px; color: ${Config.theme.textSecondary};">Entrer du texte dans un champ</span>
+              </div>
+              <div class="setting-row">
+                <span>📝 Prompt</span>
+                <span style="font-size: 12px; color: ${Config.theme.textSecondary};">Demande une saisie à l'utilisateur</span>
+              </div>
+              <div class="setting-row">
+                <span>❓ Confirmation</span>
+                <span style="font-size: 12px; color: ${Config.theme.textSecondary};">Question Oui/Non</span>
+              </div>
+              <div class="setting-row">
+                <span>⏳ Attente</span>
+                <span style="font-size: 12px; color: ${Config.theme.textSecondary};">Pause avant l'action suivante</span>
+              </div>
+              <div class="setting-row">
+                <span>🌐 Navigation</span>
+                <span style="font-size: 12px; color: ${Config.theme.textSecondary};">Aller à une URL</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; padding: 16px; font-size: 12px; color: ${Config.theme.textSecondary};">
+            AutoClicUS v${Config.version} · Propulsé par JSLAI
+          </div>
+        </div>
+      `;
+    },
+
     attachEventListeners() {
       const root = State.shadowRoot;
 
@@ -2157,92 +2832,180 @@
       if (timeLimitInput) timeLimitInput.addEventListener('input', (e) => { State.timeLimit = parseInt(e.target.value) * 1000; });
       if (dryRunCheckbox) dryRunCheckbox.addEventListener('change', (e) => { State.dryRun = e.target.checked; });
 
-      // Conditions tab
+      // Conditions tab — inline form
       const btnAddCondition = root.querySelector('#add-condition');
       const btnTestConditions = root.querySelector('#test-conditions');
 
       if (btnAddCondition) {
         btnAddCondition.addEventListener('click', () => {
-          const name = prompt('Nom de la condition:');
-          if (!name) return;
-
-          const type = prompt(`Type (${Conditions.types.join(', ')}):`);
-          if (!Conditions.types.includes(type)) {
-            alert('Type invalide');
-            return;
-          }
-
-          const selector = prompt('Sélecteur CSS:');
-          if (!selector) return;
-
-          const value = prompt('Valeur (optionnel):') || '';
-          const preflight = confirm('Vérification préalable (avant exécution)?');
-
-          State.conditions.push({ name, type, selector, value, preflight });
+          State.showConditionForm = !State.showConditionForm;
+          State.pickedElement = null;
           this.render();
         });
       }
 
       if (btnTestConditions) {
         btnTestConditions.addEventListener('click', () => {
-          const { results } = Conditions.checkAll(State.conditions);
-          const message = results.map(r =>
-            `${r.passed ? '✅' : '❌'} ${r.condition.name}`
-          ).join('\n');
-          alert(message);
+          this.render(); // Re-render shows live ✅/❌ status on each condition
+          this.flash('info', 'Conditions testées — résultats affichés');
+        });
+      }
+
+      // Condition form actions
+      const btnSubmitCond = root.querySelector('#submit-condition-form');
+      const btnCancelCond = root.querySelector('#cancel-condition-form');
+      const btnPickElement = root.querySelector('#pick-element-cond');
+
+      if (btnSubmitCond) {
+        btnSubmitCond.addEventListener('click', () => {
+          const name = root.querySelector('#form-cond-name')?.value;
+          const type = root.querySelector('#form-cond-type')?.value;
+          const selector = root.querySelector('#form-cond-selector')?.value || State.pickedElement;
+          const value = root.querySelector('#form-cond-value')?.value || '';
+          const preflight = root.querySelector('#form-cond-preflight')?.checked || false;
+
+          if (!name || !selector) {
+            this.flash('error', 'Nom et sélecteur requis');
+            return;
+          }
+
+          State.conditions.push({ name, type, selector, value, preflight });
+          State.showConditionForm = false;
+          State.pickedElement = null;
+          this.render();
+          this.flash('success', 'Condition ajoutée');
+        });
+      }
+
+      if (btnCancelCond) {
+        btnCancelCond.addEventListener('click', () => {
+          State.showConditionForm = false;
+          State.pickedElement = null;
+          this.render();
+        });
+      }
+
+      if (btnPickElement) {
+        btnPickElement.addEventListener('click', () => {
+          this.startElementPicker((selector) => {
+            State.pickedElement = selector;
+            const input = root.querySelector('#form-cond-selector');
+            if (input) input.value = selector;
+            this.render();
+          });
         });
       }
 
       root.querySelectorAll('[data-condition-index]').forEach(btn => {
         btn.addEventListener('click', () => {
           const index = parseInt(btn.dataset.conditionIndex);
+          if (State.settings.confirmBeforeDelete && !confirm('Supprimer cette condition?')) return;
           State.conditions.splice(index, 1);
           this.render();
         });
       });
 
-      // Edit tab
+      // Edit tab — inline forms
       const btnAddPrompt = root.querySelector('#add-prompt');
       const btnAddConfirm = root.querySelector('#add-confirm');
+      const btnAddWait = root.querySelector('#add-wait');
+      const btnAddNavigate = root.querySelector('#add-navigate');
       const btnClearActions = root.querySelector('#clear-actions');
 
       if (btnAddPrompt) {
         btnAddPrompt.addEventListener('click', () => {
-          const title = prompt('Titre:') || 'Entrée requise';
-          const message = prompt('Message:') || '';
-          const placeholder = prompt('Placeholder:') || '';
-          const targetSelector = prompt('Sélecteur cible:') || '';
-
-          State.recordedActions.push({
-            id: Date.now().toString(36),
-            type: 'prompt',
-            title,
-            message,
-            placeholder,
-            targetSelector,
-            required: true
-          });
-
+          State.showPromptForm = !State.showPromptForm;
+          State.showConfirmForm = false;
           this.render();
         });
       }
 
       if (btnAddConfirm) {
         btnAddConfirm.addEventListener('click', () => {
-          const title = prompt('Titre:') || 'Confirmation';
-          const message = prompt('Message:') || '';
-          const details = prompt('Détails (optionnel):') || '';
+          State.showConfirmForm = !State.showConfirmForm;
+          State.showPromptForm = false;
+          this.render();
+        });
+      }
 
+      if (btnAddWait) {
+        btnAddWait.addEventListener('click', () => {
+          State.recordedActions.push({
+            id: Date.now().toString(36),
+            type: 'wait',
+            delay: State.settings.delayBetweenActions
+          });
+          this.render();
+          this.flash('success', 'Attente ajoutée');
+        });
+      }
+
+      if (btnAddNavigate) {
+        btnAddNavigate.addEventListener('click', () => {
+          const url = prompt('URL de destination:');
+          if (!url) return;
+          State.recordedActions.push({
+            id: Date.now().toString(36),
+            type: 'navigate',
+            url: url
+          });
+          this.render();
+          this.flash('success', 'Navigation ajoutée');
+        });
+      }
+
+      // Prompt form actions
+      const btnSubmitPrompt = root.querySelector('#submit-prompt-form');
+      const btnCancelPrompt = root.querySelector('#cancel-prompt-form');
+
+      if (btnSubmitPrompt) {
+        btnSubmitPrompt.addEventListener('click', () => {
+          State.recordedActions.push({
+            id: Date.now().toString(36),
+            type: 'prompt',
+            title: root.querySelector('#form-prompt-title')?.value || 'Entrée requise',
+            message: root.querySelector('#form-prompt-msg')?.value || '',
+            placeholder: root.querySelector('#form-prompt-ph')?.value || '',
+            targetSelector: root.querySelector('#form-prompt-sel')?.value || '',
+            required: true
+          });
+          State.showPromptForm = false;
+          this.render();
+          this.flash('success', 'Saisie ajoutée');
+        });
+      }
+
+      if (btnCancelPrompt) {
+        btnCancelPrompt.addEventListener('click', () => {
+          State.showPromptForm = false;
+          this.render();
+        });
+      }
+
+      // Confirm form actions
+      const btnSubmitConfirm = root.querySelector('#submit-confirm-form');
+      const btnCancelConfirm = root.querySelector('#cancel-confirm-form');
+
+      if (btnSubmitConfirm) {
+        btnSubmitConfirm.addEventListener('click', () => {
           State.recordedActions.push({
             id: Date.now().toString(36),
             type: 'confirm',
-            title,
-            message,
-            details,
+            title: root.querySelector('#form-confirm-title')?.value || 'Confirmation',
+            message: root.querySelector('#form-confirm-msg')?.value || '',
+            details: root.querySelector('#form-confirm-details')?.value || '',
             okLabel: 'Oui',
             cancelLabel: 'Non'
           });
+          State.showConfirmForm = false;
+          this.render();
+          this.flash('success', 'Confirmation ajoutée');
+        });
+      }
 
+      if (btnCancelConfirm) {
+        btnCancelConfirm.addEventListener('click', () => {
+          State.showConfirmForm = false;
           this.render();
         });
       }
@@ -2256,13 +3019,114 @@
         });
       }
 
+      // Action row buttons: delete, move, duplicate, edit
       root.querySelectorAll('[data-action-index]').forEach(btn => {
         btn.addEventListener('click', () => {
           const index = parseInt(btn.dataset.actionIndex);
+          if (State.settings.confirmBeforeDelete && !confirm('Supprimer cette action?')) return;
           State.recordedActions.splice(index, 1);
+          State.editingActionIndex = null;
           this.render();
         });
       });
+
+      root.querySelectorAll('[data-move-up]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const i = parseInt(btn.dataset.moveUp);
+          if (i > 0) {
+            [State.recordedActions[i - 1], State.recordedActions[i]] = [State.recordedActions[i], State.recordedActions[i - 1]];
+            this.render();
+          }
+        });
+      });
+
+      root.querySelectorAll('[data-move-down]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const i = parseInt(btn.dataset.moveDown);
+          if (i < State.recordedActions.length - 1) {
+            [State.recordedActions[i], State.recordedActions[i + 1]] = [State.recordedActions[i + 1], State.recordedActions[i]];
+            this.render();
+          }
+        });
+      });
+
+      root.querySelectorAll('[data-duplicate]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const i = parseInt(btn.dataset.duplicate);
+          const clone = JSON.parse(JSON.stringify(State.recordedActions[i]));
+          clone.id = Date.now().toString(36) + Math.random().toString(36).substring(2, 9);
+          State.recordedActions.splice(i + 1, 0, clone);
+          this.render();
+          this.flash('success', 'Action dupliquée');
+        });
+      });
+
+      root.querySelectorAll('[data-edit-action]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const i = parseInt(btn.dataset.editAction);
+          State.editingActionIndex = State.editingActionIndex === i ? null : i;
+          this.render();
+        });
+      });
+
+      root.querySelectorAll('[data-edit-index]').forEach(input => {
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            const i = parseInt(input.dataset.editIndex);
+            const action = State.recordedActions[i];
+            if (action.type === 'prompt' || action.type === 'confirm') {
+              action.title = input.value;
+            } else if (action.type === 'wait') {
+              action.delay = parseInt(input.value) || 1000;
+            } else {
+              action.value = input.value;
+            }
+            State.editingActionIndex = null;
+            this.render();
+          }
+          if (e.key === 'Escape') {
+            State.editingActionIndex = null;
+            this.render();
+          }
+        });
+        input.focus();
+      });
+
+      // Settings tab
+      root.querySelectorAll('[data-capture-shortcut]').forEach(key => {
+        key.addEventListener('click', () => {
+          const shortcutKey = key.dataset.captureShortcut;
+          State.capturingShortcut = State.capturingShortcut === shortcutKey ? null : shortcutKey;
+          this.render();
+        });
+      });
+
+      const delayActions = root.querySelector('#setting-delay-actions');
+      const delayLoops = root.querySelector('#setting-delay-loops');
+      const autoSave = root.querySelector('#setting-autosave');
+      const tooltips = root.querySelector('#setting-tooltips');
+      const confirmDelete = root.querySelector('#setting-confirm-delete');
+      const resetSettings = root.querySelector('#reset-settings');
+
+      if (delayActions) delayActions.addEventListener('input', (e) => { State.settings.delayBetweenActions = parseInt(e.target.value); });
+      if (delayLoops) delayLoops.addEventListener('input', (e) => { State.settings.delayBetweenLoops = parseInt(e.target.value); });
+      if (autoSave) autoSave.addEventListener('change', (e) => { State.settings.autoSave = e.target.checked; });
+      if (tooltips) tooltips.addEventListener('change', (e) => { State.settings.showTooltips = e.target.checked; });
+      if (confirmDelete) confirmDelete.addEventListener('change', (e) => { State.settings.confirmBeforeDelete = e.target.checked; });
+      if (resetSettings) {
+        resetSettings.addEventListener('click', () => {
+          State.settings = {
+            shortcuts: { record: 'F6', play: 'F7', stop: 'F8', pause: 'F9' },
+            delayBetweenActions: 1000,
+            delayBetweenLoops: 2000,
+            autoSave: true,
+            showTooltips: true,
+            confirmBeforeDelete: true
+          };
+          this.render();
+          this.flash('success', 'Réglages réinitialisés');
+        });
+      }
 
       // Audit tab
       const btnExportJSON = root.querySelector('#export-audit-json');
@@ -2295,7 +3159,8 @@
             Storage.setItem(Config.storage.config, JSON.stringify({
               speed: State.speed,
               loopCount: State.loopCount,
-              timeLimit: State.timeLimit
+              timeLimit: State.timeLimit,
+              settings: State.settings
             }));
             this.flash('success', 'Sauvegardé');
           } catch (e) {
@@ -2318,6 +3183,7 @@
               State.speed = cfg.speed || 1;
               State.loopCount = cfg.loopCount || 1;
               State.timeLimit = cfg.timeLimit || null;
+              if (cfg.settings) Object.assign(State.settings, cfg.settings);
             }
 
             this.flash('success', 'Chargé');
@@ -2337,7 +3203,8 @@
             config: {
               speed: State.speed,
               loopCount: State.loopCount,
-              timeLimit: State.timeLimit
+              timeLimit: State.timeLimit,
+              settings: State.settings
             }
           };
 
@@ -2367,6 +3234,7 @@
                 State.speed = data.config.speed || 1;
                 State.loopCount = data.config.loopCount || 1;
                 State.timeLimit = data.config.timeLimit || null;
+                if (data.config.settings) Object.assign(State.settings, data.config.settings);
               }
 
               this.flash('success', 'Importé');
@@ -2400,23 +3268,43 @@
 
     attachKeyboardShortcuts() {
       document.addEventListener('keydown', (e) => {
-        // Ignore if typing in input
-        if (e.target.matches('input, textarea')) return;
+        // Shortcut capture mode for settings
+        if (State.capturingShortcut) {
+          e.preventDefault();
+          State.settings.shortcuts[State.capturingShortcut] = e.key;
+          State.capturingShortcut = null;
+          this.render();
+          this.flash('success', `Raccourci mis à jour: ${e.key}`);
+          return;
+        }
 
-        if (e.key === 'F6') {
+        // Ignore if typing in input
+        if (e.target.matches('input, textarea, select')) return;
+
+        const key = e.key;
+        const shortcuts = State.settings.shortcuts;
+
+        if (key === shortcuts.record) {
           e.preventDefault();
           State.isRecording ? Recorder.stop() : Recorder.start();
         }
 
-        if (e.key === 'F7') {
+        if (key === shortcuts.play) {
           e.preventDefault();
           if (!State.isPlaying && State.recordedActions.length > 0) Player.start();
         }
 
-        if (e.key === 'F8') {
+        if (key === shortcuts.stop) {
           e.preventDefault();
           if (State.isPlaying) Player.stop();
           if (State.isRecording) Recorder.stop();
+        }
+
+        if (key === shortcuts.pause) {
+          e.preventDefault();
+          if (State.isPlaying) {
+            State.isPaused ? Player.resume() : Player.pause();
+          }
         }
       });
     },
@@ -2454,6 +3342,56 @@
 
       document.body.appendChild(flash);
       setTimeout(() => flash.remove(), 3000);
+    },
+
+    startElementPicker(callback) {
+      this.flash('info', 'Cliquez sur un élément de la page pour le sélectionner');
+
+      let highlight = null;
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:999990;cursor:crosshair;';
+
+      const onMove = (e) => {
+        if (highlight) highlight.remove();
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        if (el && el !== overlay && !el.closest('#autoclicus-container')) {
+          const rect = el.getBoundingClientRect();
+          highlight = document.createElement('div');
+          highlight.style.cssText = `position:fixed;top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;height:${rect.height}px;border:2px solid ${Config.theme.primary};background:rgba(0,135,78,0.1);pointer-events:none;z-index:999991;border-radius:4px;`;
+          document.body.appendChild(highlight);
+        }
+      };
+
+      const onClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        if (highlight) highlight.remove();
+        overlay.remove();
+        document.removeEventListener('mousemove', onMove, true);
+
+        if (el && el !== overlay) {
+          const selector = Fingerprint.getSelector(el);
+          callback(selector);
+          this.flash('success', `Élément sélectionné: ${selector.substring(0, 50)}`);
+        }
+      };
+
+      overlay.addEventListener('click', onClick, { once: true });
+      document.addEventListener('mousemove', onMove, true);
+      document.body.appendChild(overlay);
+
+      // Cancel on Escape
+      const onEsc = (e) => {
+        if (e.key === 'Escape') {
+          if (highlight) highlight.remove();
+          overlay.remove();
+          document.removeEventListener('mousemove', onMove, true);
+          document.removeEventListener('keydown', onEsc);
+          this.flash('info', 'Sélection annulée');
+        }
+      };
+      document.addEventListener('keydown', onEsc);
     },
 
     highlightElement(element, dryRun = false) {
@@ -2520,6 +3458,7 @@
         State.speed = cfg.speed || 1;
         State.loopCount = cfg.loopCount || 1;
         State.timeLimit = cfg.timeLimit || null;
+        if (cfg.settings) Object.assign(State.settings, cfg.settings);
       }
     } catch (e) {
       console.warn('Failed to load saved data:', e);
@@ -2539,7 +3478,7 @@
     }, 1000);
 
     console.log(`%c✨ AutoClicUS v${Config.version} - Propulsé par JSLAI`, 'color: #00874e; font-size: 14px; font-weight: bold;');
-    console.log('%cF6=Enregistrer/Arrêter | F7=Lire | F8=Stop', 'color: #6c757d; font-size: 12px;');
+    console.log(`%c${State.settings.shortcuts.record}=Enregistrer | ${State.settings.shortcuts.play}=Lire | ${State.settings.shortcuts.stop}=Stop | ${State.settings.shortcuts.pause}=Pause`, 'color: #6c757d; font-size: 12px;');
     if (Storage.isMemoryMode) {
       console.log('%c⚠️ localStorage indisponible — stockage en mémoire uniquement', 'color: #ffc107; font-size: 12px;');
     }
