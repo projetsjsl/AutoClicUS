@@ -151,8 +151,8 @@
     tauxAcheteur: '',
     tauxVendeur: '',
 
-    // Countdown
-    countdownEnd: null,
+    // Countdown (default 16:00 today)
+    countdownEnd: (() => { const t = new Date(); t.setHours(16, 0, 0, 0); return t.getTime() > Date.now() ? t.getTime() : null; })(),
     countdownInterval: null,
 
     // UI state for forms
@@ -1328,16 +1328,19 @@
         }
 
         .header-countdown {
-          font-size: 13px;
-          font-weight: 600;
-          color: #ff6b6b;
+          font-size: 12px;
+          font-weight: 700;
+          color: #ffcdd2;
           font-variant-numeric: tabular-nums;
           margin-top: 1px;
-          text-shadow: 0 0 6px rgba(255,107,107,0.5);
+          text-shadow: 0 0 8px rgba(255,107,107,0.6);
+          letter-spacing: 0.5px;
         }
 
         .header-countdown.expired {
-          animation: ai-dot-pulse 0.5s ease-in-out infinite;
+          color: #ff6b6b;
+          animation: ai-recording-pulse 0.8s ease-in-out infinite;
+          text-shadow: 0 0 12px rgba(255,107,107,0.9);
         }
 
         .header-ai-status {
@@ -2263,11 +2266,13 @@
       if (State.countdownEnd) {
         const remaining = State.countdownEnd - now.getTime();
         if (remaining > 0) {
-          const mins = Math.floor(remaining / 60000);
+          const hrs = Math.floor(remaining / 3600000);
+          const mins = Math.floor((remaining % 3600000) / 60000);
           const secs = Math.floor((remaining % 60000) / 1000);
-          countdownHTML = `<div class="header-countdown">${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}</div>`;
+          const display = hrs > 0 ? `${hrs}h${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}` : `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+          countdownHTML = `<div class="header-countdown">⏱ ${display}</div>`;
         } else {
-          countdownHTML = `<div class="header-countdown" style="animation: ai-recording-pulse 0.8s ease-in-out infinite;">00:00 TERMINÉ</div>`;
+          countdownHTML = `<div class="header-countdown expired">⏱ 00:00 TERMINÉ</div>`;
         }
       }
 
@@ -2302,8 +2307,8 @@
             <input type="text" id="rate-seller" placeholder="1.0000" value="${State.tauxVendeur}">
           </div>
           <div class="rate-field" style="flex: 0 0 auto;">
-            <label>Décompte</label>
-            <input type="time" id="countdown-time" style="font-family: 'SF Mono', monospace; font-size: 13px;">
+            <label>Fin à</label>
+            <input type="time" id="countdown-time" value="${State.countdownEnd ? new Date(State.countdownEnd).toTimeString().substring(0,5) : '16:00'}" style="font-family: 'SF Mono', monospace; font-size: 13px;">
           </div>
         </div>
       `;
@@ -3103,7 +3108,7 @@
           const val = e.target.value;
           if (!val) {
             State.countdownEnd = null;
-            if (State.countdownInterval) { clearInterval(State.countdownInterval); State.countdownInterval = null; }
+            this.render();
             return;
           }
           const [h, m] = val.split(':').map(Number);
@@ -3111,22 +3116,7 @@
           target.setHours(h, m, 0, 0);
           if (target.getTime() <= Date.now()) target.setDate(target.getDate() + 1);
           State.countdownEnd = target.getTime();
-          if (State.countdownInterval) clearInterval(State.countdownInterval);
-          State.countdownInterval = setInterval(() => {
-            const cd = root.querySelector('.header-countdown');
-            if (!cd) return;
-            const remaining = State.countdownEnd - Date.now();
-            if (remaining > 0) {
-              const mins = Math.floor(remaining / 60000);
-              const secs = Math.floor((remaining % 60000) / 1000);
-              cd.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-            } else {
-              cd.textContent = '00:00 TERMINÉ';
-              cd.style.animation = 'ai-recording-pulse 0.8s ease-in-out infinite';
-              clearInterval(State.countdownInterval);
-              State.countdownInterval = null;
-            }
-          }, 1000);
+          this.render();
         });
       }
       if (dryRunCheckbox) dryRunCheckbox.addEventListener('change', (e) => { State.dryRun = e.target.checked; });
@@ -3785,13 +3775,31 @@
     // Initialize UI
     UI.init();
 
-    // Update clock every second
+    // Update clock + countdown every second
     setInterval(() => {
       const clock = State.shadowRoot?.querySelector('.header-clock');
       if (clock) {
         const now = new Date();
         const time = now.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         clock.textContent = time;
+      }
+      // Update countdown in header
+      if (State.countdownEnd) {
+        const cd = State.shadowRoot?.querySelector('.header-countdown');
+        if (cd) {
+          const remaining = State.countdownEnd - Date.now();
+          if (remaining > 0) {
+            const hrs = Math.floor(remaining / 3600000);
+            const mins = Math.floor((remaining % 3600000) / 60000);
+            const secs = Math.floor((remaining % 60000) / 1000);
+            const display = hrs > 0 ? `${hrs}h${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}` : `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            cd.textContent = `⏱ ${display}`;
+            cd.classList.remove('expired');
+          } else {
+            cd.textContent = '⏱ 00:00 TERMINÉ';
+            cd.classList.add('expired');
+          }
+        }
       }
     }, 1000);
 
