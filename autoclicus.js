@@ -248,12 +248,56 @@
         role: element.getAttribute('role') || '',
         ariaExpanded: element.getAttribute('aria-expanded') || '',
         isInOverlay: !!element.closest('.cdk-overlay-container'),
+        grid: this.captureGridContext(element),
         dataAttrs: this.getDataAttrs(element),
         path: path,
         coords: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
         index: this.getElementIndex(element),
         eventType: eventType
       };
+    },
+
+    // AG Grid context capture — stable identifiers for virtual-scrolled grid cells
+    captureGridContext(element) {
+      // Detect if element is inside an AG Grid
+      const gridEl = element.closest('.ag-root-wrapper, .ag-root, [ref="eRootWrapper"]');
+      if (!gridEl) return null;
+
+      // Walk up to find the cell and row containers
+      const cell = element.closest('[col-id], .ag-cell, .ag-header-cell');
+      const row = element.closest('[row-index], .ag-row, .ag-header-row');
+
+      const ctx = {
+        isGrid: true,
+        // Cell identity
+        colId: cell?.getAttribute('col-id') || '',
+        compId: cell?.getAttribute('comp-id') || '',
+        // Row identity
+        rowIndex: row?.getAttribute('row-index') || '',
+        rowId: row?.getAttribute('row-id') || '',
+        // ARIA (stable across AG Grid versions)
+        ariaRowIndex: element.closest('[aria-rowindex]')?.getAttribute('aria-rowindex') || row?.getAttribute('aria-rowindex') || '',
+        ariaColIndex: element.closest('[aria-colindex]')?.getAttribute('aria-colindex') || cell?.getAttribute('aria-colindex') || '',
+        // Cell text content (for data-driven matching when position changes after scroll)
+        cellText: cell?.textContent?.trim().substring(0, 80) || '',
+        // Row text content (first few cells — fingerprint of the entire row)
+        rowText: '',
+        // Grid container identity (to distinguish multiple grids on same page)
+        gridId: gridEl.id || gridEl.getAttribute('grid-id') || ''
+      };
+
+      // Capture row fingerprint: first 3 cell texts joined
+      if (row) {
+        const cells = row.querySelectorAll('[col-id]');
+        const texts = [];
+        for (let i = 0; i < Math.min(cells.length, 3); i++) {
+          const t = cells[i].textContent?.trim();
+          if (t) texts.push(t.substring(0, 30));
+        }
+        ctx.rowText = texts.join(' | ');
+      }
+
+      return ctx;
     },
 
     cleanClassName(cn) {
@@ -291,6 +335,27 @@
 
       if (element.name) selector += `[name="${element.name}"]`;
       if (element.type) selector += `[type="${element.type}"]`;
+
+      // If selector is too generic (just tag or tag.class), add :nth-of-type for uniqueness
+      try {
+        const matches = document.querySelectorAll(selector);
+        if (matches.length > 1 && element.parentElement) {
+          const siblings = Array.from(element.parentElement.children).filter(
+            c => c.tagName === element.tagName
+          );
+          if (siblings.length > 1) {
+            const nthIdx = siblings.indexOf(element) + 1;
+            // Build parent-scoped selector for precision
+            const parentTag = element.parentElement.tagName.toLowerCase();
+            const parentId = element.parentElement.id;
+            if (parentId) {
+              selector = `#${parentId} > ${selector}:nth-of-type(${nthIdx})`;
+            } else {
+              selector += `:nth-of-type(${nthIdx})`;
+            }
+          }
+        }
+      } catch (e) { /* querySelectorAll may fail on complex selectors */ }
 
       return selector;
     },
@@ -365,10 +430,19 @@
         }
       }
 
+      // AG Grid fast path — most reliable for grid cells (stable col-id + row data matching)
+      if (fingerprint.grid?.isGrid) {
+        const gridResult = this.resolveGridCell(fingerprint.grid, fingerprint);
+        if (gridResult.element && gridResult.confidence >= 60) {
+          return gridResult;
+        }
+      }
+
       // Try ALL strategies, pick the best confidence match
+      // XPath FIRST — most reliable for Angular/SPA (positional, survives class changes)
       const strategies = [
-        () => document.querySelector(fingerprint.selector),
         () => this.evaluateXPath(fingerprint.xpath),
+        () => this.findBySelectorAll(fingerprint.selector, fingerprint),
         () => this.findByText(fingerprint.text, fingerprint.tag),
         () => this.findByDataAttrs(fingerprint.dataAttrs),
         () => this.findByPath(fingerprint.path),
@@ -379,14 +453,18 @@
 
       for (let strategy of strategies) {
         try {
-          const element = strategy();
-          if (element && this.isVisible(element)) {
-            const confidence = this.calculateConfidence(element, fingerprint);
-            if (confidence > best.confidence) {
-              best = { element, confidence };
+          const result = strategy();
+          // Strategy may return single element or array of candidates
+          const candidates = Array.isArray(result) ? result : (result ? [result] : []);
+          for (const element of candidates) {
+            if (element && this.isVisible(element)) {
+              const confidence = this.calculateConfidence(element, fingerprint);
+              if (confidence > best.confidence) {
+                best = { element, confidence };
+              }
+              // Perfect match — stop early
+              if (confidence >= 85) return best;
             }
-            // Perfect match — stop early
-            if (confidence >= 85) return best;
           }
         } catch (e) {
           // Strategy failed, try next
@@ -399,6 +477,138 @@
     evaluateXPath(xpath) {
       const result = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
       return result.singleNodeValue;
+    },
+
+    findBySelectorAll(selector, fingerprint) {
+      // Return ALL matching elements so confidence scoring picks the right one
+      try {
+        const all = Array.from(document.querySelectorAll(selector));
+        if (all.length <= 5) return all; // Few matches — evaluate all
+        // Too many matches (e.g. "td") — narrow down by proximity to recorded coords
+        if (fingerprint.coords) {
+          return all.filter(el => {
+            const r = el.getBoundingClientRect();
+            const dx = (r.left + r.width / 2) - fingerprint.coords.x;
+            const dy = (r.top + r.height / 2) - fingerprint.coords.y;
+            return Math.sqrt(dx * dx + dy * dy) < 300; // Within 300px radius
+          }).slice(0, 10);
+        }
+        return all.slice(0, 10); // Cap at 10 candidates
+      } catch (e) { return []; }
+    },
+
+    // AG Grid resolution — finds cells by col-id + row data matching (virtual scroll safe)
+    resolveGridCell(grid, fingerprint) {
+      const noMatch = { element: null, confidence: 0 };
+      if (!grid || !grid.colId) return noMatch;
+
+      try {
+        // Strategy 1: Exact position match (col-id + row-index) — fast path
+        if (grid.rowIndex) {
+          const row = document.querySelector(`[row-index="${grid.rowIndex}"]`);
+          if (row) {
+            const cell = row.querySelector(`[col-id="${grid.colId}"]`);
+            if (cell && this.isVisible(cell)) {
+              // Verify the row still has the same data (virtual scroll may have recycled it)
+              if (grid.rowText) {
+                const cells = row.querySelectorAll('[col-id]');
+                const texts = [];
+                for (let i = 0; i < Math.min(cells.length, 3); i++) {
+                  const t = cells[i].textContent?.trim();
+                  if (t) texts.push(t.substring(0, 30));
+                }
+                const liveRowText = texts.join(' | ');
+                if (liveRowText === grid.rowText) {
+                  // Perfect: same position AND same data
+                  return { element: cell, confidence: 95 };
+                }
+                // Position matches but data changed (scroll recycled row) — fall through to data search
+              } else {
+                return { element: cell, confidence: 80 };
+              }
+            }
+          }
+        }
+
+        // Strategy 2: Data-driven match — find row by content, then column
+        // This handles virtual scroll: the row may be at a different DOM index
+        if (grid.rowText && grid.colId) {
+          const allRows = document.querySelectorAll('.ag-row, [row-index]');
+          for (const row of allRows) {
+            const cells = row.querySelectorAll('[col-id]');
+            const texts = [];
+            for (let i = 0; i < Math.min(cells.length, 3); i++) {
+              const t = cells[i].textContent?.trim();
+              if (t) texts.push(t.substring(0, 30));
+            }
+            const liveRowText = texts.join(' | ');
+            if (liveRowText === grid.rowText) {
+              const cell = row.querySelector(`[col-id="${grid.colId}"]`);
+              if (cell && this.isVisible(cell)) {
+                return { element: cell, confidence: 90 };
+              }
+            }
+          }
+        }
+
+        // Strategy 3: ARIA-based (aria-rowindex + aria-colindex)
+        if (grid.ariaRowIndex && grid.ariaColIndex) {
+          const row = document.querySelector(`[aria-rowindex="${grid.ariaRowIndex}"]`);
+          if (row) {
+            const cell = row.querySelector(`[aria-colindex="${grid.ariaColIndex}"]`);
+            if (cell && this.isVisible(cell)) {
+              return { element: cell, confidence: 75 };
+            }
+          }
+        }
+
+        // Strategy 4: col-id + cell text match (when row identity is lost)
+        if (grid.colId && grid.cellText) {
+          const allCells = document.querySelectorAll(`[col-id="${grid.colId}"]`);
+          for (const cell of allCells) {
+            if (cell.textContent?.trim().substring(0, 80) === grid.cellText && this.isVisible(cell)) {
+              return { element: cell, confidence: 70 };
+            }
+          }
+        }
+
+        // Strategy 5: Just col-id on same row-index (weaker, but still better than generic CSS)
+        if (grid.colId) {
+          const cell = document.querySelector(`[col-id="${grid.colId}"]`);
+          if (cell && this.isVisible(cell)) {
+            return { element: cell, confidence: 40 };
+          }
+        }
+      } catch (e) {
+        console.warn('AG Grid resolution error:', e);
+      }
+
+      return noMatch;
+    },
+
+    // AG Grid: Scroll a row into view using the grid API (for virtual scroll)
+    async scrollGridRowIntoView(grid) {
+      if (!grid?.rowIndex) return false;
+      try {
+        // Try to access AG Grid API via the grid element
+        const gridEl = document.querySelector('.ag-root-wrapper, [ref="eRootWrapper"]');
+        if (!gridEl) return false;
+
+        // AG Grid exposes API via __agComponent or through Angular component
+        const api = gridEl.__agComponent?.gridApi || gridEl.__agGridApi ||
+                    window.__AG_GRID_API__ || null;
+
+        if (api?.ensureIndexVisible) {
+          const idx = parseInt(grid.rowIndex);
+          if (!isNaN(idx)) {
+            api.ensureIndexVisible(idx, 'middle');
+            // Wait for virtual scroll rendering: rAF ensures paint, then 150ms for AG Grid row recycling
+            await new Promise(r => requestAnimationFrame(() => setTimeout(r, 150)));
+            return true;
+          }
+        }
+      } catch (e) { /* AG Grid API not accessible */ }
+      return false;
     },
 
     findByText(text, tag) {
@@ -495,11 +705,25 @@
       }
       // Role match — 10pts (important for Angular Material components)
       if (fingerprint.role && element.getAttribute('role') === fingerprint.role) score += 10;
-      // XPath positional match — 20pts (unique positional identity)
+      // XPath positional match — 35pts (strongest unique identifier in Angular/SPA)
       if (fingerprint.xpath) {
         try {
           const xpathEl = this.evaluateXPath(fingerprint.xpath);
-          if (xpathEl === element) score += 20;
+          if (xpathEl === element) score += 35;
+        } catch (e) {}
+      }
+      // AG Grid cell match — col-id is strong identity
+      if (fingerprint.grid?.isGrid && fingerprint.grid?.colId) {
+        const cellColId = element.closest('[col-id]')?.getAttribute('col-id') || element.getAttribute('col-id');
+        if (cellColId === fingerprint.grid.colId) score += 15;
+      }
+      // Coordinate proximity bonus — 10pts if within 50px of recorded position
+      if (fingerprint.coords) {
+        try {
+          const r = element.getBoundingClientRect();
+          const dx = (r.left + r.width / 2) - fingerprint.coords.x;
+          const dy = (r.top + r.height / 2) - fingerprint.coords.y;
+          if (Math.sqrt(dx * dx + dy * dy) < 50) score += 10;
         } catch (e) {}
       }
 
@@ -1484,6 +1708,11 @@
           return;
         }
 
+        // AG Grid: try scrolling row into view if element is in a virtual-scrolled grid
+        if (action.fingerprint.grid?.isGrid && action.fingerprint.grid?.rowIndex) {
+          await Fingerprint.scrollGridRowIntoView(action.fingerprint.grid);
+        }
+
         // Regular action — resolve with MutationObserver-driven retry (Angular/SPA rendering)
         let resolved = Fingerprint.resolve(action.fingerprint);
         if (!resolved.element) {
@@ -1491,10 +1720,14 @@
           resolved = await new Promise((resolvePromise) => {
             let attempts = 0;
             const maxWait = 8000; // 8s total budget
+            let resolved_early = false;
             const observer = new MutationObserver(() => {
+              if (resolved_early) return;
               attempts++;
               const r = Fingerprint.resolve(action.fingerprint);
               if (r.element) {
+                resolved_early = true;
+                clearInterval(interval);
                 observer.disconnect();
                 resolvePromise(r);
               }
@@ -1503,8 +1736,10 @@
 
             // Fallback: periodic check + hard timeout
             const interval = setInterval(() => {
+              if (resolved_early) return;
               const r = Fingerprint.resolve(action.fingerprint);
               if (r.element) {
+                resolved_early = true;
                 clearInterval(interval);
                 observer.disconnect();
                 resolvePromise(r);
@@ -1512,17 +1747,21 @@
             }, 500);
 
             setTimeout(() => {
-              clearInterval(interval);
-              observer.disconnect();
-              resolvePromise(Fingerprint.resolve(action.fingerprint)); // Final attempt
+              if (!resolved_early) {
+                clearInterval(interval);
+                observer.disconnect();
+                resolvePromise(Fingerprint.resolve(action.fingerprint)); // Final attempt
+              }
             }, maxWait);
           });
         }
         const { element, confidence } = resolved;
 
         if (!element) {
-          console.warn(`⏭️ Element not found after retries, skipping: ${action.fingerprint.selector}`);
-          Audit.log(action, action.fingerprint?.selector, '', 'skipped', 0);
+          const fp = action.fingerprint;
+          const gridInfo = fp.grid?.isGrid ? ` [AG Grid: col=${fp.grid.colId}, row=${fp.grid.rowIndex}]` : '';
+          console.warn(`⏭️ Element not found, skipping: ${fp.selector}${gridInfo} | xpath: ${fp.xpath?.substring(0, 80)}`);
+          Audit.log(action, fp?.selector, '', 'skipped', 0);
           return;
         }
 
@@ -1537,7 +1776,11 @@
         }
 
         if (confidence < 30) {
-          console.warn(`Low confidence (${confidence}%) for element:`, action.fingerprint);
+          const fp = action.fingerprint;
+          const gridInfo = fp.grid?.isGrid ? ` [AG Grid: col=${fp.grid.colId}]` : '';
+          console.warn(`⚠️ Low confidence (${confidence}%) for: ${fp.selector}${gridInfo} | text: "${fp.text?.substring(0, 40)}"`);
+        } else if (confidence >= 80) {
+          console.log(`✅ Matched (${confidence}%): ${action.fingerprint.selector}${action.fingerprint.grid?.isGrid ? ' [AG Grid]' : ''}`);
         }
 
         // Scroll into view before interaction (handles off-screen elements / virtual scroll)
@@ -1557,11 +1800,19 @@
           // Execute action
           switch (action.eventType) {
             case 'click': {
-              // Full pointer event sequence for Angular Material compatibility
+              // Full event sequence: hover → pointer → mouse → click (Angular Material + AG Grid)
               const rect = element.getBoundingClientRect();
               const cx = rect.left + rect.width / 2;
               const cy = rect.top + rect.height / 2;
               const evtOpts = { bubbles: true, cancelable: true, clientX: cx, clientY: cy, view: window };
+
+              // Focus first (Angular reactive forms need focus for "touched" state)
+              element.focus();
+
+              // Hover first (triggers mat-menu, tooltips, AG Grid row highlights)
+              element.dispatchEvent(new MouseEvent('mouseover', evtOpts));
+              element.dispatchEvent(new MouseEvent('mouseenter', { ...evtOpts, bubbles: false }));
+              element.dispatchEvent(new PointerEvent('pointerenter', { ...evtOpts, bubbles: false }));
 
               element.dispatchEvent(new PointerEvent('pointerdown', evtOpts));
               element.dispatchEvent(new MouseEvent('mousedown', evtOpts));
@@ -4663,7 +4914,7 @@
                   `).join('')}
                 </div>
               ` : `
-                <div class="file-browser-empty">Aucun fichier .json trouvé</div>
+                <div class="file-browser-empty">🔒 Cliquez Rafraîchir pour autoriser l'accès au dossier</div>
               `}
               <div class="btn-group" style="margin-top: 8px;">
                 <button class="btn btn-secondary btn-small" id="fm-refresh">🔄 Rafraîchir</button>
@@ -5561,6 +5812,22 @@
 
       if (btnFmRefresh) {
         btnFmRefresh.addEventListener('click', async () => {
+          // Re-request permission if needed (revoked after page reload)
+          if (FileManager.dirHandle) {
+            try {
+              const perm = await FileManager.dirHandle.queryPermission({ mode: 'read' });
+              if (perm !== 'granted') {
+                const req = await FileManager.dirHandle.requestPermission({ mode: 'read' });
+                if (req !== 'granted') {
+                  this.flash('warning', 'Permission refusée — cliquez à nouveau');
+                  return;
+                }
+              }
+            } catch (e) {
+              this.flash('error', 'Erreur de permission');
+              return;
+            }
+          }
           await FileManager.listFiles();
           this.flash('success', `🔄 ${FileManager.files.length} fichier(s)`);
           this.render();
@@ -6250,8 +6517,8 @@
     // Restore saved directory handle (async, non-blocking)
     FileManager.restoreDirectory().then(result => {
       if (result === true || result === 'needs_permission') {
-        // Re-render to show file list (or permission button)
-        if (State.currentTab === 'save') UI.render();
+        // Re-render to show file list (or permission button) regardless of current tab
+        UI.render();
       }
     });
 
