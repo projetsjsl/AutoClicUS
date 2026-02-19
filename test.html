@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartD Test Environment - AutoClicUS v4.0</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #00874e 0%, #00a65a 100%);
+      color: white;
+      padding: 24px;
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .main-content {
+      background: white;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .footer {
+      background: white;
+      padding: 16px 24px;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      font-size: 18px;
+      font-weight: 600;
+      color: #00874e;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .filter-section {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      cursor: pointer;
+      user-select: none;
+      font-size: 14px;
+    }
+
+    .rate-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .input-group label {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .input-group input {
+      padding: 10px;
+      border: 1px solid #d0d0d0;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #00874e;
+      box-shadow: 0 0 0 3px rgba(0, 135, 78, 0.1);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #00874e 0%, #00a65a 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 4px 12px rgba(0, 135, 78, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #333;
+      border: 1px solid #d0d0d0;
+    }
+
+    .btn-secondary:hover {
+      background: #f7f9f8;
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #c82333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    table th {
+      background: #f7f9f8;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid #e0e0e0;
+      font-size: 13px;
+      color: #666;
+    }
+
+    table td {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 14px;
+    }
+
+    table tr:hover {
+      background: #f7f9f8;
+    }
+
+    .error-bar {
+      background: #dc3545;
+      color: white;
+      padding: 16px 24px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      display: none;
+      font-weight: 500;
+    }
+
+    .error-bar.visible {
+      display: block;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .instructions {
+      background: #fff9e6;
+      border: 2px solid #ffc107;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .instructions h3 {
+      color: #00874e;
+      margin-bottom: 12px;
+    }
+
+    .instructions ol {
+      margin-left: 20px;
+    }
+
+    .instructions li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    .instructions code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-active {
+      background: rgba(0, 135, 78, 0.1);
+      color: #00874e;
+    }
+
+    .status-inactive {
+      background: rgba(108, 117, 125, 0.1);
+      color: #6c757d;
+    }
+
+    #rate-vendeur-group {
+      display: none;
+    }
+
+    #rate-vendeur-group.visible {
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>SmartD - Taux de change USD</h1>
+      <p>Environnement de test pour AutoClicUS v4.0 - Propulsé par JSLAI</p>
+    </div>
+
+    <div class="main-content">
+      <div class="error-bar" id="error-bar">
+        ⚠️ Une erreur est survenue. Veuillez réessayer.
+      </div>
+
+      <div class="instructions">
+        <h3>📋 Instructions de test</h3>
+        <ol>
+          <li>Ouvrez <strong>Chrome DevTools</strong> (F12 ou Cmd+Option+I)</li>
+          <li>Allez dans l'onglet <strong>Console</strong></li>
+          <li>Copiez le contenu complet de <code>autoclicus.js</code> et collez-le dans la console</li>
+          <li>Appuyez sur <strong>Entrée</strong> pour exécuter le snippet</li>
+          <li>L'interface AutoClicUS apparaît en haut à droite</li>
+          <li>Testez les fonctionnalités:
+            <ul>
+              <li><strong>F6</strong> - Démarrer l'enregistrement</li>
+              <li>Cliquez sur divers éléments de cette page</li>
+              <li><strong>F6</strong> à nouveau - Arrêter l'enregistrement</li>
+              <li><strong>F7</strong> - Rejouer les actions</li>
+              <li><strong>F8</strong> - Arrêter la lecture</li>
+            </ul>
+          </li>
+          <li>Testez les boutons ci-dessous pour simuler différents états</li>
+          <li>Testez les prompts et confirmations en mode édition</li>
+          <li>Testez le mode simulation (dry run)</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Filtres</div>
+        <div class="filter-section">
+          <div class="checkbox-group">
+            <input type="checkbox" id="filter-us" checked>
+            <label for="filter-us">🇺🇸 Comptes US</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="filter-tsx">
+            <label for="filter-tsx">📈 TSX</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="filter-pro">
+            <label for="filter-pro">💼 Comptes professionnels</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Taux de change</div>
+        <div class="rate-inputs">
+          <div class="input-group">
+            <label for="rate-unique">Taux unique USD/CAD</label>
+            <input type="text" id="rate-unique" name="rate-unique" placeholder="1.3567">
+          </div>
+          <div class="input-group" id="rate-vendeur-group">
+            <label for="rate-vendeur">Taux vendeur (optionnel)</label>
+            <input type="text" id="rate-vendeur" name="rate-vendeur" placeholder="1.3580">
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" id="apply-rate">✓ Appliquer le taux</button>
+          <button class="btn btn-secondary" id="preview-rate">👁️ Aperçu</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Transactions (10 comptes)</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Compte</th>
+              <th>Type</th>
+              <th>Solde USD</th>
+              <th>Taux actuel</th>
+              <th>Solde CAD</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody id="transactions-body">
+            <tr>
+              <td>****1234</td>
+              <td>🇺🇸 Compte US</td>
+              <td>$10,542.18</td>
+              <td id="rate-display-1">1.3500</td>
+              <td id="cad-display-1">$14,231.94 CAD</td>
+              <td><span class="status-badge status-active">Actif</span></td>
+            </tr>
+            <tr>
+              <td>****5678</td>
+              <td>🇺🇸 Compte US</td>
+              <td>$25,800.00</td>
+              <td id="rate-display-2">1.3500</td>
+              <td id="cad-display-2">$34,830.00 CAD</td>
+              <td><span class="status-badge status-active">Actif</span></td>
+            </tr>
+            <tr>
+              <td>****9012</td>
+              <td>🇺🇸 Compte US</td>
+              <td>$8,350.45</td>
+              <td id="rate-display-3">1.3500</td>
+              <td id="cad-display-3">$11,273.11 CAD</td>
+              <td><span class="status-badge status-active">Actif</span></td>
+            </tr>
+            <tr>
+              <td>****3456</td>
+              <td>🇺🇸 Compte US</td>
+              <td>$42,100.00</td>
+              <td id="rate-display-4">1.3500</td>
+              <td id="cad-display-4">$56,835.00 CAD</td>
+              <td><span class="status-badge status-active">Actif</span></td>
+            </tr>
+            <tr>
+              <td>****7890</td>
+              <td>🇺🇸 Compte US</td>
+              <td>$15,620.33</td>
+              <td id="rate-display-5">1.3500</td>
+              <td id="cad-display-5">$21,087.45 CAD</td>
+              <td><span class="status-badge status-active">Actif</span></td>
+            </tr>
+            <tr>
+              <td>****2345</td>
+              <td>🇺🇸 Compte US</td>
+              <td>$3,890.12</td>
+              <td id="rate-display-6">1.3500</td>
+              <td id="cad-display-6">$5,251.66 CAD</td>
+              <td><span class="status-badge status-active">Actif</span></td>
+            </tr>
+            <tr>
+              <td>****6789</td>
+              <td>🇺🇸 Compte US</td>
+              <td>$67,450.00</td>
+              <td id="rate-display-7">1.3500</td>
+              <td id="cad-display-7">$91,057.50 CAD</td>
+              <td><span class="status-badge status-active">Actif</span></td>
+            </tr>
+            <tr>
+              <td>****0123</td>
+              <td>🇺🇸 Compte US</td>
+              <td>$12,340.56</td>
+              <td id="rate-display-8">1.3500</td>
+              <td id="cad-display-8">$16,659.76 CAD</td>
+              <td><span class="status-badge status-active">Actif</span></td>
+            </tr>
+            <tr>
+              <td>****4567</td>
+              <td>🇺🇸 Compte US</td>
+              <td>$29,100.00</td>
+              <td id="rate-display-9">1.3500</td>
+              <td id="cad-display-9">$39,285.00 CAD</td>
+              <td><span class="status-badge status-active">Actif</span></td>
+            </tr>
+            <tr>
+              <td>****8901</td>
+              <td>🇺🇸 Compte US</td>
+              <td>$5,670.89</td>
+              <td id="rate-display-10">1.3500</td>
+              <td id="cad-display-10">$7,655.70 CAD</td>
+              <td><span class="status-badge status-active">Actif</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Simuler des états</div>
+        <div class="btn-group">
+          <button class="btn btn-secondary" id="toggle-vendeur">Afficher/masquer taux vendeur</button>
+          <button class="btn btn-secondary" id="toggle-error">Afficher/masquer erreur</button>
+          <button class="btn btn-secondary" id="toggle-pro">Activer/désactiver comptes pro</button>
+          <button class="btn btn-danger" id="reset-page">🔄 Réinitialiser la page</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <button class="btn btn-secondary" id="return-btn">← Retour</button>
+      <div style="font-size: 13px; color: #6c757d;">
+        SmartD Test Environment • AutoClicUS v4.0 • Powered by JSLAI
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toggle rate vendeur field
+    document.getElementById('toggle-vendeur').addEventListener('click', function() {
+      const vendeurGroup = document.getElementById('rate-vendeur-group');
+      vendeurGroup.classList.toggle('visible');
+    });
+
+    // Toggle error bar
+    document.getElementById('toggle-error').addEventListener('click', function() {
+      const errorBar = document.getElementById('error-bar');
+      errorBar.classList.toggle('visible');
+    });
+
+    // Toggle pro accounts filter
+    document.getElementById('toggle-pro').addEventListener('click', function() {
+      const checkbox = document.getElementById('filter-pro');
+      checkbox.checked = !checkbox.checked;
+    });
+
+    // Apply rate button
+    document.getElementById('apply-rate').addEventListener('click', function() {
+      const rateUnique = document.getElementById('rate-unique').value;
+      const rateVendeur = document.getElementById('rate-vendeur').value;
+
+      if (!rateUnique) {
+        alert('⚠️ Veuillez entrer un taux');
+        return;
+      }
+
+      const rate = parseFloat(rateUnique);
+      if (isNaN(rate)) {
+        alert('⚠️ Taux invalide');
+        return;
+      }
+
+      // Update all transactions
+      for (let i = 1; i <= 10; i++) {
+        const rateDisplay = document.getElementById(`rate-display-${i}`);
+        const cadDisplay = document.getElementById(`cad-display-${i}`);
+
+        if (rateDisplay) {
+          rateDisplay.textContent = rate.toFixed(4);
+        }
+
+        if (cadDisplay) {
+          // Get USD amount from the row
+          const row = rateDisplay.closest('tr');
+          const usdCell = row.cells[2];
+          const usdAmount = parseFloat(usdCell.textContent.replace(/[$,]/g, ''));
+          const cadAmount = usdAmount * rate;
+          cadDisplay.textContent = `$${cadAmount.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD`;
+        }
+      }
+
+      alert(`✅ Taux ${rate.toFixed(4)} appliqué à 10 comptes`);
+    });
+
+    // Preview rate button
+    document.getElementById('preview-rate').addEventListener('click', function() {
+      const rateUnique = document.getElementById('rate-unique').value;
+      if (rateUnique) {
+        alert(`👁️ Aperçu du taux: ${rateUnique}`);
+      } else {
+        alert('⚠️ Aucun taux saisi');
+      }
+    });
+
+    // Return button
+    document.getElementById('return-btn').addEventListener('click', function() {
+      alert('← Navigation vers la page précédente (simulé)');
+    });
+
+    // Reset page
+    document.getElementById('reset-page').addEventListener('click', function() {
+      if (confirm('Réinitialiser tous les champs?')) {
+        document.getElementById('rate-unique').value = '';
+        document.getElementById('rate-vendeur').value = '';
+        document.getElementById('filter-us').checked = true;
+        document.getElementById('filter-tsx').checked = false;
+        document.getElementById('filter-pro').checked = false;
+        document.getElementById('rate-vendeur-group').classList.remove('visible');
+        document.getElementById('error-bar').classList.remove('visible');
+
+        // Reset all rates to 1.3500
+        for (let i = 1; i <= 10; i++) {
+          const rateDisplay = document.getElementById(`rate-display-${i}`);
+          const cadDisplay = document.getElementById(`cad-display-${i}`);
+
+          if (rateDisplay) {
+            rateDisplay.textContent = '1.3500';
+          }
+
+          if (cadDisplay) {
+            const row = rateDisplay.closest('tr');
+            const usdCell = row.cells[2];
+            const usdAmount = parseFloat(usdCell.textContent.replace(/[$,]/g, ''));
+            const cadAmount = usdAmount * 1.35;
+            cadDisplay.textContent = `$${cadAmount.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD`;
+          }
+        }
+
+        alert('✅ Page réinitialisée');
+      }
+    });
+
+    // Filter checkboxes
+    document.getElementById('filter-us').addEventListener('change', function() {
+      console.log('Filtre US:', this.checked);
+    });
+
+    document.getElementById('filter-tsx').addEventListener('change', function() {
+      console.log('Filtre TSX:', this.checked);
+    });
+
+    document.getElementById('filter-pro').addEventListener('change', function() {
+      console.log('Filtre Pro:', this.checked);
+    });
+
+    // Console message
+    console.log('%c✨ SmartD Test Environment - Ready for AutoClicUS v4.0', 'color: #00874e; font-size: 14px; font-weight: bold;');
+    console.log('%cPaste autoclicus.js into console to start', 'color: #6c757d; font-size: 12px;');
+  </script>
+</body>
+</html>
