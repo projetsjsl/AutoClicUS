@@ -240,16 +240,24 @@
         text: element.textContent?.trim().substring(0, 100) || '',
         tag: element.tagName.toLowerCase(),
         id: element.id || '',
-        className: element.className || '',
+        className: this.cleanClassName(element.className || ''),
         name: element.getAttribute('name') || '',
         type: element.getAttribute('type') || '',
         placeholder: element.getAttribute('placeholder') || '',
+        ariaLabel: element.getAttribute('aria-label') || element.closest('[aria-label]')?.getAttribute('aria-label') || '',
         dataAttrs: this.getDataAttrs(element),
         path: path,
         coords: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
         index: this.getElementIndex(element),
         eventType: eventType
       };
+    },
+
+    cleanClassName(cn) {
+      const str = typeof cn === 'string' ? cn : cn?.baseVal || '';
+      return str.split(' ').filter(c =>
+        c.trim() && !c.match(/^(ng-|cdk-|mat-|_ngcontent|_nghost)/)
+      ).join(' ');
     },
 
     getSelector(element) {
@@ -260,7 +268,15 @@
         ? element.className
         : element.className?.baseVal || '';
       if (classStr) {
-        const classes = classStr.split(' ').filter(c => c.trim());
+        // Strip Angular/CDK/framework dynamic classes that change every session
+        const classes = classStr.split(' ').filter(c =>
+          c.trim() &&
+          !c.match(/^ng-/) &&          // Angular: ng-tns-*, ng-star-inserted, ng-trigger-*
+          !c.match(/^cdk-/) &&          // Angular CDK: cdk-focused, cdk-overlay-*
+          !c.match(/^mat-/) &&          // Angular Material: mat-content, mat-ripple-*
+          !c.match(/^_ngcontent/) &&     // Angular view encapsulation
+          !c.match(/^_nghost/)           // Angular host element
+        );
         if (classes.length > 0) {
           selector += '.' + classes.join('.');
         }
@@ -451,6 +467,11 @@
       if (fingerprint.text && element.textContent?.trim().includes(fingerprint.text.substring(0, 30))) score += 25;
       // Tag match — 5pts (very generic)
       if (element.tagName.toLowerCase() === fingerprint.tag) score += 5;
+      // Aria-label match — 15pts (strong for icon buttons / SVGs)
+      if (fingerprint.ariaLabel) {
+        const elLabel = element.getAttribute('aria-label') || element.closest('[aria-label]')?.getAttribute('aria-label') || '';
+        if (elLabel === fingerprint.ariaLabel) score += 15;
+      }
       // XPath positional match — 20pts (unique positional identity)
       if (fingerprint.xpath) {
         try {
@@ -1440,11 +1461,19 @@
           return;
         }
 
-        // Regular action
-        const { element, confidence } = Fingerprint.resolve(action.fingerprint);
+        // Regular action — resolve with retry (Angular/SPA may still be rendering)
+        let resolved = Fingerprint.resolve(action.fingerprint);
+        if (!resolved.element) {
+          // Retry up to 3 times with increasing delays
+          for (let retry = 0; retry < 3 && !resolved.element; retry++) {
+            await this.sleep(500 * (retry + 1));
+            resolved = Fingerprint.resolve(action.fingerprint);
+          }
+        }
+        const { element, confidence } = resolved;
 
         if (!element) {
-          console.warn(`⏭️ Element not found, skipping: ${action.fingerprint.selector}`);
+          console.warn(`⏭️ Element not found after retries, skipping: ${action.fingerprint.selector}`);
           Audit.log(action, action.fingerprint?.selector, '', 'skipped', 0);
           return;
         }
