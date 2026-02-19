@@ -248,6 +248,7 @@
         role: element.getAttribute('role') || '',
         ariaExpanded: element.getAttribute('aria-expanded') || '',
         isInOverlay: !!element.closest('.cdk-overlay-container'),
+        isInSidenav: !!element.closest('mat-sidenav, [mat-sidenav], .mat-sidenav'),
         grid: this.captureGridContext(element),
         dataAttrs: this.getDataAttrs(element),
         path: path,
@@ -498,54 +499,63 @@
     },
 
     // AG Grid resolution — finds cells by col-id + row data matching (virtual scroll safe)
+    // PRIORITY: Data-driven matching FIRST (live-updating lists shift row positions constantly)
     resolveGridCell(grid, fingerprint) {
       const noMatch = { element: null, confidence: 0 };
       if (!grid || !grid.colId) return noMatch;
 
+      // Helper: extract rowText fingerprint from a live row element
+      const getRowText = (row) => {
+        const cells = row.querySelectorAll('[col-id]');
+        const texts = [];
+        for (let i = 0; i < Math.min(cells.length, 3); i++) {
+          const t = cells[i].textContent?.trim();
+          if (t) texts.push(t.substring(0, 30));
+        }
+        return texts.join(' | ');
+      };
+
       try {
-        // Strategy 1: Exact position match (col-id + row-index) — fast path
-        if (grid.rowIndex) {
-          const row = document.querySelector(`[row-index="${grid.rowIndex}"]`);
-          if (row) {
-            const cell = row.querySelector(`[col-id="${grid.colId}"]`);
-            if (cell && this.isVisible(cell)) {
-              // Verify the row still has the same data (virtual scroll may have recycled it)
-              if (grid.rowText) {
-                const cells = row.querySelectorAll('[col-id]');
-                const texts = [];
-                for (let i = 0; i < Math.min(cells.length, 3); i++) {
-                  const t = cells[i].textContent?.trim();
-                  if (t) texts.push(t.substring(0, 30));
-                }
-                const liveRowText = texts.join(' | ');
-                if (liveRowText === grid.rowText) {
-                  // Perfect: same position AND same data
-                  return { element: cell, confidence: 95 };
-                }
-                // Position matches but data changed (scroll recycled row) — fall through to data search
-              } else {
+        // Strategy 1: DATA-DRIVEN match FIRST — most reliable for live-updating lists
+        // Row position changes as new transactions flow in, but row CONTENT stays stable
+        if (grid.rowText && grid.colId) {
+          const allRows = document.querySelectorAll('.ag-row, [row-index]');
+          for (const row of allRows) {
+            const liveRowText = getRowText(row);
+            if (liveRowText === grid.rowText) {
+              const cell = row.querySelector(`[col-id="${grid.colId}"]`);
+              if (cell && this.isVisible(cell)) {
+                return { element: cell, confidence: 95 };
+              }
+            }
+          }
+          // Partial match: check if live row starts with same text (data may have extra fields)
+          for (const row of allRows) {
+            const liveRowText = getRowText(row);
+            if (liveRowText && grid.rowText && liveRowText.startsWith(grid.rowText.substring(0, 40))) {
+              const cell = row.querySelector(`[col-id="${grid.colId}"]`);
+              if (cell && this.isVisible(cell)) {
                 return { element: cell, confidence: 80 };
               }
             }
           }
         }
 
-        // Strategy 2: Data-driven match — find row by content, then column
-        // This handles virtual scroll: the row may be at a different DOM index
-        if (grid.rowText && grid.colId) {
-          const allRows = document.querySelectorAll('.ag-row, [row-index]');
-          for (const row of allRows) {
-            const cells = row.querySelectorAll('[col-id]');
-            const texts = [];
-            for (let i = 0; i < Math.min(cells.length, 3); i++) {
-              const t = cells[i].textContent?.trim();
-              if (t) texts.push(t.substring(0, 30));
-            }
-            const liveRowText = texts.join(' | ');
-            if (liveRowText === grid.rowText) {
-              const cell = row.querySelector(`[col-id="${grid.colId}"]`);
-              if (cell && this.isVisible(cell)) {
-                return { element: cell, confidence: 90 };
+        // Strategy 2: Position match (col-id + row-index) with data verification
+        // Only reliable when list is NOT live-updating
+        if (grid.rowIndex) {
+          const row = document.querySelector(`[row-index="${grid.rowIndex}"]`);
+          if (row) {
+            const cell = row.querySelector(`[col-id="${grid.colId}"]`);
+            if (cell && this.isVisible(cell)) {
+              if (grid.rowText) {
+                const liveRowText = getRowText(row);
+                if (liveRowText === grid.rowText) {
+                  return { element: cell, confidence: 90 };
+                }
+                // Position exists but data doesn't match — skip (data-driven already failed)
+              } else {
+                return { element: cell, confidence: 70 };
               }
             }
           }
@@ -1713,13 +1723,33 @@
           await Fingerprint.scrollGridRowIntoView(action.fingerprint.grid);
         }
 
+        // If action targets a sidenav/overlay element, wait for the panel to be present in DOM first
+        const isSidenavAction = action.fingerprint.isInSidenav || action.fingerprint.xpath?.includes('mat-sidenav');
+        if (isSidenavAction) {
+          // Wait up to 3s for any mat-sidenav to become visible (Angular animation)
+          const sidenavWaitStart = Date.now();
+          while (Date.now() - sidenavWaitStart < 3000) {
+            const sidenav = document.querySelector('mat-sidenav[style*="visible"], mat-sidenav.mat-drawer-opened, .mat-sidenav-opened, mat-sidenav[ng-reflect-opened="true"]');
+            if (sidenav) break;
+            // Also check: any mat-sidenav with actual width > 0 (rendered)
+            const allSidenavs = document.querySelectorAll('mat-sidenav');
+            let found = false;
+            for (const sn of allSidenavs) {
+              if (sn.offsetWidth > 50) { found = true; break; }
+            }
+            if (found) break;
+            await this.sleep(200);
+          }
+        }
+
         // Regular action — resolve with MutationObserver-driven retry (Angular/SPA rendering)
         let resolved = Fingerprint.resolve(action.fingerprint);
         if (!resolved.element) {
           // Use MutationObserver to wait for DOM changes, then re-resolve
           resolved = await new Promise((resolvePromise) => {
             let attempts = 0;
-            const maxWait = 8000; // 8s total budget
+            // Extended wait for sidenav elements (animation + render), standard 8s otherwise
+            const maxWait = isSidenavAction ? 12000 : 8000;
             let resolved_early = false;
             const observer = new MutationObserver(() => {
               if (resolved_early) return;
@@ -1760,7 +1790,9 @@
         if (!element) {
           const fp = action.fingerprint;
           const gridInfo = fp.grid?.isGrid ? ` [AG Grid: col=${fp.grid.colId}, row=${fp.grid.rowIndex}]` : '';
-          console.warn(`⏭️ Element not found, skipping: ${fp.selector}${gridInfo} | xpath: ${fp.xpath?.substring(0, 80)}`);
+          const isSidenav = fp.xpath?.includes('mat-sidenav') || fp.selector?.includes('mat-sidenav') || fp.isInOverlay;
+          const sidenavHint = isSidenav ? ' [⚠ Element is inside mat-sidenav — panel may not have opened. Check if previous grid click triggered the panel.]' : '';
+          console.warn(`⏭️ Element not found, skipping: ${fp.selector}${gridInfo}${sidenavHint} | xpath: ${fp.xpath?.substring(0, 80)}`);
           Audit.log(action, fp?.selector, '', 'skipped', 0);
           return;
         }
@@ -1805,6 +1837,7 @@
               const cx = rect.left + rect.width / 2;
               const cy = rect.top + rect.height / 2;
               const evtOpts = { bubbles: true, cancelable: true, clientX: cx, clientY: cy, view: window };
+              const isGridCell = !!action.fingerprint.grid?.isGrid;
 
               // Focus first (Angular reactive forms need focus for "touched" state)
               element.focus();
@@ -1814,15 +1847,45 @@
               element.dispatchEvent(new MouseEvent('mouseenter', { ...evtOpts, bubbles: false }));
               element.dispatchEvent(new PointerEvent('pointerenter', { ...evtOpts, bubbles: false }));
 
+              // Small delay between hover and click (AG Grid needs time to register hover state)
+              if (isGridCell) await this.sleep(50);
+
               element.dispatchEvent(new PointerEvent('pointerdown', evtOpts));
               element.dispatchEvent(new MouseEvent('mousedown', evtOpts));
+
+              // Human-like delay between mousedown and mouseup (AG Grid + Angular detect synthetic clicks)
+              if (isGridCell) await this.sleep(80);
+
               element.dispatchEvent(new PointerEvent('pointerup', evtOpts));
               element.dispatchEvent(new MouseEvent('mouseup', evtOpts));
 
-              if (typeof element.click === 'function') {
-                element.click();
-              } else {
-                element.dispatchEvent(new MouseEvent('click', evtOpts));
+              // CRITICAL: Always use dispatchEvent with real coordinates for the click.
+              // element.click() sends clientX:0, clientY:0 which breaks AG Grid cell identification
+              // and Angular event delegation that relies on coordinates.
+              element.dispatchEvent(new MouseEvent('click', {
+                ...evtOpts,
+                detail: 1, // single click (AG Grid checks this for single vs double click)
+                button: 0, // left button
+                buttons: 1
+              }));
+
+              // AG Grid + Angular: also try triggering via the row element (some Angular apps
+              // bind (click) on the ag-row, not on individual cells)
+              if (isGridCell) {
+                const agRow = element.closest('.ag-row, [row-index]');
+                if (agRow && agRow !== element) {
+                  agRow.dispatchEvent(new MouseEvent('click', {
+                    ...evtOpts,
+                    detail: 1,
+                    button: 0,
+                    buttons: 1
+                  }));
+                }
+
+                // Wait for Angular sidenav/panel animation after grid row click
+                // mat-sidenav typically takes 200-400ms to animate open
+                await this.sleep(500);
+                console.log('🔲 AG Grid click dispatched with coords + row click');
               }
               break;
             }
