@@ -1603,15 +1603,20 @@
 
       const fingerprint = Fingerprint.capture(target, eventType);
 
-      // DBLCLICK: Replace the preceding click(s) on the same element with a single dblclick action
+      // DBLCLICK: Replace the preceding click(s) with a single dblclick action
       // Browser fires: click(detail:1) → click(detail:2) → dblclick
       // We want to record just ONE dblclick action, not click+click+dblclick
+      // NOTE: Don't compare selectors — if a modal opens between clicks,
+      // the dblclick target changes but it's still the same user gesture.
+      let originalClickFingerprint = null;
       if (eventType === 'dblclick') {
-        // Remove recent click actions on the same element (last 500ms)
+        // Remove ALL recent click actions within 500ms (same double-click gesture)
+        // Save the earliest click's fingerprint (the true user target)
         const now = Date.now();
         while (State.recordedActions.length > 0) {
           const last = State.recordedActions[State.recordedActions.length - 1];
-          if (last.eventType === 'click' && last.fingerprint.selector === fingerprint.selector && (now - last.timestamp) < 500) {
+          if (last.eventType === 'click' && (now - last.timestamp) < 500) {
+            originalClickFingerprint = last.fingerprint;
             State.recordedActions.pop();
           } else {
             break;
@@ -1622,19 +1627,31 @@
           const stepId = State.scenario.guidedStep;
           if (State.scenario.stepActions[stepId]?.length) {
             const last = State.scenario.stepActions[stepId][0];
-            if (last.eventType === 'click' && last.fingerprint.selector === fingerprint.selector) {
+            if (last.eventType === 'click' && (now - last.timestamp) < 500) {
+              originalClickFingerprint = originalClickFingerprint || last.fingerprint;
               State.scenario.stepActions[stepId] = [];
             }
           }
         }
       }
 
+      // For dblclick: use the original click's fingerprint if the dblclick landed
+      // on a different element (e.g. modal that opened mid-gesture)
+      const effectiveFingerprint = (eventType === 'dblclick' && originalClickFingerprint &&
+        originalClickFingerprint.selector !== fingerprint.selector)
+        ? originalClickFingerprint : fingerprint;
+
+      // Use original click's text when dblclick target shifted (e.g. to modal)
+      const effectiveValue = (effectiveFingerprint !== fingerprint && effectiveFingerprint.text)
+        ? effectiveFingerprint.text
+        : (target.value || target.textContent?.trim() || '');
+
       const action = {
         id: Date.now().toString(36) + Math.random().toString(36).substring(2, 9),
         type: 'action',
         eventType: eventType,
-        fingerprint: fingerprint,
-        value: target.value || target.textContent?.trim() || '',
+        fingerprint: effectiveFingerprint,
+        value: effectiveValue,
         timestamp: Date.now()
       };
 
