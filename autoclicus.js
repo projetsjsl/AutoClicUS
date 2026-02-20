@@ -1,4 +1,4 @@
-// AutoClicUS v5.3.0 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
+// AutoClicUS v5.4.0 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
 // Automation assistant for SmartD USD exchange rate operations
 // Paste this complete snippet into Chrome DevTools console
 
@@ -9,7 +9,7 @@
   // CONFIG
   // =============================================================================
   const Config = {
-    version: '5.3.0',
+    version: '5.4.0',
     emmaAvatar: 'data:image/jpeg;base64,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',
     theme: {
       bg: '#ffffff',
@@ -42,7 +42,8 @@
       config: 'autoclicus_config_v4',
       audit: 'autoclicus_audit_v4',
       scenario: 'autoclicus_scenario_v1',
-      dirHandle: 'autoclicus_dir_handle_v1'
+      dirHandle: 'autoclicus_dir_handle_v1',
+      calibration: 'autoclicus_calibration_v1'
     },
     // Emma Vibe Themes
     vibeThemes: {
@@ -218,12 +219,32 @@
 
     // Scenario (guided recording)
     scenario: {
+      steps: [],             // Mutable workflow steps (initialized from default template)
       stepActions: {},       // { stepId: [actions] }
       guidedStep: null,      // current step being recorded
       isGuided: false,       // true when in guided recording mode
       rateModel: 'acheteur',   // 'acheteur' or 'vendeur'
-      configured: false      // true when all required steps are configured
-    }
+      configured: false,     // true when all required steps are configured
+      editingStepId: null,   // Step id being edited inline
+      showAddStep: false     // Show add-step form
+    },
+
+    // Calibration wizard
+    calibration: {
+      isRunning: false,
+      currentStep: 0,
+      results: [],           // [{actionIndex, confidence, status: 'pass'|'fail'|'skipped', detail}]
+      awaitingResponse: false,
+      viewportMatch: null,
+      currentTestInfo: null,
+      _resolve: null
+    },
+
+    // Start page (for dual-browser parallel runs)
+    startPage: 'first',      // 'first' | 'last'
+
+    // Skip current loop flag (for error recovery)
+    _skipCurrentLoop: false
   };
 
   // =============================================================================
@@ -1344,7 +1365,7 @@
     },
 
     getStepStatus(stepId) {
-      const step = this.defaultWorkflow.steps.find(s => s.id === stepId);
+      const step = State.scenario.steps.find(s => s.id === stepId);
       if (!step) return 'unconfigured';
       if (step.auto) return 'auto';
       if (step.optional && !State.scenario.stepActions[stepId]) return 'optional';
@@ -1353,13 +1374,81 @@
     },
 
     isAllRequiredConfigured() {
-      return this.defaultWorkflow.steps
+      return State.scenario.steps
         .filter(s => s.recordRequired)
         .every(s => State.scenario.stepActions[s.id]?.length > 0);
     },
 
+    // ─── CRUD Operations ─────────────────────────────────────────
+    addStep(afterStepId, stepData) {
+      const id = 'step_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+      const newStep = { id, name: stepData.name || 'Nouvelle étape', type: stepData.type || 'loop', ...stepData };
+      // Ensure proper defaults
+      if (newStep.type === 'wait') { newStep.auto = true; newStep.recordRequired = false; newStep.delay = newStep.delay || 1000; }
+      else if (newStep.type === 'paste_rate') { newStep.auto = true; newStep.recordRequired = false; }
+      else if (newStep.type === 'condition' || newStep.type === 'error_recovery') { newStep.optional = true; newStep.recordRequired = false; }
+      else if (newStep.type === 'setup' || newStep.type === 'loop') { newStep.recordRequired = true; }
+
+      if (afterStepId) {
+        const idx = State.scenario.steps.findIndex(s => s.id === afterStepId);
+        State.scenario.steps.splice(idx + 1, 0, newStep);
+      } else {
+        State.scenario.steps.push(newStep);
+      }
+      this.saveConfig();
+      UI.render();
+      return newStep;
+    },
+
+    removeStep(stepId) {
+      const idx = State.scenario.steps.findIndex(s => s.id === stepId);
+      if (idx < 0) return;
+      const step = State.scenario.steps[idx];
+      if (step.type === 'marker') return; // Cannot delete the loop marker
+      State.scenario.steps.splice(idx, 1);
+      delete State.scenario.stepActions[stepId]; // Clean up recorded actions
+      this.saveConfig();
+      UI.render();
+    },
+
+    moveStep(stepId, direction) {
+      const idx = State.scenario.steps.findIndex(s => s.id === stepId);
+      if (idx < 0) return;
+      const target = direction === 'up' ? idx - 1 : idx + 1;
+      if (target < 0 || target >= State.scenario.steps.length) return;
+      [State.scenario.steps[idx], State.scenario.steps[target]] = [State.scenario.steps[target], State.scenario.steps[idx]];
+      this.saveConfig();
+      UI.render();
+    },
+
+    updateStep(stepId, changes) {
+      const step = State.scenario.steps.find(s => s.id === stepId);
+      if (!step) return;
+      Object.assign(step, changes);
+      // Auto-set flags based on type change
+      if (changes.type) {
+        if (changes.type === 'wait') { step.auto = true; step.recordRequired = false; step.delay = step.delay || 1000; }
+        else if (changes.type === 'paste_rate') { step.auto = true; step.recordRequired = false; }
+        else if (changes.type === 'condition' || changes.type === 'error_recovery') { step.optional = true; step.recordRequired = false; }
+        else if (changes.type === 'setup' || changes.type === 'loop') { step.recordRequired = true; step.auto = false; step.optional = false; }
+      }
+      this.saveConfig();
+      UI.render();
+    },
+
+    resetSteps() {
+      State.scenario.steps = JSON.parse(JSON.stringify(this.defaultWorkflow.steps));
+      State.scenario.stepActions = {};
+      State.scenario.editingStepId = null;
+      State.scenario.showAddStep = false;
+      this.saveConfig();
+      UI.render();
+      UI.flash('info', 'Scénario réinitialisé aux valeurs par défaut');
+    },
+    // ─────────────────────────────────────────────────────────────
+
     startGuidedRecording(stepId) {
-      const step = this.defaultWorkflow.steps.find(s => s.id === stepId);
+      const step = State.scenario.steps.find(s => s.id === stepId);
       if (!step) return;
 
       State.scenario.isGuided = true;
@@ -1400,7 +1489,7 @@
 
     buildActionSequence() {
       const actions = [];
-      const steps = this.defaultWorkflow.steps;
+      const steps = State.scenario.steps;
 
       for (const step of steps) {
         if (step.type === 'marker') {
@@ -1477,6 +1566,7 @@
     saveConfig() {
       try {
         Storage.setItem(Config.storage.scenario, JSON.stringify({
+          steps: State.scenario.steps,
           stepActions: State.scenario.stepActions,
           rateModel: State.scenario.rateModel
         }));
@@ -1490,17 +1580,26 @@
         const saved = Storage.getItem(Config.storage.scenario);
         if (saved) {
           const data = JSON.parse(saved);
+          if (data.steps && data.steps.length > 0) {
+            State.scenario.steps = data.steps;
+          } else {
+            State.scenario.steps = JSON.parse(JSON.stringify(this.defaultWorkflow.steps));
+          }
           if (data.stepActions) State.scenario.stepActions = data.stepActions;
           if (data.rateModel) State.scenario.rateModel = data.rateModel;
-          // Recalculate configured flag
-          const requiredSteps = this.defaultWorkflow.steps.filter(s => s.recordRequired);
-          State.scenario.configured = requiredSteps.every(s => {
-            const actions = State.scenario.stepActions[s.id];
-            return actions && actions.length > 0;
-          });
+        } else {
+          // First load — initialize from default
+          State.scenario.steps = JSON.parse(JSON.stringify(this.defaultWorkflow.steps));
         }
+        // Recalculate configured flag
+        const requiredSteps = State.scenario.steps.filter(s => s.recordRequired);
+        State.scenario.configured = requiredSteps.every(s => {
+          const actions = State.scenario.stepActions[s.id];
+          return actions && actions.length > 0;
+        });
       } catch (e) {
         console.warn('Scenario load error:', e);
+        State.scenario.steps = JSON.parse(JSON.stringify(this.defaultWorkflow.steps));
       }
     },
 
@@ -1547,6 +1646,344 @@
     _removeOverlay() {
       const existing = document.getElementById('autoclicus-guided-overlay');
       if (existing) existing.remove();
+    }
+  };
+
+  // =============================================================================
+  // DISPATCH ACTION — Shared click/dblclick dispatch used by Player + Calibration
+  // =============================================================================
+  async function dispatchAction(element, eventType, fingerprint) {
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    const rect = element.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const evtOpts = { bubbles: true, cancelable: true, clientX: cx, clientY: cy, view: window };
+    const isGridCell = !!fingerprint?.grid?.isGrid;
+
+    switch (eventType) {
+      case 'click': {
+        element.focus();
+        element.dispatchEvent(new MouseEvent('mouseover', evtOpts));
+        element.dispatchEvent(new MouseEvent('mouseenter', { ...evtOpts, bubbles: false }));
+        element.dispatchEvent(new PointerEvent('pointerenter', { ...evtOpts, bubbles: false }));
+        if (isGridCell) await sleep(50);
+        element.dispatchEvent(new PointerEvent('pointerdown', evtOpts));
+        element.dispatchEvent(new MouseEvent('mousedown', evtOpts));
+        if (isGridCell) await sleep(80);
+        element.dispatchEvent(new PointerEvent('pointerup', evtOpts));
+        element.dispatchEvent(new MouseEvent('mouseup', evtOpts));
+        element.dispatchEvent(new MouseEvent('click', { ...evtOpts, detail: 1, button: 0, buttons: 1 }));
+
+        if (isGridCell) {
+          const agRow = element.closest('.ag-row, [row-index]');
+          if (agRow && agRow !== element) {
+            agRow.dispatchEvent(new MouseEvent('click', { ...evtOpts, detail: 1, button: 0, buttons: 1 }));
+          }
+          await sleep(500);
+        }
+        break;
+      }
+      case 'dblclick': {
+        element.focus();
+        element.dispatchEvent(new MouseEvent('mouseover', evtOpts));
+        element.dispatchEvent(new MouseEvent('mouseenter', { ...evtOpts, bubbles: false }));
+        if (isGridCell) await sleep(30);
+
+        // First click
+        element.dispatchEvent(new PointerEvent('pointerdown', evtOpts));
+        element.dispatchEvent(new MouseEvent('mousedown', evtOpts));
+        await sleep(40);
+        element.dispatchEvent(new PointerEvent('pointerup', evtOpts));
+        element.dispatchEvent(new MouseEvent('mouseup', evtOpts));
+        element.dispatchEvent(new MouseEvent('click', { ...evtOpts, detail: 1, button: 0, buttons: 1 }));
+        await sleep(100);
+
+        // Second click
+        element.dispatchEvent(new PointerEvent('pointerdown', evtOpts));
+        element.dispatchEvent(new MouseEvent('mousedown', evtOpts));
+        await sleep(40);
+        element.dispatchEvent(new PointerEvent('pointerup', evtOpts));
+        element.dispatchEvent(new MouseEvent('mouseup', evtOpts));
+        element.dispatchEvent(new MouseEvent('click', { ...evtOpts, detail: 2, button: 0, buttons: 1 }));
+        element.dispatchEvent(new MouseEvent('dblclick', { ...evtOpts, detail: 2, button: 0, buttons: 1 }));
+
+        if (isGridCell) {
+          const agRow = element.closest('.ag-row, [row-index]');
+          if (agRow && agRow !== element) {
+            agRow.dispatchEvent(new MouseEvent('dblclick', { ...evtOpts, detail: 2, button: 0, buttons: 1 }));
+          }
+          await sleep(500);
+        }
+        break;
+      }
+      case 'input':
+      case 'change':
+        // Handled separately by Player (needs value)
+        break;
+      case 'keydown':
+        // Handled separately by Player (needs key)
+        break;
+    }
+  }
+
+  // =============================================================================
+  // CALIBRATION — Viewport check + interactive action wizard
+  // =============================================================================
+  const Calibration = {
+    async start() {
+      const testable = State.recordedActions.filter(a =>
+        a.fingerprint && a.type !== 'loop_start' && a.type !== 'wait' &&
+        a.type !== 'paste_buyer_rate' && a.type !== 'paste_seller_rate' &&
+        a.type !== 'navigate' && a.type !== 'prompt' && a.type !== 'confirm' &&
+        a.type !== 'condition_check' && a.type !== 'error_recovery'
+      );
+
+      if (testable.length === 0) {
+        UI.flash('warning', 'Aucune action testable enregistrée');
+        return;
+      }
+
+      State.calibration.isRunning = true;
+      State.calibration.currentStep = 0;
+      State.calibration.results = [];
+      State.calibration.awaitingResponse = false;
+      State.calibration.viewportMatch = this.checkViewport();
+      UI.render();
+
+      for (let i = 0; i < testable.length; i++) {
+        if (!State.calibration.isRunning) break;
+        State.calibration.currentStep = i;
+        await this.testAction(testable[i], i, testable.length);
+      }
+
+      State.calibration.isRunning = false;
+      State.calibration.awaitingResponse = false;
+      UI.render();
+    },
+
+    async testAction(action, index, total) {
+      // Phase A — Element detection
+      let element = null;
+      let confidence = 0;
+
+      try {
+        const resolved = Fingerprint.resolve(action.fingerprint);
+        element = resolved.element;
+        confidence = resolved.confidence;
+      } catch (e) { /* resolve failed */ }
+
+      if (!element) {
+        State.calibration.results.push({
+          actionIndex: index, confidence: 0, status: 'fail',
+          detail: 'Élément introuvable',
+          eventType: action.eventType,
+          selector: action.fingerprint?.selector?.substring(0, 50) || '?'
+        });
+        State.calibration.awaitingResponse = false;
+        UI.render();
+        // Brief pause so user can see the FAIL before auto-advancing
+        await new Promise(r => setTimeout(r, 800));
+        return;
+      }
+
+      // Phase B — Highlight + dispatch click + ask user
+      try { element.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+      UI.highlightElement(element, false);
+
+      // Actually dispatch the click/dblclick so user can see the effect
+      const eventType = action.eventType || action.type;
+      if (eventType === 'click' || eventType === 'dblclick') {
+        try {
+          await dispatchAction(element, eventType, action.fingerprint);
+        } catch (e) { /* dispatch failed — still ask user */ }
+      }
+
+      State.calibration.awaitingResponse = true;
+      State.calibration.currentTestInfo = {
+        actionIndex: index,
+        total,
+        confidence,
+        text: element.textContent?.trim().substring(0, 50) || '',
+        eventType: action.eventType || action.type,
+        selector: action.fingerprint?.selector?.substring(0, 50) || ''
+      };
+      UI.render();
+
+      // Wait for user response (Oui / Non / Passer)
+      return new Promise(resolve => {
+        State.calibration._resolve = resolve;
+      });
+    },
+
+    handleResponse(status) {
+      const info = State.calibration.currentTestInfo;
+      State.calibration.results.push({
+        actionIndex: State.calibration.currentStep,
+        confidence: info?.confidence || 0,
+        status,
+        detail: info?.text || '',
+        eventType: info?.eventType || '',
+        selector: info?.selector || ''
+      });
+      State.calibration.awaitingResponse = false;
+      State.calibration.currentTestInfo = null;
+
+      if (State.calibration._resolve) {
+        State.calibration._resolve();
+        State.calibration._resolve = null;
+      }
+      UI.render();
+    },
+
+    checkViewport() {
+      if (State.recordedActions.length === 0) return null;
+      const first = State.recordedActions.find(a => a.fingerprint?.viewport);
+      if (!first) return null;
+
+      const recorded = first.fingerprint.viewport;
+      const current = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        devicePixelRatio: window.devicePixelRatio || 1,
+        zoom: Math.round((parseFloat(document.body.style.zoom) || 1) * 100)
+      };
+      const recZoom = Math.round((recorded.zoom || 1) * 100);
+
+      const widthDiff = Math.abs(current.width - recorded.width) / Math.max(recorded.width, 1);
+      const heightDiff = Math.abs(current.height - recorded.height) / Math.max(recorded.height, 1);
+      const dprDiff = Math.abs(current.devicePixelRatio - recorded.devicePixelRatio);
+
+      return {
+        match: widthDiff < 0.05 && heightDiff < 0.05 && dprDiff < 0.1,
+        current: { ...current, zoom: current.zoom },
+        recorded: { width: recorded.width, height: recorded.height, dpr: recorded.devicePixelRatio, zoom: recZoom },
+        widthDiff: Math.round(widthDiff * 100),
+        heightDiff: Math.round(heightDiff * 100)
+      };
+    },
+
+    setZoom(percent) {
+      const p = Math.max(25, Math.min(200, parseInt(percent) || 100));
+      document.body.style.zoom = `${p}%`;
+      UI.flash('success', `Zoom réglé à ${p}%`);
+      UI.render();
+    },
+
+    // Layout presets — resizeTo only works on window.open() windows
+    // In DevTools context we show the recommended size; zoom is directly controllable
+    layoutPresets: {
+      fullscreen: { label: 'Plein écran', w: () => screen.availWidth, h: () => screen.availHeight, x: 0, y: 0 },
+      halfLeft:   { label: 'Moitié gauche', w: () => Math.round(screen.availWidth / 2), h: () => screen.availHeight, x: 0, y: 0 },
+      halfRight:  { label: 'Moitié droite', w: () => Math.round(screen.availWidth / 2), h: () => screen.availHeight, x: () => Math.round(screen.availWidth / 2), y: 0 },
+      third:      { label: 'Tiers écran', w: () => Math.round(screen.availWidth / 3), h: () => screen.availHeight, x: 0, y: 0 },
+      smartd:     { label: 'SmartD optimal', w: () => 1400, h: () => 900, x: () => Math.round((screen.availWidth - 1400) / 2), y: () => Math.round((screen.availHeight - 900) / 2) }
+    },
+
+    applyLayout(presetKey) {
+      const preset = this.layoutPresets[presetKey];
+      if (!preset) return;
+
+      const w = typeof preset.w === 'function' ? preset.w() : preset.w;
+      const h = typeof preset.h === 'function' ? preset.h() : preset.h;
+      const x = typeof preset.x === 'function' ? preset.x() : preset.x;
+      const y = typeof preset.y === 'function' ? preset.y() : preset.y;
+
+      // Try resizeTo/moveTo (works on popup windows)
+      try {
+        window.resizeTo(w, h);
+        window.moveTo(x, y);
+        UI.flash('success', `${preset.label}: ${w}×${h}`);
+      } catch (e) {
+        UI.flash('info', `Redimensionnez manuellement: ${w}×${h} à (${x}, ${y})`);
+      }
+      UI.render();
+    },
+
+    getViewportSuggestion() {
+      const vp = this.checkViewport();
+      if (!vp || vp.match) return null;
+
+      const suggestions = [];
+      if (vp.current.zoom !== vp.recorded.zoom) {
+        suggestions.push(`Réglez le zoom à ${vp.recorded.zoom}%`);
+      }
+      if (vp.widthDiff > 5 || vp.heightDiff > 5) {
+        // Find closest matching preset
+        const recW = vp.recorded.width;
+        const recH = vp.recorded.height;
+        for (const [key, p] of Object.entries(this.layoutPresets)) {
+          const pw = typeof p.w === 'function' ? p.w() : p.w;
+          const ph = typeof p.h === 'function' ? p.h() : p.h;
+          if (Math.abs(pw - recW) / recW < 0.1 && Math.abs(ph - recH) / recH < 0.1) {
+            suggestions.push(`Essayez la disposition "${p.label}"`);
+            break;
+          }
+        }
+        if (suggestions.length <= 1) {
+          suggestions.push(`Fenêtre recommandée: ${recW}×${recH}`);
+        }
+      }
+      return suggestions.length > 0 ? suggestions : null;
+    },
+
+    async navigateToPage(which) {
+      // AG Grid pagination — find pagination panel
+      const pagingPanel = document.querySelector('.ag-paging-panel, [ref="ePagingPanel"]');
+      if (!pagingPanel) {
+        // Fallback: look for generic pagination arrows
+        const arrows = document.querySelectorAll('button[aria-label*="page"], [class*="pagination"] button, [class*="paging"] button');
+        if (arrows.length === 0) {
+          UI.flash('warning', 'Pagination non trouvée — naviguer manuellement');
+          return false;
+        }
+      }
+
+      let btn;
+      if (which === 'last') {
+        btn = document.querySelector(
+          '.ag-paging-button[ref="btLast"], [ref="btLast"], ' +
+          'button[aria-label*="last" i], button[aria-label*="dernière" i], ' +
+          '.ag-paging-panel button:last-of-type'
+        );
+      } else {
+        btn = document.querySelector(
+          '.ag-paging-button[ref="btFirst"], [ref="btFirst"], ' +
+          'button[aria-label*="first" i], button[aria-label*="première" i], ' +
+          '.ag-paging-panel button:first-of-type'
+        );
+      }
+
+      if (btn && !btn.disabled) {
+        btn.click();
+        await new Promise(r => setTimeout(r, 500));
+        UI.flash('success', which === 'last' ? 'Navigation → dernière page' : 'Navigation → page 1');
+        return true;
+      }
+
+      UI.flash('warning', `Bouton "${which === 'last' ? 'Dernière page' : 'Première page'}" non trouvé`);
+      return false;
+    },
+
+    getReport() {
+      const results = State.calibration.results;
+      const passed = results.filter(r => r.status === 'pass').length;
+      const failed = results.filter(r => r.status === 'fail').length;
+      const skipped = results.filter(r => r.status === 'skipped').length;
+      const total = results.length;
+      return { passed, failed, skipped, total, score: total > 0 ? Math.round((passed / total) * 100) : 0 };
+    },
+
+    reset() {
+      State.calibration = {
+        isRunning: false,
+        currentStep: 0,
+        results: [],
+        awaitingResponse: false,
+        viewportMatch: null,
+        currentTestInfo: null,
+        _resolve: null
+      };
+      UI.render();
     }
   };
 
@@ -1831,6 +2268,19 @@
         }
       }
 
+      // ═══════════════════════════════════════════════════════════════════
+      // Navigate to start page (for dual-browser parallel execution)
+      // ═══════════════════════════════════════════════════════════════════
+      if (State.startPage === 'last') {
+        try {
+          const navResult = await Calibration.navigateToPage('last');
+          if (navResult) {
+            console.log('📄 Navigated to last page for parallel execution');
+            await this.sleep(500);
+          }
+        } catch (e) { /* best effort */ }
+      }
+
       // Execute loop actions × loopCount
       while (State.isPlaying && State.currentLoop < State.loopCount) {
         State.currentLoop++;
@@ -1912,6 +2362,13 @@
             UI.flash('warning', 'Heure limite atteinte');
             this.stop();
             return;
+          }
+
+          // Check skip flag (set by auto-error-recovery after concurrency error)
+          if (State._skipCurrentLoop) {
+            State._skipCurrentLoop = false;
+            console.log('⏭️ Skipping rest of loop iteration due to error recovery');
+            break; // Break inner for loop, continue to next loop iteration
           }
 
           // Delay between actions
@@ -2118,115 +2575,15 @@
             console.warn('⚠️ Clicking disabled element:', action.fingerprint.selector);
           }
 
-          // Execute action
+          // Execute action — use shared dispatchAction for click/dblclick
           switch (action.eventType) {
-            case 'click': {
-              // Full event sequence: hover → pointer → mouse → click (Angular Material + AG Grid)
-              const rect = element.getBoundingClientRect();
-              const cx = rect.left + rect.width / 2;
-              const cy = rect.top + rect.height / 2;
-              const evtOpts = { bubbles: true, cancelable: true, clientX: cx, clientY: cy, view: window };
-              const isGridCell = !!action.fingerprint.grid?.isGrid;
-
-              // Focus first (Angular reactive forms need focus for "touched" state)
-              element.focus();
-
-              // Hover first (triggers mat-menu, tooltips, AG Grid row highlights)
-              element.dispatchEvent(new MouseEvent('mouseover', evtOpts));
-              element.dispatchEvent(new MouseEvent('mouseenter', { ...evtOpts, bubbles: false }));
-              element.dispatchEvent(new PointerEvent('pointerenter', { ...evtOpts, bubbles: false }));
-
-              // Small delay between hover and click (AG Grid needs time to register hover state)
-              if (isGridCell) await this.sleep(50);
-
-              element.dispatchEvent(new PointerEvent('pointerdown', evtOpts));
-              element.dispatchEvent(new MouseEvent('mousedown', evtOpts));
-
-              // Human-like delay between mousedown and mouseup (AG Grid + Angular detect synthetic clicks)
-              if (isGridCell) await this.sleep(80);
-
-              element.dispatchEvent(new PointerEvent('pointerup', evtOpts));
-              element.dispatchEvent(new MouseEvent('mouseup', evtOpts));
-
-              // CRITICAL: Always use dispatchEvent with real coordinates for the click.
-              // element.click() sends clientX:0, clientY:0 which breaks AG Grid cell identification
-              // and Angular event delegation that relies on coordinates.
-              element.dispatchEvent(new MouseEvent('click', {
-                ...evtOpts,
-                detail: 1, // single click (AG Grid checks this for single vs double click)
-                button: 0, // left button
-                buttons: 1
-              }));
-
-              // AG Grid + Angular: also try triggering via the row element (some Angular apps
-              // bind (click) on the ag-row, not on individual cells)
-              if (isGridCell) {
-                const agRow = element.closest('.ag-row, [row-index]');
-                if (agRow && agRow !== element) {
-                  agRow.dispatchEvent(new MouseEvent('click', {
-                    ...evtOpts,
-                    detail: 1,
-                    button: 0,
-                    buttons: 1
-                  }));
-                }
-
-                // Wait for Angular sidenav/panel animation after grid row click
-                // mat-sidenav typically takes 200-400ms to animate open
-                await this.sleep(500);
-                console.log('🔲 AG Grid click dispatched with coords + row click');
+            case 'click':
+            case 'dblclick':
+              await dispatchAction(element, action.eventType, action.fingerprint);
+              if (action.fingerprint.grid?.isGrid) {
+                console.log(`🔲 AG Grid ${action.eventType} dispatched with coords + row`);
               }
               break;
-            }
-            case 'dblclick': {
-              // Full double-click sequence: two clicks + dblclick event
-              // Browser expects: mousedown→mouseup→click(detail:1) → mousedown→mouseup→click(detail:2) → dblclick
-              const rect2 = element.getBoundingClientRect();
-              const cx2 = rect2.left + rect2.width / 2;
-              const cy2 = rect2.top + rect2.height / 2;
-              const evtOpts2 = { bubbles: true, cancelable: true, clientX: cx2, clientY: cy2, view: window };
-              const isGridCell2 = !!action.fingerprint.grid?.isGrid;
-
-              element.focus();
-
-              // Hover
-              element.dispatchEvent(new MouseEvent('mouseover', evtOpts2));
-              element.dispatchEvent(new MouseEvent('mouseenter', { ...evtOpts2, bubbles: false }));
-              if (isGridCell2) await this.sleep(30);
-
-              // First click (detail: 1)
-              element.dispatchEvent(new PointerEvent('pointerdown', evtOpts2));
-              element.dispatchEvent(new MouseEvent('mousedown', evtOpts2));
-              await this.sleep(40);
-              element.dispatchEvent(new PointerEvent('pointerup', evtOpts2));
-              element.dispatchEvent(new MouseEvent('mouseup', evtOpts2));
-              element.dispatchEvent(new MouseEvent('click', { ...evtOpts2, detail: 1, button: 0, buttons: 1 }));
-
-              // Brief pause between clicks (human-like: 80-120ms)
-              await this.sleep(100);
-
-              // Second click (detail: 2)
-              element.dispatchEvent(new PointerEvent('pointerdown', evtOpts2));
-              element.dispatchEvent(new MouseEvent('mousedown', evtOpts2));
-              await this.sleep(40);
-              element.dispatchEvent(new PointerEvent('pointerup', evtOpts2));
-              element.dispatchEvent(new MouseEvent('mouseup', evtOpts2));
-              element.dispatchEvent(new MouseEvent('click', { ...evtOpts2, detail: 2, button: 0, buttons: 1 }));
-
-              // dblclick event (fires after second click)
-              element.dispatchEvent(new MouseEvent('dblclick', { ...evtOpts2, detail: 2, button: 0, buttons: 1 }));
-
-              // Also dispatch on row for AG Grid
-              if (isGridCell2) {
-                const agRow2 = element.closest('.ag-row, [row-index]');
-                if (agRow2 && agRow2 !== element) {
-                  agRow2.dispatchEvent(new MouseEvent('dblclick', { ...evtOpts2, detail: 2, button: 0, buttons: 1 }));
-                }
-                await this.sleep(500);
-                console.log('🔲 AG Grid dblclick dispatched with full sequence');
-              }
-              break;
-            }
             case 'input':
             case 'change':
               this.setInputValue(element, action.value);
@@ -2250,22 +2607,61 @@
                                    actionAriaLabel.includes('submit') || actionAriaLabel.includes('valider');
             if (isLikelySubmit) {
               // Only wait + check for submit-like buttons (not every click)
-              await this.sleep(300);
+              await this.sleep(500);
               const errorIndicators = document.querySelectorAll(
                 '.alert-danger, .alert-warning, .mat-snack-bar-container, ' +
-                '[class*="error-banner"], [class*="error-message"], [class*="notification-error"]'
+                '[class*="error-banner"], [class*="error-message"], [class*="notification-error"], ' +
+                '[style*="background"][style*="red"], [style*="color"][style*="red"]'
               );
+              let errorDetected = false;
               for (const indicator of errorIndicators) {
                 const text = indicator.textContent?.trim() || '';
                 if (text && (
                   text.includes('rejet') || text.includes('erreur') || text.includes('modifi') ||
-                  text.includes('error') || text.includes('failed') || text.includes('conflit')
+                  text.includes('error') || text.includes('failed') || text.includes('conflit') ||
+                  text.includes('autre utilisateur')
                 )) {
                   console.warn(`🚨 Error detected after submit: "${text.substring(0, 80)}"`);
                   UI.flash('warning', `Erreur détectée: ${text.substring(0, 60)}`);
                   Audit.log(action, action.fingerprint, text.substring(0, 100), 'error_detected', Date.now() - startTime);
+                  errorDetected = true;
                   break;
                 }
+              }
+
+              // ═══════════════════════════════════════════════════════════════
+              // Auto-recovery: click "Fermer" or "Retour" when error detected
+              // Handles SmartD "L'ordre a été modifié entre temps" concurrency
+              // ═══════════════════════════════════════════════════════════════
+              if (errorDetected) {
+                await this.sleep(200);
+                // Look for Fermer/Retour/Close button near the error
+                const recoveryBtns = document.querySelectorAll(
+                  'button, [role="button"], input[type="button"], a.btn'
+                );
+                let clicked = false;
+                for (const btn of recoveryBtns) {
+                  const btnText = (btn.textContent?.trim() || '').toLowerCase();
+                  if (btnText === 'fermer' || btnText === 'retour' || btnText === 'close' ||
+                      btnText === 'annuler' || btnText === 'cancel') {
+                    if (btn.offsetWidth > 0 && btn.offsetHeight > 0 && !btn.disabled) {
+                      btn.click();
+                      clicked = true;
+                      console.log(`🔙 Auto-recovery: clicked "${btn.textContent.trim()}" to dismiss error`);
+                      UI.flash('info', `Erreur → clic auto sur "${btn.textContent.trim()}" — passage au suivant`);
+                      await this.sleep(800);
+                      break;
+                    }
+                  }
+                }
+                if (!clicked) {
+                  // Fallback: try Escape key
+                  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+                  console.log('🔙 Auto-recovery: Escape key dispatched');
+                  await this.sleep(500);
+                }
+                // Signal loop to skip to next iteration
+                State._skipCurrentLoop = true;
               }
             }
           }
@@ -4218,6 +4614,191 @@
           font-size: 11px;
           font-weight: 600;
         }
+
+        /* ═══ Calibration Tab ═══ */
+        .viewport-status {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 12px;
+          border-radius: 8px;
+          font-size: 12px;
+          font-weight: 500;
+        }
+        .viewport-status.match { background: rgba(0, 135, 78, 0.08); color: #00874e; border: 1px solid rgba(0, 135, 78, 0.2); }
+        .viewport-status.mismatch { background: rgba(220, 53, 69, 0.08); color: #dc3545; border: 1px solid rgba(220, 53, 69, 0.2); }
+        .viewport-status.unknown { background: rgba(108, 117, 125, 0.08); color: #6c757d; border: 1px solid rgba(108, 117, 125, 0.2); }
+
+        .zoom-presets {
+          display: flex;
+          gap: 6px;
+          flex-wrap: wrap;
+          margin-top: 8px;
+        }
+        .zoom-btn {
+          padding: 4px 12px;
+          border: 1px solid ${Config.theme.border};
+          background: white;
+          border-radius: 6px;
+          font-size: 12px;
+          cursor: pointer;
+          transition: all 0.15s;
+        }
+        .zoom-btn:hover { background: ${Config.theme.primary}; color: white; border-color: ${Config.theme.primary}; }
+        .zoom-btn.active { background: ${Config.theme.primary}; color: white; border-color: ${Config.theme.primary}; }
+
+        .page-toggle-group {
+          display: flex;
+          gap: 0;
+          border-radius: 8px;
+          overflow: hidden;
+          border: 1px solid ${Config.theme.border};
+        }
+        .page-toggle-btn {
+          flex: 1;
+          padding: 8px 12px;
+          border: none;
+          background: white;
+          font-size: 12px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.15s;
+          color: ${Config.theme.text};
+        }
+        .page-toggle-btn:not(:last-child) { border-right: 1px solid ${Config.theme.border}; }
+        .page-toggle-btn.active { background: ${Config.theme.primary}; color: white; }
+        .page-toggle-btn:hover:not(.active) { background: ${Config.theme.bgSecondary}; }
+
+        .calib-step-card {
+          padding: 12px;
+          border: 1px solid ${Config.theme.border};
+          border-radius: 8px;
+          margin-top: 8px;
+          background: ${Config.theme.bgSecondary};
+        }
+        .calib-step-card .step-header {
+          font-size: 13px;
+          font-weight: 600;
+          margin-bottom: 8px;
+          color: ${Config.theme.text};
+        }
+        .calib-step-card .step-detail {
+          font-size: 12px;
+          color: ${Config.theme.textSecondary};
+          margin-bottom: 10px;
+        }
+        .calib-response-btns {
+          display: flex;
+          gap: 8px;
+        }
+        .calib-response-btns button {
+          flex: 1;
+          padding: 8px;
+          border: none;
+          border-radius: 6px;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: opacity 0.15s;
+        }
+        .calib-response-btns button:hover { opacity: 0.85; }
+        .calib-btn-pass { background: #00874e; color: white; }
+        .calib-btn-fail { background: #dc3545; color: white; }
+        .calib-btn-skip { background: #6c757d; color: white; }
+
+        .calib-report-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 0;
+          font-size: 12px;
+          border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .calib-report-row:last-child { border-bottom: none; }
+        .calib-report-row .calib-badge {
+          display: inline-block;
+          padding: 2px 8px;
+          border-radius: 4px;
+          font-size: 11px;
+          font-weight: 600;
+          min-width: 50px;
+          text-align: center;
+        }
+        .calib-badge.pass { background: rgba(0, 135, 78, 0.12); color: #00874e; }
+        .calib-badge.fail { background: rgba(220, 53, 69, 0.12); color: #dc3545; }
+        .calib-badge.skipped { background: rgba(108, 117, 125, 0.12); color: #6c757d; }
+
+        @keyframes calib-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(0, 135, 78, 0.3); }
+          50% { box-shadow: 0 0 0 6px rgba(0, 135, 78, 0); }
+        }
+        .calib-step-card.awaiting { animation: calib-pulse 1.5s ease-in-out infinite; border-color: ${Config.theme.primary}; }
+
+        .layout-presets {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+        .layout-btn {
+          padding: 5px 10px;
+          border: 1px solid ${Config.theme.border};
+          border-radius: 6px;
+          background: ${Config.theme.bg};
+          font-size: 11px;
+          cursor: pointer;
+          transition: all 0.15s;
+          color: ${Config.theme.text};
+        }
+        .layout-btn:hover {
+          background: ${Config.theme.primaryLight};
+          color: white;
+          border-color: ${Config.theme.primaryLight};
+        }
+
+        .custom-zoom-row {
+          display: flex;
+          gap: 6px;
+          margin-top: 8px;
+          align-items: center;
+        }
+        .custom-zoom-input {
+          width: 70px;
+          padding: 5px 8px;
+          border: 1px solid ${Config.theme.border};
+          border-radius: 6px;
+          font-size: 12px;
+          text-align: center;
+          background: ${Config.theme.bg};
+          color: ${Config.theme.text};
+        }
+        .custom-zoom-apply {
+          font-size: 11px !important;
+          padding: 5px 10px !important;
+        }
+
+        .calib-suggest {
+          margin-top: 8px;
+          padding: 8px 10px;
+          background: rgba(255, 193, 7, 0.1);
+          border: 1px solid rgba(255, 193, 7, 0.3);
+          border-radius: 6px;
+          font-size: 12px;
+          color: #856404;
+        }
+        .calib-suggest div { margin-bottom: 2px; }
+        .calib-suggest div:last-child { margin-bottom: 0; }
+
+        /* Step management buttons */
+        .step-mgmt { display: inline-flex; gap: 2px; margin-left: 4px; }
+        .step-mgmt-btn {
+          background: none; border: 1px solid ${Config.theme.border}; border-radius: 3px;
+          cursor: pointer; font-size: 12px; padding: 1px 5px; color: ${Config.theme.textSecondary};
+          transition: all 0.15s;
+        }
+        .step-mgmt-btn:hover:not(:disabled) { background: ${Config.theme.bgSecondary}; color: ${Config.theme.text}; border-color: ${Config.theme.primary}; }
+        .step-mgmt-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .step-mgmt-del:hover:not(:disabled) { background: #fff5f5; color: ${Config.theme.error}; border-color: ${Config.theme.error}; }
+        .scenario-step-edit-form input:focus, .scenario-step-edit-form select:focus { outline: none; border-color: ${Config.theme.primary}; }
       `;
     },
 
@@ -4498,7 +5079,7 @@
         modeName = State.scenario.configured ? '📋 ' + Scenario.defaultWorkflow.name : State.recordedActions.length + ' actions enregistrées';
       } else if (State.isRecording) {
         if (State.scenario.isGuided) {
-          const step = Scenario.defaultWorkflow.steps.find(s => s.id === State.scenario.guidedStep);
+          const step = State.scenario.steps.find(s => s.id === State.scenario.guidedStep);
           modeBadge = '<span class="mode-badge recording">⏺ Enregistrement guidé</span>';
           modeName = step ? '📋 ' + step.name : 'Scénario';
         } else {
@@ -4628,7 +5209,7 @@
         statusIcon = '🔴';
         statusLabel = 'REC';
         if (State.scenario.isGuided) {
-          const step = Scenario.defaultWorkflow.steps.find(s => s.id === State.scenario.guidedStep);
+          const step = State.scenario.steps.find(s => s.id === State.scenario.guidedStep);
           statusText = `Enregistrement guidé — ${step ? step.name : 'étape'}`;
         } else {
           statusText = `Enregistrement libre — ${State.recordedActions.length} action${State.recordedActions.length !== 1 ? 's' : ''}`;
@@ -4671,6 +5252,7 @@
         { id: 'audit', label: '📊 Audit' },
         { id: 'stats', label: '📈 Stats' },
         { id: 'save', label: '💾 Sauv.' },
+        { id: 'calibrate', label: '🎯 Calibrer' },
         { id: 'settings', label: '⚙️ Régl.' },
         { id: 'help', label: '❓ Aide' }
       ];
@@ -4695,6 +5277,7 @@
         case 'audit': return this.renderAuditTab();
         case 'stats': return this.renderStatsTab();
         case 'save': return this.renderSaveTab();
+        case 'calibrate': return this.renderCalibrateTab();
         case 'settings': return this.renderSettingsTab();
         case 'help': return this.renderHelpTab();
         default: return '';
@@ -4703,9 +5286,17 @@
 
     renderScenarioTab() {
       const wf = Scenario.defaultWorkflow;
+      const steps = State.scenario.steps;
       const allReady = Scenario.isAllRequiredConfigured();
-      const requiredCount = wf.steps.filter(s => s.recordRequired).length;
-      const configuredCount = wf.steps.filter(s => s.recordRequired && State.scenario.stepActions[s.id]?.length > 0).length;
+      const requiredCount = steps.filter(s => s.recordRequired).length;
+      const configuredCount = steps.filter(s => s.recordRequired && State.scenario.stepActions[s.id]?.length > 0).length;
+      const editingId = State.scenario.editingStepId;
+
+      const stepTypeLabels = {
+        setup: 'Clic (avant boucle)', loop: 'Clic (dans boucle)', wait: 'Attente',
+        paste_rate: 'Coller taux', condition: 'Détection erreur', error_recovery: 'Récupération erreur',
+        marker: 'Marqueur boucle', rate_input: 'Taux du jour', ui_toggle: 'Toggle UI'
+      };
 
       const renderStepBadge = (step) => {
         const status = Scenario.getStepStatus(step.id);
@@ -4720,9 +5311,9 @@
       const renderStepAction = (step) => {
         const status = Scenario.getStepStatus(step.id);
         if (step.type === 'marker') return '';
-        if (step.auto && !step.optional) return '<span style="font-size:11px;color:#1976d2;">Automatique</span>';
-        if (status === 'configured') return `<button class="btn-configure reconfigure" data-scenario-configure="${step.id}">Reconfigurer</button>`;
-        if (step.optional && status === 'optional') return `<button class="btn-configure" style="background:#f57c00;" data-scenario-configure="${step.id}">Configurer (opt.)</button>`;
+        if (step.auto && !step.optional) return '<span style="font-size:11px;color:#1976d2;">Auto</span>';
+        if (status === 'configured') return `<button class="btn-configure reconfigure" data-scenario-configure="${step.id}">Recfg</button>`;
+        if (step.optional && status === 'optional') return `<button class="btn-configure" style="background:#f57c00;" data-scenario-configure="${step.id}">Cfg</button>`;
         if (step.recordRequired) return `<button class="btn-configure" data-scenario-configure="${step.id}">Configurer</button>`;
         return '';
       };
@@ -4738,11 +5329,52 @@
         return step.instruction || '';
       };
 
+      const renderEditForm = (step) => {
+        return `
+          <div class="scenario-step-edit-form" style="padding:8px;background:${Config.theme.bgSecondary};border:1px solid ${Config.theme.primary};border-radius:6px;margin:4px 0;">
+            <div style="display:flex;gap:6px;margin-bottom:6px;">
+              <input type="text" data-edit-field="name" value="${step.name}" placeholder="Nom" style="flex:1;padding:4px 8px;border:1px solid ${Config.theme.border};border-radius:4px;font-size:12px;">
+              <select data-edit-field="type" style="padding:4px 6px;border:1px solid ${Config.theme.border};border-radius:4px;font-size:12px;">
+                ${['setup','loop','wait','paste_rate','condition','error_recovery'].map(t =>
+                  `<option value="${t}" ${step.type === t ? 'selected' : ''}>${stepTypeLabels[t] || t}</option>`
+                ).join('')}
+              </select>
+            </div>
+            ${step.type === 'wait' ? `
+              <div style="margin-bottom:6px;">
+                <label style="font-size:11px;color:${Config.theme.textSecondary};">Délai (ms):</label>
+                <input type="number" data-edit-field="delay" value="${step.delay || 1000}" min="100" step="100" style="width:80px;padding:4px 6px;border:1px solid ${Config.theme.border};border-radius:4px;font-size:12px;">
+              </div>
+            ` : ''}
+            <input type="text" data-edit-field="instruction" value="${step.instruction || ''}" placeholder="Instruction (optionnel)" style="width:100%;padding:4px 8px;border:1px solid ${Config.theme.border};border-radius:4px;font-size:11px;margin-bottom:6px;">
+            <div style="display:flex;gap:6px;justify-content:flex-end;">
+              <button class="btn btn-secondary" style="font-size:11px;padding:3px 10px;" data-step-edit-cancel>Annuler</button>
+              <button class="btn btn-primary" style="font-size:11px;padding:3px 10px;" data-step-edit-save="${step.id}">Sauver</button>
+            </div>
+          </div>
+        `;
+      };
+
+      const renderStepMgmt = (step, idx) => {
+        if (step.type === 'marker') return '<span style="font-size:10px;color:#999;">---</span>';
+        return `
+          <span class="step-mgmt">
+            <button class="step-mgmt-btn" data-step-edit="${step.id}" title="Modifier">&#9998;</button>
+            <button class="step-mgmt-btn" data-step-move-up="${step.id}" title="Monter" ${idx === 0 ? 'disabled' : ''}>&#8593;</button>
+            <button class="step-mgmt-btn" data-step-move-down="${step.id}" title="Descendre" ${idx === steps.length - 1 ? 'disabled' : ''}>&#8595;</button>
+            <button class="step-mgmt-btn step-mgmt-del" data-step-delete="${step.id}" title="Supprimer">&#10005;</button>
+          </span>
+        `;
+      };
+
       let setupSteps = '';
       let loopSteps = '';
       let inLoop = false;
+      let lastSetupId = null;
+      let lastLoopId = null;
 
-      for (const step of wf.steps) {
+      for (let si = 0; si < steps.length; si++) {
+        const step = steps[si];
         if (step.type === 'marker') {
           inLoop = true;
           setupSteps += `
@@ -4751,25 +5383,52 @@
           continue;
         }
 
-        const row = `
-          <div class="scenario-step ${step.type === 'marker' ? 'is-marker' : ''}">
+        const isEditing = editingId === step.id;
+        const row = isEditing ? renderEditForm(step) : `
+          <div class="scenario-step">
             ${renderStepBadge(step)}
-            <div class="scenario-step-info">
+            <div class="scenario-step-info" style="flex:1;min-width:0;">
               <div class="scenario-step-name">${step.name}</div>
               <div class="scenario-step-detail">${renderStepDetail(step)}</div>
             </div>
-            <div class="scenario-step-action">
+            <div class="scenario-step-action" style="display:flex;align-items:center;gap:4px;">
               ${renderStepAction(step)}
+              ${renderStepMgmt(step, si)}
             </div>
           </div>
         `;
 
         if (inLoop) {
           loopSteps += row;
+          lastLoopId = step.id;
         } else {
           setupSteps += row;
+          lastSetupId = step.id;
         }
       }
+
+      // Add step form
+      const addFormHTML = State.scenario.showAddStep ? `
+        <div class="card" style="border-left: 3px solid #0d6efd; margin-top:8px;">
+          <div class="card-header" style="color:#0d6efd;">Ajouter une étape</div>
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <input type="text" id="add-step-name" placeholder="Nom de l'étape" style="flex:1;padding:5px 8px;border:1px solid ${Config.theme.border};border-radius:4px;font-size:12px;">
+            <select id="add-step-type" style="padding:5px 6px;border:1px solid ${Config.theme.border};border-radius:4px;font-size:12px;">
+              ${['setup','loop','wait','paste_rate','condition','error_recovery'].map(t =>
+                `<option value="${t}">${stepTypeLabels[t] || t}</option>`
+              ).join('')}
+            </select>
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <input type="text" id="add-step-instruction" placeholder="Instruction (optionnel)" style="flex:1;padding:5px 8px;border:1px solid ${Config.theme.border};border-radius:4px;font-size:11px;">
+            <input type="number" id="add-step-delay" value="1000" min="100" step="100" placeholder="Délai ms" style="width:80px;padding:5px 6px;border:1px solid ${Config.theme.border};border-radius:4px;font-size:12px;">
+          </div>
+          <div style="display:flex;gap:6px;justify-content:flex-end;">
+            <button class="btn btn-secondary" style="font-size:11px;padding:4px 12px;" id="btn-add-step-cancel">Annuler</button>
+            <button class="btn btn-primary" style="font-size:11px;padding:4px 12px;" id="btn-add-step-save">Ajouter</button>
+          </div>
+        </div>
+      ` : '';
 
       return `
         <div class="content">
@@ -4808,17 +5467,22 @@
           </div>
 
           <div class="card">
-            <div class="card-header">Étapes</div>
+            <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+              Étapes
+              <button class="btn btn-secondary" style="font-size:10px;padding:2px 8px;" id="btn-add-step-toggle">+ Ajouter</button>
+            </div>
             ${setupSteps}
             ${loopSteps}
           </div>
+
+          ${addFormHTML}
 
           <div class="btn-group" style="margin-top:12px;">
             <button class="btn btn-primary" id="btn-launch-scenario" ${!allReady || State.isPlaying ? 'disabled' : ''}>
               ${allReady ? '&#9654; Lancer le scénario' : '&#9744; Configurer les étapes d\'abord'}
             </button>
             <button class="btn btn-secondary" id="btn-reset-scenario">
-              Réinitialiser
+              Réinitialiser par défaut
             </button>
           </div>
 
@@ -5378,6 +6042,182 @@
       `;
     },
 
+    renderCalibrateTab() {
+      const vp = Calibration.checkViewport();
+      const cal = State.calibration;
+      const report = cal.results.length > 0 ? Calibration.getReport() : null;
+      const currentZoom = Math.round((parseFloat(document.body.style.zoom) || 1) * 100);
+      const hasActions = State.recordedActions.length > 0;
+      const suggestions = Calibration.getViewportSuggestion();
+
+      // Viewport card
+      let vpStatusClass = 'unknown';
+      let vpIcon = '—';
+      let vpText = 'Aucune action enregistrée';
+      if (vp) {
+        vpStatusClass = vp.match ? 'match' : 'mismatch';
+        vpIcon = vp.match ? '&#10003;' : '&#9888;';
+        vpText = vp.match
+          ? `Correspondance ${vp.current.width}&#215;${vp.current.height} @${vp.current.devicePixelRatio}x`
+          : `Décalage: ${vp.recorded.width}&#215;${vp.recorded.height} &#8594; ${vp.current.width}&#215;${vp.current.height}`;
+      }
+
+      // Viewport suggestion
+      let suggestHTML = '';
+      if (suggestions && suggestions.length > 0) {
+        suggestHTML = `
+          <div class="calib-suggest">
+            ${suggestions.map(s => `<div>&#128161; ${s}</div>`).join('')}
+          </div>
+        `;
+      }
+
+      // Layout presets
+      const layoutKeys = Object.keys(Calibration.layoutPresets);
+      const layoutHTML = layoutKeys.map(key => {
+        const p = Calibration.layoutPresets[key];
+        return `<button class="layout-btn" data-layout="${key}">${p.label}</button>`;
+      }).join('');
+
+      // Calibration wizard UI
+      let wizardHTML = '';
+      if (cal.isRunning && cal.awaitingResponse && cal.currentTestInfo) {
+        const info = cal.currentTestInfo;
+        wizardHTML = `
+          <div class="calib-step-card awaiting">
+            <div class="step-header">Étape ${info.actionIndex + 1}/${info.total}: ${(info.eventType || '').toUpperCase()} &#8594; ${info.selector}</div>
+            <div class="step-detail">
+              Confiance: ${info.confidence}% ${info.confidence >= 70 ? '&#10003;' : '&#9888;'}<br>
+              Élément trouvé: "${info.text}"
+            </div>
+            <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:${Config.theme.text};">Le clic a-t-il fonctionné correctement?</div>
+            <div class="calib-response-btns">
+              <button class="calib-btn-pass" data-calib-response="pass">Oui</button>
+              <button class="calib-btn-fail" data-calib-response="fail">Non</button>
+              <button class="calib-btn-skip" data-calib-response="skipped">Passer</button>
+            </div>
+          </div>
+        `;
+      } else if (cal.isRunning && !cal.awaitingResponse) {
+        wizardHTML = `
+          <div class="calib-step-card">
+            <div style="text-align:center;color:${Config.theme.textSecondary};font-size:13px;">
+              Résolution de l'étape ${cal.currentStep + 1}...
+            </div>
+          </div>
+        `;
+      }
+
+      // Report
+      let reportHTML = '';
+      if (!cal.isRunning && report && report.total > 0) {
+        const scoreColor = report.score >= 80 ? '#00874e' : report.score >= 50 ? '#ffc107' : '#dc3545';
+        reportHTML = `
+          <div class="card" style="border-left: 3px solid ${scoreColor};">
+            <div class="card-header">Rapport de calibration</div>
+            ${vp ? `<div class="viewport-status ${vpStatusClass}" style="margin-bottom:8px;">
+              Viewport: ${vpIcon} ${vpText}
+            </div>` : ''}
+            ${cal.results.map((r, i) => `
+              <div class="calib-report-row">
+                <span style="min-width:55px;">Étape ${i + 1}</span>
+                <span style="flex:1;color:${Config.theme.textSecondary};font-size:11px;">${r.eventType?.toUpperCase() || '?'} ${r.selector || ''}</span>
+                <span>${r.confidence}%</span>
+                <span class="calib-badge ${r.status}">${r.status === 'pass' ? 'OK' : r.status === 'fail' ? 'ÉCHEC' : 'PASSÉ'}</span>
+              </div>
+            `).join('')}
+            <div style="margin-top:10px;font-size:14px;font-weight:600;color:${scoreColor};">
+              Score global: ${report.passed}/${report.total} (${report.score}%)
+            </div>
+            ${report.failed > 0 ? `
+              <div class="btn-group" style="margin-top:10px;">
+                <button class="btn btn-primary" id="btn-calib-rerun">Relancer la calibration</button>
+                <button class="btn btn-secondary" id="btn-calib-reset">Réinitialiser</button>
+              </div>
+            ` : `
+              <div class="btn-group" style="margin-top:10px;">
+                <button class="btn btn-secondary" id="btn-calib-reset">Effacer résultats</button>
+              </div>
+            `}
+          </div>
+        `;
+      }
+
+      return `
+        <div class="content">
+          <div class="card">
+            <div class="card-header">&#128208; Écran & Zoom</div>
+            <div class="viewport-status ${vpStatusClass}">
+              ${vpIcon} ${vpText}
+            </div>
+            <div style="font-size:11px;color:${Config.theme.textSecondary};margin-top:6px;">
+              Actuel: ${window.innerWidth}&#215;${window.innerHeight} @${window.devicePixelRatio}x zoom:${currentZoom}%
+              ${vp ? `<br>Enregistré: ${vp.recorded.width}&#215;${vp.recorded.height} @${vp.recorded.dpr}x zoom:${vp.recorded.zoom}%` : ''}
+            </div>
+            ${suggestHTML}
+            <div style="margin-top:10px;">
+              <div style="font-size:12px;font-weight:500;margin-bottom:6px;">Dispositions rapides:</div>
+              <div class="layout-presets">${layoutHTML}</div>
+            </div>
+            <div style="margin-top:10px;">
+              <div style="font-size:12px;font-weight:500;margin-bottom:6px;">Zoom:</div>
+              <div class="zoom-presets">
+                ${[75, 90, 100, 110, 125].map(z => `
+                  <button class="zoom-btn ${currentZoom === z ? 'active' : ''}" data-zoom="${z}">${z}%</button>
+                `).join('')}
+              </div>
+              <div class="custom-zoom-row">
+                <input type="number" id="custom-zoom-input" min="25" max="200" step="5" value="${currentZoom}" class="custom-zoom-input" placeholder="%">
+                <button class="btn btn-secondary custom-zoom-apply" id="btn-custom-zoom">Appliquer</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">&#128196; Page de départ</div>
+            <div style="font-size:12px;color:${Config.theme.textSecondary};margin-bottom:8px;">
+              Pour exécuter en parallèle sur 2 navigateurs: un commence à la page 1, l'autre à la dernière page.
+            </div>
+            <div class="page-toggle-group">
+              <button class="page-toggle-btn ${State.startPage === 'first' ? 'active' : ''}" data-start-page="first">
+                &#9664;&#9664; Page 1
+              </button>
+              <button class="page-toggle-btn ${State.startPage === 'last' ? 'active' : ''}" data-start-page="last">
+                Dernière page &#9654;&#9654;
+              </button>
+            </div>
+            <button class="btn btn-secondary" style="margin-top:8px;font-size:12px;" id="btn-nav-page">
+              Naviguer maintenant vers ${State.startPage === 'last' ? 'la dernière page' : 'la page 1'}
+            </button>
+          </div>
+
+          <div class="card" style="border-left: 3px solid ${Config.theme.primary};">
+            <div class="card-header">&#127919; Calibration interactive</div>
+            <div style="font-size:12px;color:${Config.theme.textSecondary};margin-bottom:10px;">
+              Teste chaque action enregistrée: détecte l'élément, dispatche le clic, et vous demande si ça fonctionne.
+            </div>
+            ${!cal.isRunning ? `
+              <div class="btn-group">
+                <button class="btn btn-primary" id="btn-calib-start" ${!hasActions || State.isPlaying ? 'disabled' : ''}>
+                  ${hasActions ? '&#9654; Lancer la calibration' : 'Enregistrez des actions d\'abord'}
+                </button>
+              </div>
+            ` : `
+              <div style="margin-bottom:8px;">
+                <div class="progress-bar-geek">
+                  <div class="progress-fill-geek playing" style="width: ${cal.results.length > 0 ? Math.round((cal.results.length / (cal.currentTestInfo?.total || 1)) * 100) : 0}%"></div>
+                </div>
+              </div>
+              <button class="btn btn-danger" id="btn-calib-stop" style="font-size:12px;">Arrêter</button>
+            `}
+            ${wizardHTML}
+          </div>
+
+          ${reportHTML}
+        </div>
+      `;
+    },
+
     renderSettingsTab() {
       const shortcutNames = {
         record: 'Enregistrer / Arrêter',
@@ -5712,6 +6552,35 @@
           this.render();
           return;
         }
+
+        // Calibration response (Oui / Non / Passer)
+        const calibBtn = t.closest('[data-calib-response]');
+        if (calibBtn) {
+          Calibration.handleResponse(calibBtn.dataset.calibResponse);
+          return;
+        }
+
+        // Zoom presets
+        const zoomBtn = t.closest('[data-zoom]');
+        if (zoomBtn) {
+          Calibration.setZoom(parseInt(zoomBtn.dataset.zoom));
+          return;
+        }
+
+        // Layout presets
+        const layoutBtn = t.closest('[data-layout]');
+        if (layoutBtn) {
+          Calibration.applyLayout(layoutBtn.dataset.layout);
+          return;
+        }
+
+        // Start page toggle
+        const pageBtn = t.closest('[data-start-page]');
+        if (pageBtn) {
+          State.startPage = pageBtn.dataset.startPage;
+          this.render();
+          return;
+        }
       });
 
       // Record tab
@@ -5815,10 +6684,7 @@
 
       if (btnResetScenario) {
         btnResetScenario.addEventListener('click', () => {
-          State.scenario.stepActions = {};
-          Scenario.saveConfig();
-          this.render();
-          this.flash('info', 'Scénario réinitialisé');
+          Scenario.resetSteps(); // Already calls saveConfig + render + flash
         });
       }
 
@@ -5838,6 +6704,134 @@
           this.render();
         });
       });
+
+      // Step management: edit
+      root.querySelectorAll('[data-step-edit]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          State.scenario.editingStepId = btn.dataset.stepEdit;
+          this.render();
+        });
+      });
+
+      // Step management: delete
+      root.querySelectorAll('[data-step-delete]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          Scenario.removeStep(btn.dataset.stepDelete); // calls saveConfig + render
+        });
+      });
+
+      // Step management: move up
+      root.querySelectorAll('[data-step-move-up]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          Scenario.moveStep(btn.dataset.stepMoveUp, 'up'); // calls saveConfig + render
+        });
+      });
+
+      // Step management: move down
+      root.querySelectorAll('[data-step-move-down]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          Scenario.moveStep(btn.dataset.stepMoveDown, 'down'); // calls saveConfig + render
+        });
+      });
+
+      // Step management: save edit
+      root.querySelectorAll('[data-step-edit-save]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const stepId = btn.dataset.stepEditSave;
+          const form = btn.closest('.scenario-step-edit-form');
+          if (!form) return;
+          const name = (form.querySelector('[data-edit-field="name"]') || {}).value;
+          const type = (form.querySelector('[data-edit-field="type"]') || {}).value;
+          const instruction = (form.querySelector('[data-edit-field="instruction"]') || {}).value;
+          const delay = parseInt((form.querySelector('[data-edit-field="delay"]') || {}).value) || undefined;
+          const changes = {};
+          if (name) changes.name = name;
+          if (type) changes.type = type;
+          if (instruction !== undefined) changes.instruction = instruction;
+          if (delay) changes.delay = delay;
+          State.scenario.editingStepId = null;
+          Scenario.updateStep(stepId, changes); // calls saveConfig + render
+        });
+      });
+
+      // Step management: cancel edit
+      root.querySelectorAll('[data-step-edit-cancel]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          State.scenario.editingStepId = null;
+          this.render();
+        });
+      });
+
+      // Add step toggle
+      const btnAddStepToggle = root.querySelector('#btn-add-step-toggle');
+      if (btnAddStepToggle) {
+        btnAddStepToggle.addEventListener('click', () => {
+          State.scenario.showAddStep = !State.scenario.showAddStep;
+          this.render();
+        });
+      }
+
+      // Add step save
+      const btnAddStepSave = root.querySelector('#btn-add-step-save');
+      if (btnAddStepSave) {
+        btnAddStepSave.addEventListener('click', () => {
+          const name = (root.querySelector('#add-step-name') || {}).value;
+          const type = (root.querySelector('#add-step-type') || {}).value || 'setup';
+          const instruction = (root.querySelector('#add-step-instruction') || {}).value;
+          const delay = parseInt((root.querySelector('#add-step-delay') || {}).value) || 1000;
+          if (!name || !name.trim()) {
+            this.flash('error', 'Nom requis');
+            return;
+          }
+          State.scenario.showAddStep = false;
+          Scenario.addStep(null, { name: name.trim(), type, instruction: instruction || '', delay, required: false }); // calls saveConfig + render
+          this.flash('success', `Étape "${name.trim()}" ajoutée`);
+        });
+      }
+
+      // Add step cancel
+      const btnAddStepCancel = root.querySelector('#btn-add-step-cancel');
+      if (btnAddStepCancel) {
+        btnAddStepCancel.addEventListener('click', () => {
+          State.scenario.showAddStep = false;
+          this.render();
+        });
+      }
+
+      // Calibration tab buttons
+      const btnCalibStart = root.querySelector('#btn-calib-start');
+      const btnCalibStop = root.querySelector('#btn-calib-stop');
+      const btnCalibRerun = root.querySelector('#btn-calib-rerun');
+      const btnCalibReset = root.querySelector('#btn-calib-reset');
+      const btnNavPage = root.querySelector('#btn-nav-page');
+
+      if (btnCalibStart) btnCalibStart.addEventListener('click', () => Calibration.start());
+      if (btnCalibStop) btnCalibStop.addEventListener('click', () => {
+        State.calibration.isRunning = false;
+        if (State.calibration._resolve) {
+          State.calibration._resolve();
+          State.calibration._resolve = null;
+        }
+        this.render();
+      });
+      if (btnCalibRerun) btnCalibRerun.addEventListener('click', () => {
+        Calibration.reset();
+        Calibration.start();
+      });
+      if (btnCalibReset) btnCalibReset.addEventListener('click', () => Calibration.reset());
+      if (btnNavPage) btnNavPage.addEventListener('click', () => Calibration.navigateToPage(State.startPage));
+
+      // Custom zoom
+      const btnCustomZoom = root.querySelector('#btn-custom-zoom');
+      const customZoomInput = root.querySelector('#custom-zoom-input');
+      if (btnCustomZoom && customZoomInput) {
+        btnCustomZoom.addEventListener('click', () => {
+          Calibration.setZoom(parseInt(customZoomInput.value) || 100);
+        });
+        customZoomInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') Calibration.setZoom(parseInt(customZoomInput.value) || 100);
+        });
+      }
 
       // Conditions tab — inline form
       const btnAddCondition = root.querySelector('#add-condition');
