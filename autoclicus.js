@@ -1,4 +1,4 @@
-// AutoClicUS v5.4.0 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
+// AutoClicUS v5.5.0 - "C'est l'heure du taux de change! — Propulsé par JSLAI"
 // Automation assistant for SmartD USD exchange rate operations
 // Paste this complete snippet into Chrome DevTools console
 
@@ -9,7 +9,7 @@
   // CONFIG
   // =============================================================================
   const Config = {
-    version: '5.4.0',
+    version: '5.5.0',
     emmaAvatar: 'data:image/jpeg;base64,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',
     theme: {
       bg: '#ffffff',
@@ -42,6 +42,7 @@
       config: 'autoclicus_config_v4',
       audit: 'autoclicus_audit_v4',
       scenario: 'autoclicus_scenario_v1',
+      scenarioVersions: 'autoclicus_scenarios_v2',
       dirHandle: 'autoclicus_dir_handle_v1',
       calibration: 'autoclicus_calibration_v1'
     },
@@ -141,6 +142,64 @@
       }
     };
   })();
+
+  // =============================================================================
+  // LOGGER — Ring buffer logging with download support
+  // =============================================================================
+  const Logger = {
+    _buffer: [],
+    _maxEntries: 500,
+
+    log(level, category, message, data) {
+      const entry = {
+        timestamp: new Date().toISOString(),
+        level,
+        category,
+        message,
+        data: data || null
+      };
+      this._buffer.push(entry);
+      if (this._buffer.length > this._maxEntries) {
+        this._buffer.shift();
+      }
+      if (typeof console[level] === 'function') {
+        const prefix = `[AutoClicUS:${category}]`;
+        if (data) console[level](prefix, message, data);
+        else console[level](prefix, message);
+      }
+    },
+
+    info(category, message, data) { this.log('info', category, message, data); },
+    warn(category, message, data) { this.log('warn', category, message, data); },
+    error(category, message, data) { this.log('error', category, message, data); },
+
+    getRecent(n) {
+      return this._buffer.slice(-(n || 50));
+    },
+
+    download() {
+      const lines = this._buffer.map(e => {
+        const dataStr = e.data ? ' | ' + JSON.stringify(e.data) : '';
+        return `${e.timestamp} [${e.level.toUpperCase()}] (${e.category}) ${e.message}${dataStr}`;
+      });
+      const text = `AutoClicUS v${Config.version} — Log Export\n` +
+        `Generated: ${new Date().toISOString()}\n` +
+        `Entries: ${this._buffer.length}\n` +
+        `${'='.repeat(80)}\n\n` +
+        lines.join('\n');
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `autoclicus-log-${new Date().toISOString().replace(/[:.]/g, '-')}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+
+    clear() {
+      this._buffer = [];
+    }
+  };
 
   // =============================================================================
   // STATE
@@ -244,7 +303,14 @@
     startPage: 'first',      // 'first' | 'last'
 
     // Skip current loop flag (for error recovery)
-    _skipCurrentLoop: false
+    _skipCurrentLoop: false,
+
+    // Lightweight mode (reduce visual effects for lower memory)
+    lightweightMode: false,
+
+    // Scenario versioning
+    scenarioVersions: [],
+    activeVersionName: 'Auto'
   };
 
   // =============================================================================
@@ -1353,8 +1419,9 @@
         // Loop marker
         { id: 'loop-start', name: 'Début boucle', type: 'marker', recordRequired: false, auto: true, instruction: 'Les étapes suivantes sont répétées pour chaque transaction.' },
         // Loop steps (repeat × BOUCLES)
-        { id: 'clic-ligne', name: 'Cliquer ligne transaction', type: 'loop', recordRequired: true, instruction: 'Cliquez sur une ligne de transaction pour ouvrir le modal.' },
-        { id: 'attente-modal', name: 'Attente ouverture modal', type: 'wait', recordRequired: false, auto: true, delay: 1000, instruction: 'Attente automatique (1000ms).' },
+        { id: 'clic-ligne', name: 'Cliquer ligne transaction', type: 'loop', recordRequired: true, instruction: 'Cliquez sur une ligne de transaction dans la grille.' },
+        { id: 'clic-crayon', name: 'Crayon (éditer)', type: 'loop', recordRequired: true, instruction: 'Cliquez sur l\'icône crayon/éditer qui apparaît après le clic sur la ligne.' },
+        { id: 'attente-modal', name: 'Attente ouverture sidenav', type: 'wait_sidenav', recordRequired: false, auto: true, delay: 5000, instruction: 'Attente automatique de l\'ouverture du panneau latéral (max 5s).' },
         { id: 'clic-champ-taux', name: 'Cliquer champ taux dans modal', type: 'loop', recordRequired: true, instruction: 'Cliquez sur le champ de saisie du taux dans le modal.' },
         { id: 'coller-taux', name: 'Coller taux', type: 'paste_rate', recordRequired: false, auto: true, instruction: 'Le taux acheteur est collé automatiquement.' },
         { id: 'soumettre', name: 'Soumettre', type: 'loop', recordRequired: true, instruction: 'Cliquez sur le bouton Soumettre dans le modal.' },
@@ -1384,7 +1451,7 @@
       const id = 'step_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
       const newStep = { id, name: stepData.name || 'Nouvelle étape', type: stepData.type || 'loop', ...stepData };
       // Ensure proper defaults
-      if (newStep.type === 'wait') { newStep.auto = true; newStep.recordRequired = false; newStep.delay = newStep.delay || 1000; }
+      if (newStep.type === 'wait' || newStep.type === 'wait_sidenav') { newStep.auto = true; newStep.recordRequired = false; newStep.delay = newStep.delay || 1000; }
       else if (newStep.type === 'paste_rate') { newStep.auto = true; newStep.recordRequired = false; }
       else if (newStep.type === 'condition' || newStep.type === 'error_recovery') { newStep.optional = true; newStep.recordRequired = false; }
       else if (newStep.type === 'setup' || newStep.type === 'loop') { newStep.recordRequired = true; }
@@ -1427,7 +1494,7 @@
       Object.assign(step, changes);
       // Auto-set flags based on type change
       if (changes.type) {
-        if (changes.type === 'wait') { step.auto = true; step.recordRequired = false; step.delay = step.delay || 1000; }
+        if (changes.type === 'wait' || changes.type === 'wait_sidenav') { step.auto = true; step.recordRequired = false; step.delay = step.delay || 1000; }
         else if (changes.type === 'paste_rate') { step.auto = true; step.recordRequired = false; }
         else if (changes.type === 'condition' || changes.type === 'error_recovery') { step.optional = true; step.recordRequired = false; }
         else if (changes.type === 'setup' || changes.type === 'loop') { step.recordRequired = true; step.auto = false; step.optional = false; }
@@ -1503,6 +1570,15 @@
             id: `scenario_wait_${step.id}`,
             type: 'wait',
             delay: step.delay || 1000
+          });
+          continue;
+        }
+
+        if (step.type === 'wait_sidenav') {
+          actions.push({
+            id: `scenario_wait_sidenav_${step.id}`,
+            type: 'wait_sidenav',
+            delay: step.delay || 5000
           });
           continue;
         }
@@ -1601,6 +1677,90 @@
         console.warn('Scenario load error:', e);
         State.scenario.steps = JSON.parse(JSON.stringify(this.defaultWorkflow.steps));
       }
+
+      // Load versions list
+      this.loadVersions();
+    },
+
+    // ─── Versioning ──────────────────────────────────────────────
+    loadVersions() {
+      try {
+        const saved = Storage.getItem(Config.storage.scenarioVersions);
+        if (saved) {
+          State.scenarioVersions = JSON.parse(saved);
+        }
+      } catch (e) { State.scenarioVersions = []; }
+    },
+
+    saveVersions() {
+      try {
+        Storage.setItem(Config.storage.scenarioVersions, JSON.stringify(State.scenarioVersions));
+      } catch (e) { console.warn('Version save error:', e); }
+    },
+
+    saveAsVersion(name) {
+      if (!name || !name.trim()) return;
+      const data = {
+        name: name.trim(),
+        created: Date.now(),
+        updated: Date.now(),
+        data: {
+          steps: JSON.parse(JSON.stringify(State.scenario.steps)),
+          stepActions: JSON.parse(JSON.stringify(State.scenario.stepActions)),
+          rateModel: State.scenario.rateModel,
+          viewport: {
+            width: window.innerWidth,
+            height: window.innerHeight,
+            devicePixelRatio: window.devicePixelRatio || 1,
+            zoom: Math.round((parseFloat(document.body.style.zoom) || 1) * 100)
+          }
+        }
+      };
+
+      // Replace if same name exists
+      const idx = State.scenarioVersions.findIndex(v => v.name === data.name);
+      if (idx >= 0) {
+        data.created = State.scenarioVersions[idx].created;
+        State.scenarioVersions[idx] = data;
+      } else {
+        State.scenarioVersions.push(data);
+      }
+
+      // Cap at 10 versions
+      while (State.scenarioVersions.length > 10) {
+        State.scenarioVersions.shift();
+      }
+
+      State.activeVersionName = data.name;
+      this.saveVersions();
+      Logger.info('nav', `Scenario saved as "${data.name}"`);
+    },
+
+    loadVersion(name) {
+      const version = State.scenarioVersions.find(v => v.name === name);
+      if (!version) return;
+      State.scenario.steps = JSON.parse(JSON.stringify(version.data.steps));
+      State.scenario.stepActions = JSON.parse(JSON.stringify(version.data.stepActions));
+      State.scenario.rateModel = version.data.rateModel || 'acheteur';
+      State.activeVersionName = name;
+      this.saveConfig();
+      // Recalculate configured flag
+      const requiredSteps = State.scenario.steps.filter(s => s.recordRequired);
+      State.scenario.configured = requiredSteps.every(s => {
+        const actions = State.scenario.stepActions[s.id];
+        return actions && actions.length > 0;
+      });
+      Logger.info('nav', `Scenario version "${name}" loaded`);
+      UI.flash('success', `Version "${name}" chargée`);
+      UI.render();
+    },
+
+    deleteVersion(name) {
+      State.scenarioVersions = State.scenarioVersions.filter(v => v.name !== name);
+      this.saveVersions();
+      Logger.info('nav', `Scenario version "${name}" deleted`);
+      UI.flash('info', `Version "${name}" supprimée`);
+      UI.render();
     },
 
     _showOverlay(instruction) {
@@ -1646,6 +1806,171 @@
     _removeOverlay() {
       const existing = document.getElementById('autoclicus-guided-overlay');
       if (existing) existing.remove();
+    }
+  };
+
+  // =============================================================================
+  // AUTO-DISCOVER — Smart workflow pattern detection during recording
+  // =============================================================================
+  const AutoDiscover = {
+    isActive: false,
+    detectedSteps: [],
+    _lastGridClick: null,
+    _lastClickTime: 0,
+
+    start() {
+      this.isActive = true;
+      this.detectedSteps = [];
+      this._lastGridClick = null;
+      this._lastClickTime = 0;
+
+      // Attach observer for DOM mutations (sidenav open/close)
+      this._observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes) {
+            if (node.nodeType === 1 && (node.matches?.('mat-sidenav.mat-drawer-opened') || node.classList?.contains('mat-drawer-opened'))) {
+              this._onSidenavOpen();
+            }
+          }
+        }
+      });
+      this._observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+
+      // Start recording
+      if (!State.isRecording) {
+        Recorder.start();
+      }
+
+      Logger.info('nav', 'Auto-discovery mode started');
+      UI.flash('info', 'Mode auto-découverte: effectuez votre flux de travail normalement');
+    },
+
+    stop() {
+      this.isActive = false;
+      if (this._observer) {
+        this._observer.disconnect();
+        this._observer = null;
+      }
+      if (State.isRecording) {
+        Recorder.stop();
+      }
+      Logger.info('nav', `Auto-discovery stopped: ${this.detectedSteps.length} steps detected`);
+      UI.render();
+    },
+
+    // Called from Recorder.onEvent when auto-discover is active
+    analyzeAction(action) {
+      if (!this.isActive) return;
+
+      const now = Date.now();
+      const fp = action.fingerprint;
+      const selector = fp?.selector || '';
+      const text = (fp?.text || '').toLowerCase();
+
+      // Pattern: Grid cell click (AG Grid)
+      if (fp?.grid?.isGrid && action.eventType === 'click') {
+        this._lastGridClick = now;
+        this.detectedSteps.push({
+          type: 'clic-ligne',
+          name: 'Cliquer ligne transaction',
+          confidence: 0.9,
+          action,
+          timestamp: now
+        });
+        Logger.info('nav', 'Auto-discover: detected grid line click');
+        return;
+      }
+
+      // Pattern: Small icon click (<30px) shortly after grid click → pencil/edit
+      if (action.eventType === 'click' && this._lastGridClick && (now - this._lastGridClick < 3000)) {
+        const rect = fp?.rect;
+        if (rect && (rect.width < 35 || rect.height < 35)) {
+          this.detectedSteps.push({
+            type: 'clic-crayon',
+            name: 'Crayon (éditer)',
+            confidence: 0.7,
+            action,
+            timestamp: now
+          });
+          Logger.info('nav', 'Auto-discover: detected pencil/edit icon click');
+          return;
+        }
+      }
+
+      // Pattern: Input focus in sidenav → rate field
+      if ((action.eventType === 'click' || action.eventType === 'input') && selector.includes('mat-sidenav')) {
+        const tag = fp?.tagName?.toLowerCase();
+        if (tag === 'input' || tag === 'textarea') {
+          this.detectedSteps.push({
+            type: 'clic-champ-taux',
+            name: 'Cliquer champ taux',
+            confidence: 0.8,
+            action,
+            timestamp: now
+          });
+          Logger.info('nav', 'Auto-discover: detected rate field click in sidenav');
+          return;
+        }
+      }
+
+      // Pattern: Submit button
+      if (action.eventType === 'click' && (
+        text.includes('valider') || text.includes('soumettre') || text.includes('submit') ||
+        text.includes('enregistrer') || text.includes('sauvegarder')
+      )) {
+        this.detectedSteps.push({
+          type: 'soumettre',
+          name: 'Soumettre',
+          confidence: 0.9,
+          action,
+          timestamp: now
+        });
+        Logger.info('nav', 'Auto-discover: detected submit button');
+        return;
+      }
+
+      this._lastClickTime = now;
+    },
+
+    _onSidenavOpen() {
+      if (!this.isActive) return;
+      this.detectedSteps.push({
+        type: 'attente-modal',
+        name: 'Ouverture sidenav détectée',
+        confidence: 0.95,
+        action: null,
+        timestamp: Date.now()
+      });
+      Logger.info('nav', 'Auto-discover: sidenav opened');
+    },
+
+    // Apply detected steps to the scenario
+    applyToScenario() {
+      const highConfidence = this.detectedSteps.filter(s => s.confidence >= 0.7);
+      if (highConfidence.length === 0) {
+        UI.flash('warning', 'Aucun pattern détecté avec confiance suffisante');
+        return;
+      }
+
+      // Map detected steps to scenario step IDs and assign actions
+      for (const detected of highConfidence) {
+        const scenarioStep = State.scenario.steps.find(s => s.id === detected.type);
+        if (scenarioStep && detected.action) {
+          State.scenario.stepActions[detected.type] = [detected.action];
+          Logger.info('nav', `Auto-discover: assigned ${detected.type} from detection`);
+        }
+      }
+
+      Scenario.saveConfig();
+      // Recalculate configured flag
+      const requiredSteps = State.scenario.steps.filter(s => s.recordRequired);
+      State.scenario.configured = requiredSteps.every(s => {
+        const actions = State.scenario.stepActions[s.id];
+        return actions && actions.length > 0;
+      });
+
+      UI.flash('success', `${highConfidence.length} étapes configurées automatiquement`);
+      UI.render();
     }
   };
 
@@ -1733,6 +2058,7 @@
     async start() {
       const testable = State.recordedActions.filter(a =>
         a.fingerprint && a.type !== 'loop_start' && a.type !== 'wait' &&
+        a.type !== 'wait_sidenav' &&
         a.type !== 'paste_buyer_rate' && a.type !== 'paste_seller_rate' &&
         a.type !== 'navigate' && a.type !== 'prompt' && a.type !== 'confirm' &&
         a.type !== 'condition_check' && a.type !== 'error_recovery'
@@ -1753,6 +2079,10 @@
       for (let i = 0; i < testable.length; i++) {
         if (!State.calibration.isRunning) break;
         State.calibration.currentStep = i;
+
+        // Execute preceding non-testable steps to put page in correct state
+        await this._executePrecedingSteps(i);
+
         await this.testAction(testable[i], i, testable.length);
       }
 
@@ -1761,7 +2091,57 @@
       UI.render();
     },
 
+    // Execute preceding actions (waits, paste_rate, etc.) to bring page to correct state
+    async _executePrecedingSteps(testableIndex) {
+      const allActions = State.recordedActions;
+      // Find position of this testable action in the full list
+      let testableCount = 0;
+      for (let i = 0; i < allActions.length; i++) {
+        const a = allActions[i];
+        if (a.fingerprint && a.type !== 'loop_start' && a.type !== 'wait' &&
+            a.type !== 'wait_sidenav' &&
+            a.type !== 'paste_buyer_rate' && a.type !== 'paste_seller_rate' &&
+            a.type !== 'navigate' && a.type !== 'prompt' && a.type !== 'confirm' &&
+            a.type !== 'condition_check' && a.type !== 'error_recovery') {
+          if (testableCount === testableIndex) break;
+          testableCount++;
+        } else if (a.type === 'wait' || a.type === 'wait_sidenav') {
+          // Execute wait steps to maintain timing
+          try {
+            await Player.execAction(a);
+          } catch (e) { Logger.warn('calibrate', `Pre-step wait failed: ${e.message}`); }
+        }
+      }
+    },
+
+    // Calibrate a single step by its scenario step ID
+    async testSingleStep(stepId) {
+      const stepActions = State.scenario.stepActions[stepId];
+      if (!stepActions || stepActions.length === 0) {
+        UI.flash('warning', 'Aucune action enregistrée pour cette étape');
+        return;
+      }
+      const action = stepActions[0];
+      if (!action.fingerprint) {
+        UI.flash('warning', 'Action sans empreinte — impossible à tester');
+        return;
+      }
+
+      State.calibration.isRunning = true;
+      State.calibration.currentStep = 0;
+      State.calibration.results = [];
+      State.calibration.awaitingResponse = false;
+      UI.render();
+
+      await this.testAction(action, 0, 1);
+
+      State.calibration.isRunning = false;
+      State.calibration.awaitingResponse = false;
+      UI.render();
+    },
+
     async testAction(action, index, total) {
+      Logger.info('calibrate', `Testing action ${index + 1}/${total}: ${action.eventType || action.type} on ${action.fingerprint?.selector?.substring(0, 50) || '?'}`);
       // Phase A — Element detection
       let element = null;
       let confidence = 0;
@@ -1773,12 +2153,24 @@
       } catch (e) { /* resolve failed */ }
 
       if (!element) {
+        // Check if this action requires sidenav to be open
+        const isSidenav = action.fingerprint?.selector?.includes('mat-sidenav') ||
+                          action.fingerprint?.xpath?.includes('mat-sidenav');
+        const sidenavOpen = !!document.querySelector('mat-sidenav.mat-drawer-opened, mat-drawer.mat-drawer-opened');
+        let detail = 'Élément introuvable';
+        if (isSidenav && !sidenavOpen) {
+          detail = 'Élément introuvable — le panneau latéral (sidenav) n\'est pas ouvert. Exécutez d\'abord les étapes précédentes.';
+        } else if (!sidenavOpen && action.fingerprint?.selector) {
+          detail = `Élément introuvable: ${action.fingerprint.selector.substring(0, 60)}`;
+        }
+
         State.calibration.results.push({
           actionIndex: index, confidence: 0, status: 'fail',
-          detail: 'Élément introuvable',
+          detail,
           eventType: action.eventType,
           selector: action.fingerprint?.selector?.substring(0, 50) || '?'
         });
+        Logger.warn('calibrate', `FAIL: ${detail}`);
         State.calibration.awaitingResponse = false;
         UI.render();
         // Brief pause so user can see the FAIL before auto-advancing
@@ -1888,14 +2280,32 @@
       const x = typeof preset.x === 'function' ? preset.x() : preset.x;
       const y = typeof preset.y === 'function' ? preset.y() : preset.y;
 
-      // Try resizeTo/moveTo (works on popup windows)
+      // Try resizeTo/moveTo (works on popup windows opened with window.open)
+      let resized = false;
       try {
+        const beforeW = window.outerWidth;
+        const beforeH = window.outerHeight;
         window.resizeTo(w, h);
         window.moveTo(x, y);
-        UI.flash('success', `${preset.label}: ${w}×${h}`);
-      } catch (e) {
-        UI.flash('info', `Redimensionnez manuellement: ${w}×${h} à (${x}, ${y})`);
+        // Check if resize actually worked (Chrome blocks for non-popup windows)
+        if (Math.abs(window.outerWidth - beforeW) > 10 || Math.abs(window.outerHeight - beforeH) > 10) {
+          resized = true;
+          UI.flash('success', `${preset.label}: ${w}×${h}`);
+        }
+      } catch (e) { /* resizeTo not available */ }
+
+      if (!resized) {
+        // Fallback: try CSS zoom approach for visual scaling
+        const currentW = window.innerWidth;
+        const zoomRatio = w / currentW;
+        if (zoomRatio > 0.5 && zoomRatio < 2) {
+          document.body.style.zoom = `${Math.round(zoomRatio * 100)}%`;
+          UI.flash('info', `Zoom CSS appliqué (${Math.round(zoomRatio * 100)}%). Pour une taille exacte ${w}×${h}: redimensionnez manuellement la fenêtre.`);
+        } else {
+          UI.flash('info', `Redimensionnez manuellement: ${w}×${h} à (${x}, ${y})`);
+        }
       }
+      Logger.info('calibrate', `Layout ${presetKey}: ${w}×${h}, resized=${resized}`);
       UI.render();
     },
 
@@ -1927,6 +2337,7 @@
     },
 
     async navigateToPage(which) {
+      Logger.info('nav', `Navigating to ${which} page`);
       // AG Grid pagination — find pagination panel
       const pagingPanel = document.querySelector('.ag-paging-panel, [ref="ePagingPanel"]');
       if (!pagingPanel) {
@@ -1938,29 +2349,61 @@
         }
       }
 
-      let btn;
-      if (which === 'last') {
-        btn = document.querySelector(
-          '.ag-paging-button[ref="btLast"], [ref="btLast"], ' +
-          'button[aria-label*="last" i], button[aria-label*="dernière" i], ' +
-          '.ag-paging-panel button:last-of-type'
-        );
-      } else {
-        btn = document.querySelector(
-          '.ag-paging-button[ref="btFirst"], [ref="btFirst"], ' +
-          'button[aria-label*="first" i], button[aria-label*="première" i], ' +
-          '.ag-paging-panel button:first-of-type'
-        );
+      // Expanded selector lists for maximum compatibility
+      const lastSelectors = [
+        '.ag-paging-button[ref="btLast"]', '[ref="btLast"]',
+        'button[aria-label*="last" i]', 'button[aria-label*="dernière" i]',
+        'button:has(.ag-icon-last)', 'button:has(mat-icon)',
+        '.ag-paging-panel button:last-of-type',
+        '[class*="pagination"] button:last-of-type',
+        '[class*="paging"] button:last-of-type'
+      ];
+      const firstSelectors = [
+        '.ag-paging-button[ref="btFirst"]', '[ref="btFirst"]',
+        'button[aria-label*="first" i]', 'button[aria-label*="première" i]',
+        'button:has(.ag-icon-first)', 'button:has(mat-icon)',
+        '.ag-paging-panel button:first-of-type',
+        '[class*="pagination"] button:first-of-type',
+        '[class*="paging"] button:first-of-type'
+      ];
+
+      const selectors = which === 'last' ? lastSelectors : firstSelectors;
+      let btn = null;
+      let matchedSelector = null;
+
+      for (const sel of selectors) {
+        try {
+          const candidate = document.querySelector(sel);
+          if (candidate && !candidate.disabled) {
+            btn = candidate;
+            matchedSelector = sel;
+            break;
+          }
+        } catch (e) { /* :has() not supported in older browsers */ }
       }
 
-      if (btn && !btn.disabled) {
+      // Visual fallback: find pagination panel and pick rightmost/leftmost button
+      if (!btn) {
+        const panel = pagingPanel || document.querySelector('[class*="pagination"], [class*="paging"]');
+        if (panel) {
+          const buttons = Array.from(panel.querySelectorAll('button:not(:disabled)'));
+          if (buttons.length > 0) {
+            btn = which === 'last' ? buttons[buttons.length - 1] : buttons[0];
+            matchedSelector = 'visual-fallback (positional)';
+          }
+        }
+      }
+
+      if (btn) {
         btn.click();
+        Logger.info('nav', `Page navigation: ${which} — matched selector: ${matchedSelector}`);
         await new Promise(r => setTimeout(r, 500));
         UI.flash('success', which === 'last' ? 'Navigation → dernière page' : 'Navigation → page 1');
         return true;
       }
 
-      UI.flash('warning', `Bouton "${which === 'last' ? 'Dernière page' : 'Première page'}" non trouvé`);
+      Logger.warn('nav', `Page navigation FAILED: ${which} — no selector matched`, { triedSelectors: selectors.length });
+      UI.flash('warning', `Bouton "${which === 'last' ? 'Dernière page' : 'Première page'}" non trouvé — essayez de naviguer manuellement`);
       return false;
     },
 
@@ -2039,6 +2482,7 @@
       if (eventType === 'keydown' && !['Enter', 'Tab'].includes(event.key)) return;
 
       const fingerprint = Fingerprint.capture(target, eventType);
+      Logger.info('record', `Captured ${eventType} on ${fingerprint?.selector?.substring(0, 60) || target.tagName}`, { eventType, text: fingerprint?.text?.substring(0, 40) });
 
       // DBLCLICK: Replace the preceding click(s) with a single dblclick action
       // Browser fires: click(detail:1) → click(detail:2) → dblclick
@@ -2126,6 +2570,11 @@
       }
 
       State.recordedActions.push(action);
+
+      // Auto-discovery: analyze action for pattern detection
+      if (AutoDiscover.isActive) {
+        AutoDiscover.analyzeAction(action);
+      }
 
       // Semantic analysis log — help user understand what was captured
       const fp = action.fingerprint;
@@ -2401,11 +2850,34 @@
 
     async execAction(action) {
       const startTime = Date.now();
+      Logger.info('play', `Executing: ${action.type} ${action.eventType || ''} ${action.fingerprint?.selector?.substring(0, 50) || action.type}`, { actionId: action.id, step: State.currentStep, loop: State.currentLoop });
 
       try {
         if (action.type === 'wait') {
           await this.sleep(action.delay || 1000);
           Audit.log(action, 'wait', `${action.delay}ms`, 'success', Date.now() - startTime);
+          return;
+        }
+
+        if (action.type === 'wait_sidenav') {
+          const maxWait = action.delay || 5000;
+          const pollInterval = 200;
+          let elapsed = 0;
+          let opened = false;
+          while (elapsed < maxWait) {
+            const sidenav = document.querySelector('mat-sidenav.mat-drawer-opened, mat-drawer.mat-drawer-opened');
+            if (sidenav && sidenav.offsetWidth > 50) {
+              opened = true;
+              Logger.info('play', `Sidenav detected after ${elapsed}ms`);
+              break;
+            }
+            await this.sleep(pollInterval);
+            elapsed += pollInterval;
+          }
+          if (!opened) {
+            Logger.warn('play', `Sidenav not detected after ${maxWait}ms — continuing anyway`);
+          }
+          Audit.log(action, 'wait_sidenav', opened ? `opened in ${elapsed}ms` : `timeout ${maxWait}ms`, opened ? 'success' : 'warning', Date.now() - startTime);
           return;
         }
 
@@ -2940,6 +3412,23 @@
   // UI - User interface
   // =============================================================================
   const UI = {
+    _renderDebounceTimer: null,
+    _clockInterval: null,
+
+    destroy() {
+      if (this._clockInterval) {
+        clearInterval(this._clockInterval);
+        this._clockInterval = null;
+      }
+      if (this._renderDebounceTimer) {
+        clearTimeout(this._renderDebounceTimer);
+        this._renderDebounceTimer = null;
+      }
+      const container = document.getElementById('autoclicus-container');
+      if (container) container.remove();
+      Logger.info('nav', 'UI destroyed and cleaned up');
+    },
+
     init() {
       // Create container
       const container = document.createElement('div');
@@ -3066,6 +3555,16 @@
           object-fit: cover;
           flex-shrink: 0;
         }
+
+        /* CSS-only avatar (lightweight mode) */
+        .css-avatar {
+          display: flex; align-items: center; justify-content: center;
+          width: 28px; height: 28px; border-radius: 50%;
+          background: linear-gradient(135deg, #00874e, #00a65a);
+          color: white; font-weight: 700; font-size: 14px;
+          border: 2px solid rgba(255,255,255,0.6); flex-shrink: 0;
+        }
+        .css-avatar-lg { width: 40px; height: 40px; font-size: 18px; }
 
         .minimized-strip .mini-label {
           font-size: 12px;
@@ -4803,7 +5302,18 @@
     },
 
     render() {
-      const ui = State.shadowRoot.querySelector('#autoclicus-ui');
+      // Debounce: if called multiple times within N ms, only execute last one
+      // Lightweight mode uses longer debounce to reduce render frequency
+      const debounceMs = State.lightweightMode ? 150 : 50;
+      if (this._renderDebounceTimer) {
+        clearTimeout(this._renderDebounceTimer);
+      }
+      this._renderDebounceTimer = setTimeout(() => this._doRender(), debounceMs);
+    },
+
+    _doRender() {
+      this._renderDebounceTimer = null;
+      const ui = State.shadowRoot?.querySelector('#autoclicus-ui');
       if (!ui) return;
 
       // Apply state classes for border glow
@@ -4826,9 +5336,12 @@
             : (State.scenario.configured ? '📋 Prêt' : '');
         const hasActions = State.recordedActions.length > 0 || State.scenario.configured;
 
+        const avatarHTML = State.lightweightMode
+          ? '<div class="mini-avatar css-avatar">E</div>'
+          : `<img class="mini-avatar" src="${Config.emmaAvatar}" alt="E">`;
         safeHTML(ui, `
           <div class="minimized-strip ${stripClass}" id="mini-strip">
-            <img class="mini-avatar" src="${Config.emmaAvatar}" alt="E">
+            ${avatarHTML}
             <span class="mini-label">${miniModeName || 'AutoClicUS'}</span>
             <div class="mini-actions">
               <button class="mini-btn ${State.isRecording ? 'rec-active' : ''}" id="mini-rec" title="Enregistrer" ${State.isPlaying ? 'disabled' : ''}>⏺</button>
@@ -4962,11 +5475,14 @@
         }
       }
 
+      const headerAvatarContent = State.lightweightMode
+        ? '<div class="css-avatar css-avatar-lg">E</div>'
+        : `<img src="${Config.emmaAvatar}" alt="Emma" width="40" height="40"
+               style="border-radius: 50%; border: 2px solid rgba(255,255,255,0.6); object-fit: cover;">`;
       return `
         <div class="header">
           <div class="header-avatar">
-            <img src="${Config.emmaAvatar}" alt="Emma" width="40" height="40"
-                 style="border-radius: 50%; border: 2px solid rgba(255,255,255,0.6); object-fit: cover;">
+            ${headerAvatarContent}
           </div>
           <div class="header-info">
             <div class="header-title">Emma <span class="header-ai-badge">JSLAI</span></div>
@@ -5294,6 +5810,7 @@
 
       const stepTypeLabels = {
         setup: 'Clic (avant boucle)', loop: 'Clic (dans boucle)', wait: 'Attente',
+        wait_sidenav: 'Attente sidenav',
         paste_rate: 'Coller taux', condition: 'Détection erreur', error_recovery: 'Récupération erreur',
         marker: 'Marqueur boucle', rate_input: 'Taux du jour', ui_toggle: 'Toggle UI'
       };
@@ -5321,6 +5838,7 @@
       const renderStepDetail = (step) => {
         const status = Scenario.getStepStatus(step.id);
         if (step.type === 'wait') return `Délai: ${step.delay}ms`;
+        if (step.type === 'wait_sidenav') return `Attente sidenav (max ${step.delay}ms)`;
         if (step.type === 'paste_rate') return State.scenario.rateModel === 'vendeur' ? 'Colle taux vendeur' : 'Colle taux acheteur';
         if (status === 'configured') {
           const act = State.scenario.stepActions[step.id]?.[0];
@@ -5484,6 +6002,22 @@
             <button class="btn btn-secondary" id="btn-reset-scenario">
               Réinitialiser par défaut
             </button>
+          </div>
+
+          <div class="card" style="margin-top:8px; border: 1px dashed ${Config.theme.primary};">
+            <div class="card-header">&#128269; Auto-découverte</div>
+            <div style="font-size:11px;color:${Config.theme.textSecondary};margin-bottom:8px;">
+              ${AutoDiscover.isActive
+                ? `Mode actif — ${AutoDiscover.detectedSteps.length} pattern(s) détecté(s)`
+                : 'Enregistre votre flux naturel et détecte automatiquement les étapes du scénario.'}
+            </div>
+            <div class="btn-group">
+              ${AutoDiscover.isActive
+                ? `<button class="btn btn-secondary" id="btn-auto-discover-stop">&#9632; Arrêter</button>
+                   <button class="btn btn-primary" id="btn-auto-discover-apply" ${AutoDiscover.detectedSteps.length === 0 ? 'disabled' : ''}>&#10003; Appliquer (${AutoDiscover.detectedSteps.length})</button>`
+                : `<button class="btn btn-secondary" id="btn-auto-discover-start" ${State.isPlaying ? 'disabled' : ''}>&#128269; Démarrer</button>`
+              }
+            </div>
           </div>
 
         </div>
@@ -5964,6 +6498,23 @@
               URL: ${window.location.href}
             </div>
           </div>
+
+          <div class="card">
+            <div class="card-header">Journaux</div>
+            <div style="font-size: 12px; color: ${Config.theme.textSecondary}; margin-bottom: 8px;">
+              ${Logger._buffer.length} entrées en mémoire (max ${Logger._maxEntries})
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-secondary" id="btn-download-logs">📋 Télécharger logs (.txt)</button>
+              <button class="btn btn-secondary" id="btn-clear-logs">🗑️ Vider</button>
+            </div>
+            <div class="btn-group" style="margin-top: 6px;">
+              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" id="lightweight-mode" ${State.lightweightMode ? 'checked' : ''}>
+                Mode léger (réduit la mémoire)
+              </label>
+            </div>
+          </div>
         </div>
       `;
     },
@@ -6030,6 +6581,32 @@
                 </div>
               ` : ''}
             `}
+          </div>
+
+          <div class="card" style="border: 1px solid rgba(0,135,78,0.25);">
+            <div class="card-header">📌 Versions du scénario <span class="info-tip" data-info="Sauvegardez plusieurs versions du scénario sous des noms différents (max 10).">i</span></div>
+            <div style="font-size: 11px; color: ${Config.theme.textSecondary}; margin-bottom: 8px;">
+              Version active: <strong>${State.activeVersionName || 'Auto'}</strong>
+              ${State.scenarioVersions.length > 0 ? ` · ${State.scenarioVersions.length} version(s) sauvegardée(s)` : ''}
+            </div>
+            ${State.scenarioVersions.length > 0 ? `
+              <div style="margin-bottom: 8px;">
+                ${State.scenarioVersions.map(v => `
+                  <div style="display: flex; align-items: center; gap: 6px; padding: 4px 0; border-bottom: 1px solid ${Config.theme.border}; font-size: 12px;">
+                    <span style="flex: 1; font-weight: ${v.name === State.activeVersionName ? '600' : '400'};">${v.name === State.activeVersionName ? '▸ ' : ''}${v.name}</span>
+                    <span style="color: ${Config.theme.textSecondary}; font-size: 11px;">${new Date(v.updated).toLocaleDateString('fr-CA')}</span>
+                    <button class="btn btn-secondary btn-small" data-version-load="${v.name}" style="padding: 2px 8px; font-size: 11px;">Charger</button>
+                    <button class="btn btn-secondary btn-small" data-version-delete="${v.name}" style="padding: 2px 8px; font-size: 11px; color: ${Config.theme.error};">✕</button>
+                  </div>
+                `).join('')}
+              </div>
+            ` : '<div style="font-size: 12px; color: ${Config.theme.textSecondary}; margin-bottom: 8px;">Aucune version sauvegardée.</div>'}
+            <div class="input-group" style="margin-bottom: 6px;">
+              <input type="text" id="version-name" placeholder="Nom de la version" style="padding: 4px 8px; font-size: 12px; border: 1px solid ${Config.theme.border}; border-radius: 4px; width: 100%;">
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-primary btn-small" id="btn-save-version" ${!hasScenario ? 'disabled' : ''}>📌 Sauvegarder sous...</button>
+            </div>
           </div>
 
           <div class="card" style="border: 1px solid rgba(220,53,69,0.2);">
@@ -6560,6 +7137,27 @@
           return;
         }
 
+        // Calibrate single step
+        const calibSingleBtn = t.closest('[data-calib-step]');
+        if (calibSingleBtn) {
+          Calibration.testSingleStep(calibSingleBtn.dataset.calibStep);
+          return;
+        }
+
+        // Version load
+        const versionLoadBtn = t.closest('[data-version-load]');
+        if (versionLoadBtn) {
+          Scenario.loadVersion(versionLoadBtn.dataset.versionLoad);
+          return;
+        }
+
+        // Version delete
+        const versionDeleteBtn = t.closest('[data-version-delete]');
+        if (versionDeleteBtn) {
+          Scenario.deleteVersion(versionDeleteBtn.dataset.versionDelete);
+          return;
+        }
+
         // Zoom presets
         const zoomBtn = t.closest('[data-zoom]');
         if (zoomBtn) {
@@ -6797,6 +7395,14 @@
           this.render();
         });
       }
+
+      // Auto-discovery buttons
+      const btnAutoDiscoverStart = root.querySelector('#btn-auto-discover-start');
+      const btnAutoDiscoverStop = root.querySelector('#btn-auto-discover-stop');
+      const btnAutoDiscoverApply = root.querySelector('#btn-auto-discover-apply');
+      if (btnAutoDiscoverStart) btnAutoDiscoverStart.addEventListener('click', () => { AutoDiscover.start(); this.render(); });
+      if (btnAutoDiscoverStop) btnAutoDiscoverStop.addEventListener('click', () => { AutoDiscover.stop(); this.render(); });
+      if (btnAutoDiscoverApply) btnAutoDiscoverApply.addEventListener('click', () => { AutoDiscover.applyToScenario(); AutoDiscover.stop(); });
 
       // Calibration tab buttons
       const btnCalibStart = root.querySelector('#btn-calib-start');
@@ -7328,6 +7934,30 @@
             this.flash('success', 'Réinitialisé');
             this.render();
           }
+        });
+      }
+
+      // Logger buttons (Stats tab)
+      const btnDownloadLogs = root.querySelector('#btn-download-logs');
+      const btnClearLogs = root.querySelector('#btn-clear-logs');
+      const lightweightCheckbox = root.querySelector('#lightweight-mode');
+      if (btnDownloadLogs) btnDownloadLogs.addEventListener('click', () => Logger.download());
+      if (btnClearLogs) btnClearLogs.addEventListener('click', () => { Logger.clear(); this.flash('success', 'Logs vidés'); this.render(); });
+      if (lightweightCheckbox) lightweightCheckbox.addEventListener('change', (e) => { State.lightweightMode = e.target.checked; this.flash('success', State.lightweightMode ? 'Mode léger activé' : 'Mode normal'); this.render(); });
+
+      // Versioning buttons (Save tab)
+      const btnSaveVersion = root.querySelector('#btn-save-version');
+      if (btnSaveVersion) {
+        btnSaveVersion.addEventListener('click', () => {
+          const input = root.querySelector('#version-name');
+          const name = input?.value?.trim();
+          if (!name) {
+            this.flash('error', 'Entrez un nom pour la version');
+            return;
+          }
+          Scenario.saveAsVersion(name);
+          this.flash('success', `Version "${name}" sauvegardée`);
+          this.render();
         });
       }
     },
@@ -7954,8 +8584,8 @@
     // Initialize UI
     UI.init();
 
-    // Update clock + countdown every second
-    setInterval(() => {
+    // Update clock + countdown every second (store reference for cleanup)
+    UI._clockInterval = setInterval(() => {
       const clock = State.shadowRoot?.querySelector('.header-clock');
       if (clock) {
         const now = new Date();
