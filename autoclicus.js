@@ -9,7 +9,7 @@
   // CONFIG
   // =============================================================================
   const Config = {
-    version: '5.5.0',
+    version: '5.6.0',
     emmaAvatar: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAYABgAAD/4QDYRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUAAAABAAAARgEoAAMAAAABAAIAAIdpAAQAAAABAAAATgAAAAAAAABgAAAAAQAAAGAAAAABAAeQAwACAAAAFAAAAKiQBAACAAAAFAAAALySkQACAAAAAzAwAACSkgACAAAAAzAwAACgAQADAAAAAQABAACgAgAEAAAAAQAAAHigAwAEAAAAAQAAAHgAAAAAMjAyNToxMDowOCAxODozNjoyMwAyMDI1OjEwOjA4IDE4OjM2OjIzAP/tADhQaG90b3Nob3AgMy4wADhCSU0EBAAAAAAAADhCSU0EJQAAAAAAENQdjNmPALIE6YAJmOz4Qn7/wAARCAB4AHgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9sAQwAEBAQEBAQGBAQGCQYGBgkMCQkJCQwPDAwMDAwPEg8PDw8PDxISEhISEhISFRUVFRUVGRkZGRkcHBwcHBwcHBwc/9sAQwEEBQUHBwcMBwcMHRQQFB0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0d/90ABAAI/9oADAMBAAIRAxEAPwD6/wDFvjnw94Ihs5vEEkqf2hN9nt1hheZ3k2l8BYwT0BNaHh/xJpnibTRqum+ckBZl/wBJieB8qcH5JAGxnocc15V8avC2u+Jf+EXm0bT7nUU0zUzcXMdncpaTiLyXTKSu6YO4joc1xOq/DzX/ABKukxTaHewWdjpurRGHUb9LqX7RMFNuWkEh3ZbJXJOzAzjigD6myMkZGQcHnoaQMpxgg55GD1r401D4beJtB0OeVrF47STRNGOohbhSZb23uBJek/Pkv5eRuHDDgE1q6P8ADXXtN1mDX9D00RLH4ju7m2JnAC6VNbuIkxvJWMuwygGQTnFAH1bcTukTm1QTSrwF3ADPoT2rzrUj8TbwstoLKyjPTynLP/306EfoK8s+Dfg3xf4d8U3Wq63pjaZaXelJDJGHgMYu0m3NtWJ3ZgVJxI5LnvjpX0qKBNHyxrF94hj1CWx1S+nkkiO1lMrFc+w4H6Va0yzM7Ddzml8TIW8UX+f+ev8AQV1nh+2XKnFJGLPMviRYeItM+wXWkapPZROkhKQuyEMnO7KkHnpX094eeeHSLON55LhvJQl5mLuxIGSWPJrxr4sIFsbQAdIpa9o0biwtR/0xT+QrTojNPU5ZvidptlrFxpOrwPAIpxCsyfOpLEAZHUcn3r05SrAMpyDXyJ4tGfFNyPXUIR/4+lfU8TsgG09hTkl0NITfU1KM1EkokHoafWZuKBTsU0GnZoA//9D7qoJCjJpTXnmrfEvwLpepHSNQ1y0t7pG2tG0gyp9G7L+OKYmy546cyeEdY/69Jf8A0E1d0yeG28PWl1cOI4orVHd2OAqqgJJPYAVj+Jryz1LwZq1xp88dzE9pLh4mDqfkPcZFeI/HLxg2gfCHT9Ptn2XGuRxW+QcEQqgaU/jwp9mNDIW55R8Q/wBpLXdR1KbTvB8v9n6dGxRZwAZpQP4snO0HsAM479qr+CviP8VE3XNlLd3yzLuBnUyx8c5+boD7GvnPw/pseqarEt5uW3zukwCSVH8Ixnk19teHNe0Wz0sXKP5dvbgKw2MCmOAChG79K4a1VxklE9KjSUotyIdN8RL4tmbWTH5M0zfvYv7jgAEc+9et6AmMV4lJcadB8RLd9LcfZtas2lZFBAEsZHzYPQsDzXueifLjNdFNtxuzz60VGdkcx8Wf+PW1H/TGSvY9JOLK3HpEn8hXjvxVZZLW1ZCGHkv0Oa9h0k/6JB/1yT+VdHRHKviPmzxQN3iub31GH/0YlfUMZz+AFfMXiQE+LX99Sh/9GLX0zH1bmqkEDD8W3U1p4X1O5t3McscLFHU4Kt2IPrmq/gbxhH4jtPst4yrqMC/OOnmL/fUfzHaofHLbfCGqH/pmB+bAV876Vd3Fl4n0OW2cxub1FJHGVIOQfYjrRa6LUrM+zKTNIrLIu5DkH0orI6T/0ftHxPdXll4e1C50/Au0t5PJz08zadv61+VPh3wtqOuxLrM8glD3XlzBj85JYbmP1JNfffxx+J1j4E02GxU+ZqN4jtDEMcY4Dtn+EE/jXzb4O0U+MfD8d14aZLW9t7gC7ib7qE5O8Y52N1HoeKzqqfL7hrRcE25n0F4XstD8PfD/AFyKztRaxCORpFB++THgHqevSvh34peI9R1abTrS8uWnis4T5UbdEycYA9OB9a+tNcDad4HutCEsc2rzEJcCIn7nbr0wK+MvH8KLe2/7wSyLCqOVOQNvH51hHmU4qXY191wlKO9zsfhxpWjXNiH1VfMWRjk5xnH+Fey+HtMsNTbVLOaB3RmV40GRlY8gc4x0JIHY4rwb4b6lNb6fLZzweZbFyofGdu4cj+tfRvhuXSNK0ee61G4his4kLPK3DhR2z1z+tefNS9o4s9SDg6SkkcvrL2OmeMfCNtpQxuaTzOcnHCc16J8TrO+k0iwaz1KbTk88rKYsgOpHRiMHr05r5w1DxfNq/iGfxvp0YiTTsR20bjOBnhmHqc5P4DtX0f4g1hLv4V2et6vKqXE8cMoGAA8j/wAIHvnivRhGXs2lueTUcfbJtaHiuk6d4k0rVZrWdnlsAGAZ3yGVhncAT19a+1dC1y4nhWNoQqpGuDzzxXyP4o8UT+HvC8E17Cg1C+m2QIedsSD52P1PAr2L4X+PI/FkUsIJjuIIlLIeMjpke1dVJS5PeOPEcvP7ux57418W2th4qvYZzHHJFdJIobfk9GH3VIA/GtFfjS0G5isMrP8A7cvH/jteKfFSVW8dak8vzhXXK5xnAHB71xVxDc6iILmIby6YboAChbgf8BANbrzMYxunY+gNV+NUN/p9xpVyUjExG4qJWxghv7uO1cm/xC0k3Npdiba1rL5q4ifBIGPb1ryhtPMllEEVVlUkyMT0B5G49sD+dV3MNvHHA8StJGN7sf7zfwkd8Dt61Wj2J7H3d8HPirZeKNSufD8swMrqZoBtK5K/fHJOeCCPxr6Kr8rvh94jHh3xrpOsxqIobSdTJjvG/wAkmT/uMfavt7/hfPhH++fzrOUNTaMrKx//0vMP2pdbN/8AFy5sw3y6baW9vjsCVMx/9GCsf4OeIbnTfFNnYxXLQQ6k6282P4hnKj8+Pxq38cvDvmfFzxHcXdwxaSeNtqqBhTDGVG4k9FwOleQQXZ0m9eDcQyMGVxwRjlSD2Ira2hk9T7OvVms9Z1O5kY7ornEhb+4e5+gr5+8a23hnW9U3aDCsGCxlYP8A61yeoXooHt1qLVPH93e6JcWKRtHLdlRJMX3Fh3HPPPfNcdZBpCPlUntjKn8+ayaOSvUe0Wd34KaTwtrMT3aeZp1yQlxGeQR2b6qefpmvpXxZ4Gh8VeHzp+mELBKyvIy8+WVBKE45KFscjtXznp95DNbfYb8srcFWPXj0PQ19LfCrUH1K0Onebuks4/kIP34DwPrtJx9MVzzgm+bqRg8XNN05PRnysPB3jXSJruytdInZo2MMpUCRCevfg56g/jXWfErxVDN4d8NeBIwVubKOKS7B42SbdojPuMkn8K9lvPEGsReNNV0pVMUNwy7Yz1IjAH5n7w9jXjPjz4d2sEzazYwXbXd7cMgiOcISoIkyQSefU4rWEve5bHdCXtIe0b8jmPiq88muWlnAGeGxtIotwyQGPJJPb8a774MX8el+I7AzPtScPEf+BKev5Zrpbbw+NK8NzaTPdBta1lSslw67hlV5TPYBRgH1rhdctNO8K+HPODbtQiysEqkqd7/KCADyB1rdSS90p03JcxzPja8tdc8TajrWnsHs7iYlHY43KOMgckcjiuWMpEQtYpR5YYkDnnOOvFaFpY39xEI1mjgiUKqq3fA64GasxadfLNHAh+0PMzARKucchVbA9etOFSLlyJ6hUw1SFP2slZGLPFcOZJXmVy3J+Yc/gcVSa3mYb8Fl55AyMjryOM16B4i0S10OKwuYblZpW8xZk2hcGPvhcdzjmuKdplgsgJChl3zOQfmVpG79OqKpH1qo1E9UY8jKVu6xSHJ64HcY5B/LArV+0Qf89B+bf4VJZzM0piknEwTC5boCSc49enWtjybX/npH+Q/+Jq9GZn//0+e/aLs2s/ifdSsMC8toJh7/ACmP/wBkr5wvtJGpatYRCVYPtUqQNI/3V3MAGP0B/SvtT9qzQmH9h+KIl4BezlP1+eP8sN+dfG95GtxbMpBJHzDBwcryMHtXQtYmGzL/AI08Kv4L1KLS2uxerLEsyyKNoIOQMVi2cyjDowyOqk4IrmJb57lt7yO2OAJGLkD0ye1X7WWNsZ61izlqx3PWbBY9UtfsrPh/vL0+8vIrqPhz4tu/DGuwC4G17a4ePB/iDclD7MpO33FeW6MV8wyh9hTGMcHNduLJb/fczMDK6jcy8E7Put/vD1FQ9Dype5I+mPina21tqumeLLaJJ7eba2HGUcFcjI/3Tn6gVYvZPF2qaXC2mwQS2V2gMbQAltuMjq3HTGD9K4nT/EH/AAk3wmubK9cNd+H7lFZj1KNnH4HP9K5L4d/ELUJLM+HzftZJbqTbNgZznO08E4POKFc9CjUUZvs9T2e8nXwX8PrmbXy4umHzSuoUM7nCqvJOQor4x1rUrvX9Strm7/dwOTJEh7RR8A/8Cb+Ve+eKNTOpae1j4m1RL9EkBMDF2dTjqAq8HHtisnQfBVjq9z/wkcEvnW8CiCOJgODHz8yjpjII9evSlUqqmnJnq0XGpJU09TH8FfDS91+0Opaqfsdoztwo/fH02jsD6msnxLrVpoM134f8O2raXMhFvPNK5a5dP4gXzhQc87evrivpDRY5YX8oFm81SmAzLyRxyvI57jmvnPxd4C8YzeIb69GjYS4lLIITtG3op2tg5bGT7mubD1nOTlM7a9NRSjA85vIkMBW3Z5J5SsMYL7s7zgCqV/c5uJ44OYARGhx/BGAiHPqVAzXrPh74d63eeKNH0vXdLvNMtFcyTzzIUXKoSmxjkElsYrhPEugaBpmv32gadPctcw3xt4920p5YbBYkck9eOK9KLPKs+5k6PlrhETl3lUAAZPQ9K73+z9T/AOeUn/fsV6B4Q+Bmrx+LNJmTVEmtLe7iluInR0fbGQ7Lj5hllGOT0NfZf/CB6B/z7j86UpK44wTR/9T6s+JfhGPxx4M1LQMDz5I/Mt2P8M0fzIfzGK/KoyvEzQygo8bFWU9QQcEfga/Y/Nfnn+0v8Nn8Ma9/wmukRY0vV3/fhRxDcnk/RZOo98itIPoZyXU+TrqHybpwuNkh3CmqxU7k6Cpp7qe4QWi4EQcPnAzuwR164wenSp47f5cUmc82rl6zvFBBNd5pOpxiYSEExoPXHNeWSI0LZWtC2v5I12A4zSauctSkpI9Yg1K7s49St9PkVbXWI0BRjgq0R4z7HNc7a6KYVlnvbhi65C7OBnufesyxvTKk0ch5IIQn3wDWmk7z4t0DPGpCgjnJ9KRyuM72RoWmYbKJGwC2W4GM89TXe+EvFd14cj1F7Py5HlgHlxynCGRWG305wWA+tS6D8MvEOvhZrh0soegyC749lXOPoSK9s8PfB3QdPPmXkMmpuVKkXCqIjkY/1fPPpljg9Kh8r0Z0UcPUjNTvYz/BfxOntPMOp6XFJLI3WN1JQY6bhuXnrxXrUvxD0D7Msi21w0rEZjU4wO5GGwcfhXnd78DvDk8ouNLmuNHn7eTJvQf8BfJH4MK5TU/hz8StEdl8P3tvrUBAKmU+TMp75DEqfruPHYdKuLjsek0+56teeM9HuVMUMyR5HKTFh+BZ/lP4E18eSeGdWufiDJeyqjRy3zTZHQqzluMcdDXv9p8PfGOoxRtqkttYkD5toMjgnrgD5f1rvfCHgPw3ZyPa+XHqV40n72WRV3dBxtH8P1zVOcY7sUYt7Hrfhu1sJm/tO3hWN0XycpgAkYzkLgEjGORkdK6/NVbS0t7C2S0tI1iijGAqjAH4CrNQbJWR/9X7irJ13Q9L8S6RdaFrVutzZXiFJI29D0I9GB5BHIPNa1BoA/KP4pfCPWfhjrxgmDXOkXLk2d5jhh18t+wkUdR36juBwKxDHHFfsFr2g6R4n0m40TXLZbqzuV2ujfoynsw6gjkGvgD4ofAHXPA7S6toCyapogy29BmaAekijqB/eHHrg0ziq03uj52mti461QdNgx3q89wwOEYOPTHNQeU7fvH49qZirrc1/C0NpqOuw6dqU628M6uBIQcB8ZHAr6o+HWjeGfEFkfDWuIiXluxWJ4/lSYDow4Hz4/Ej3r4suLh7S5guIzhonDD8DXpmlfEiygmjldJYHUgllwcEdxg5yKUldHZBdT7IfQfF/gz5fD1093poO9oGwZQR02MeD9D19RXo3hnxjpmvxfZ5D9nvo+JIXGxvrtPI/l6E1x/w8+IFp4ssIoLiZWu9uUcdJl9f94dxXZX2g6PqEqzXdsPOjOVlQtHIv0dCGH4GudU9bpnQ53VmdM8aKCzHj1PA/OsW51/RLOJ5pr6ErH97a28j67c4/GuS8U+Ek1vS3tNOna0uchlnYtJJx23sSwB+tfPZ/Z/8X+Ir+aXVr6V44xhMPvyB1JZmJH5fhWijrZk20uj29/iHp+qalHpnh4PqF7cbf9HieNmAH3gF3gqRnJZsDjBr0HwvqcBuJLgWyxallIrqOZdkkC5cHouW3bdwPTGMcEZ8r+Hnwy0jwdNPZ6dKtpqszBo7y4dlkljCjdFG4TAXfnfja5wB6EeiTLc32ow2891b3MtrHPE9yitIheSdJEjG4qSyoCMBmwACc1dkCPZQQwDKcgjINGKbaxrHbRou0gKMFeh9xU+KBn//1vuPFJTqbQAmKcDSUUAeO+N/gd4F8Z+fdfZv7L1GYc3VoAjN3+dcbWz34zXy14n/AGYPHmmF30GW31mEfdCsIJf++ZDt/wDH6/Qen0XM5U4y1Z+OHif4aePtHkA1Pw9fwqmcv5DtH/32oKn8688ktZYHMcyMjjqrAg/ka/XD4v8A/IuN/vH+Rr8sPEn/ACGJv941ogWisdj8OrjxVZ30cGmade3dvI4P+jQySNG/Z12KfxFfo74Ph8Uatpq/25p8lncR4XfLhBIP7237wPrkV8w/s9f8f0H+8K+/U6VDVmWjnrbw9ChDXL+Yf7o4H+Nb8cccSCONQqjsKfRSGZF/odjqMbxzLkOQxB5XI74PAJ9RVG68H6Nd21rayK6x2XzQBG27HChA4A7gZ/M104pRQAqKERY1GFQBR9BTqQUtAH//2Q==',
     theme: {
       bg: '#ffffff',
@@ -245,7 +245,9 @@
       delayBetweenLoops: 2000,
       autoSave: true,
       showTooltips: true,
-      confirmBeforeDelete: true
+      confirmBeforeDelete: true,
+      defaultIntelligence: 2,    // 1=Littéral, 2=Équilibré, 3=Sémantique
+      minActionDelay: 200        // Floor delay in ms (prevents speed > safe for Angular animations)
     },
 
     // Rates
@@ -549,7 +551,17 @@
 
     _viewportWarned: false, // only warn once per session about viewport mismatch
 
-    resolve(fingerprint) {
+    // Intelligence level labels (used in UI)
+    intelligenceLabels: {
+      1: { name: 'Littéral', icon: '📌', desc: 'Position exacte (XPath, index)' },
+      2: { name: 'Équilibré', icon: '⚖️', desc: 'Mixte position + contenu (défaut)' },
+      3: { name: 'Sémantique', icon: '🧠', desc: 'Contenu et texte (tolère les déplacements)' }
+    },
+
+    resolve(fingerprint, intelligence) {
+      // Determine intelligence level: per-action > global default > 2
+      const level = intelligence || State.settings.defaultIntelligence || 2;
+
       // Viewport mismatch warning — fire ONCE per session (not per resolve call)
       if (fingerprint.viewport && !this._viewportWarned) {
         const dprDiff = Math.abs((window.devicePixelRatio || 1) - fingerprint.viewport.devicePixelRatio);
@@ -560,19 +572,18 @@
         }
       }
 
-      // ID match is definitive — return immediately
+      // ID match is definitive at all intelligence levels
       if (fingerprint.id) {
         const el = document.getElementById(fingerprint.id);
         if (el && this.isVisible(el)) {
-          return { element: el, confidence: this.calculateConfidence(el, fingerprint) };
+          return { element: el, confidence: this.calculateConfidence(el, fingerprint, level) };
         }
       }
 
-      // AG Grid fast path — most reliable for grid cells (stable col-id + row data matching)
+      // AG Grid fast path — intelligence level affects grid resolution strategy
       if (fingerprint.grid?.isGrid) {
-        const gridResult = this.resolveGridCell(fingerprint.grid, fingerprint);
+        const gridResult = this.resolveGridCell(fingerprint.grid, fingerprint, level);
         if (gridResult.element && gridResult.confidence >= 60) {
-          // SWAT: For ACTIONS column (small icons), find the clickable descendant
           let resolved = gridResult.element;
           const isActionsCol = fingerprint.grid.colId?.toLowerCase().includes('action') ||
                                fingerprint.elementSize?.width < 30 || fingerprint.elementSize?.height < 30;
@@ -583,21 +594,41 @@
               resolved = clickable;
             }
           }
-          // SWAT: Verify element is actually at its computed center (not obscured)
           resolved = this.verifyHitTarget(resolved);
           return { element: resolved, confidence: gridResult.confidence };
         }
       }
 
-      // Try ALL semantic strategies, pick the best confidence match
-      // SWAT: Removed findByCoords — coordinates are unreliable across zoom/resolution/panel states
-      const strategies = [
-        () => this.evaluateXPath(fingerprint.xpath),
-        () => this.findBySelectorAll(fingerprint.selector, fingerprint),
-        () => this.findByText(fingerprint.text, fingerprint.tag),
-        () => this.findByDataAttrs(fingerprint.dataAttrs),
-        () => this.findByPath(fingerprint.path)
-      ];
+      // Strategy order depends on intelligence level
+      let strategies;
+      if (level === 1) {
+        // LITTÉRAL: Positional first — XPath, selector, path. Text/data last.
+        strategies = [
+          () => this.evaluateXPath(fingerprint.xpath),
+          () => this.findBySelectorAll(fingerprint.selector, fingerprint),
+          () => this.findByPath(fingerprint.path),
+          () => this.findByDataAttrs(fingerprint.dataAttrs),
+          () => this.findByText(fingerprint.text, fingerprint.tag)
+        ];
+      } else if (level === 3) {
+        // SÉMANTIQUE: Content first — text, aria, data-attrs. Positional last.
+        strategies = [
+          () => this.findByText(fingerprint.text, fingerprint.tag),
+          () => this.findByDataAttrs(fingerprint.dataAttrs),
+          () => this.findBySelectorAll(fingerprint.selector, fingerprint),
+          () => this.evaluateXPath(fingerprint.xpath),
+          () => this.findByPath(fingerprint.path)
+        ];
+      } else {
+        // ÉQUILIBRÉ (default): All strategies equally, best confidence wins
+        strategies = [
+          () => this.evaluateXPath(fingerprint.xpath),
+          () => this.findBySelectorAll(fingerprint.selector, fingerprint),
+          () => this.findByText(fingerprint.text, fingerprint.tag),
+          () => this.findByDataAttrs(fingerprint.dataAttrs),
+          () => this.findByPath(fingerprint.path)
+        ];
+      }
 
       let best = { element: null, confidence: 0 };
 
@@ -681,9 +712,10 @@
     //   - The COLUMN clicked (col-id)
     //   - The RELATIVE POSITION (Nth visible row)
     //   - In loops: the SEQUENCE (1st iteration = 1st row, 2nd = 2nd row, etc.)
-    resolveGridCell(grid, fingerprint) {
+    resolveGridCell(grid, fingerprint, intelligence) {
       const noMatch = { element: null, confidence: 0 };
       if (!grid || !grid.colId) return noMatch;
+      const level = intelligence || State.settings.defaultIntelligence || 2;
 
       // Get all currently visible data rows (not headers, not loading rows)
       const gridEl = document.querySelector('.ag-root-wrapper, .ag-root, [ref="eRootWrapper"]');
@@ -709,88 +741,143 @@
 
       try {
         // ──────────────────────────────────────────────────────────
-        // Strategy 1: EXACT DATA match (same row content still visible)
-        // Works when: the specific transaction is still on screen
+        // INTELLIGENCE-DRIVEN STRATEGY ORDER:
+        //   Littéral (1): Position first → row-index → ARIA → data match last
+        //   Équilibré (2): Data match → position → row-index → ARIA (current default)
+        //   Sémantique (3): Data match (strict) → partial text → position last
         // ──────────────────────────────────────────────────────────
-        if (grid.rowText) {
-          for (const row of allVisibleRows) {
-            if (getRowText(row) === grid.rowText) {
-              const cell = getCellFromRow(row);
+
+        if (level === 1) {
+          // LITTÉRAL: "Click row 1 = always row 1 regardless of content"
+          // Position-first strategy
+          if (grid.visibleRowPosition >= 0 && grid.colId) {
+            const loopOffset = (State.isPlaying && State.currentLoop > 0) ? (State.currentLoop - 1) : 0;
+            const targetPos = grid.visibleRowPosition + loopOffset;
+            if (targetPos < allVisibleRows.length) {
+              const cell = getCellFromRow(allVisibleRows[targetPos]);
               if (cell) {
-                console.log(`✅ Grid S1 (exact data): found row "${grid.rowText.substring(0, 40)}"`);
-                return { element: cell, confidence: 95 };
+                console.log(`📌 Grid Littéral (position #${targetPos + 1}/${allVisibleRows.length})`);
+                return { element: cell, confidence: 92 };
+              }
+            }
+            if (targetPos >= allVisibleRows.length && loopOffset > 0) return noMatch;
+          }
+          // Fallback to row-index
+          if (grid.rowIndex) {
+            const row = document.querySelector(`[row-index="${grid.rowIndex}"]`);
+            if (row) { const cell = getCellFromRow(row); if (cell) return { element: cell, confidence: 80 }; }
+          }
+          // Last resort: data match
+          if (grid.rowText) {
+            for (const row of allVisibleRows) {
+              if (getRowText(row) === grid.rowText) { const cell = getCellFromRow(row); if (cell) return { element: cell, confidence: 70 }; }
+            }
+          }
+
+        } else if (level === 3) {
+          // SÉMANTIQUE: "Click CLIENT row = find CLIENT wherever it moved"
+          // Content-first strategy — scan all rows for matching text
+          if (grid.rowText) {
+            // Exact match
+            for (const row of allVisibleRows) {
+              if (getRowText(row) === grid.rowText) {
+                const cell = getCellFromRow(row);
+                if (cell) {
+                  console.log(`🧠 Grid Sémantique (exact): "${grid.rowText.substring(0, 40)}"`);
+                  return { element: cell, confidence: 98 };
+                }
+              }
+            }
+            // Partial match (first cell text contains recorded text)
+            const firstRecordedText = grid.rowText.split(' | ')[0]?.trim();
+            if (firstRecordedText) {
+              for (const row of allVisibleRows) {
+                const rowText = getRowText(row);
+                if (rowText.includes(firstRecordedText)) {
+                  const cell = getCellFromRow(row);
+                  if (cell) {
+                    console.log(`🧠 Grid Sémantique (partial): "${firstRecordedText}" found in "${rowText.substring(0, 40)}"`);
+                    return { element: cell, confidence: 85 };
+                  }
+                }
               }
             }
           }
-        }
-
-        // ──────────────────────────────────────────────────────────
-        // Strategy 2: VISIBLE POSITION (Nth visible row + same column)
-        // Works when: data changed but layout is the same.
-        // This is the KEY strategy for loops and live-updating lists:
-        //   "click the 3rd visible row" — doesn't matter what data is in it.
-        // In LOOP mode: offset by currentLoop to process rows sequentially.
-        // ──────────────────────────────────────────────────────────
-        if (grid.visibleRowPosition >= 0 && grid.colId) {
-          // In loop mode: advance to next row each iteration
-          // Loop 0 → original position, Loop 1 → position+1, etc.
-          const loopOffset = (State.isPlaying && State.currentLoop > 0) ? (State.currentLoop - 1) : 0;
-          const targetPos = grid.visibleRowPosition + loopOffset;
-
-          if (targetPos < allVisibleRows.length) {
-            const row = allVisibleRows[targetPos];
-            const cell = getCellFromRow(row);
-            if (cell) {
-              const rowPreview = getRowText(row).substring(0, 50);
-              console.log(`✅ Grid S2 (position #${targetPos + 1}/${allVisibleRows.length}${loopOffset > 0 ? `, loop offset +${loopOffset}` : ''}): "${rowPreview}"`);
-              return { element: cell, confidence: 88 };
+          // Cell text match (for single-cell clicks)
+          if (grid.cellText) {
+            for (const row of allVisibleRows) {
+              const cell = getCellFromRow(row);
+              if (cell && cell.textContent?.trim().includes(grid.cellText.substring(0, 30))) {
+                console.log(`🧠 Grid Sémantique (cell text): "${grid.cellText.substring(0, 30)}"`);
+                return { element: cell, confidence: 82 };
+              }
+            }
+          }
+          // Fallback to position (lowest priority for sémantique)
+          if (grid.visibleRowPosition >= 0) {
+            const loopOffset = (State.isPlaying && State.currentLoop > 0) ? (State.currentLoop - 1) : 0;
+            const targetPos = grid.visibleRowPosition + loopOffset;
+            if (targetPos < allVisibleRows.length) {
+              const cell = getCellFromRow(allVisibleRows[targetPos]);
+              if (cell) return { element: cell, confidence: 55 };
             }
           }
 
-          // If loop overflowed visible rows, we've processed all visible — stop gracefully
-          if (targetPos >= allVisibleRows.length && loopOffset > 0) {
-            console.warn(`⏭️ Grid: loop offset ${targetPos} exceeds visible rows (${allVisibleRows.length}) — all visible rows processed`);
-            return noMatch;
+        } else {
+          // ÉQUILIBRÉ (default): Data match first, then position
+          // Strategy 1: EXACT DATA match
+          if (grid.rowText) {
+            for (const row of allVisibleRows) {
+              if (getRowText(row) === grid.rowText) {
+                const cell = getCellFromRow(row);
+                if (cell) {
+                  console.log(`⚖️ Grid S1 (exact data): "${grid.rowText.substring(0, 40)}"`);
+                  return { element: cell, confidence: 95 };
+                }
+              }
+            }
           }
-        }
 
-        // ──────────────────────────────────────────────────────────
-        // Strategy 3: row-index match (AG Grid internal index)
-        // Works when: grid data hasn't been sorted/filtered since recording
-        // ──────────────────────────────────────────────────────────
-        if (grid.rowIndex) {
-          const row = document.querySelector(`[row-index="${grid.rowIndex}"]`);
-          if (row) {
-            const cell = getCellFromRow(row);
-            if (cell) {
-              console.log(`✅ Grid S3 (row-index ${grid.rowIndex})`);
-              return { element: cell, confidence: 75 };
+          // Strategy 2: VISIBLE POSITION
+          if (grid.visibleRowPosition >= 0 && grid.colId) {
+            const loopOffset = (State.isPlaying && State.currentLoop > 0) ? (State.currentLoop - 1) : 0;
+            const targetPos = grid.visibleRowPosition + loopOffset;
+            if (targetPos < allVisibleRows.length) {
+              const row = allVisibleRows[targetPos];
+              const cell = getCellFromRow(row);
+              if (cell) {
+                const rowPreview = getRowText(row).substring(0, 50);
+                console.log(`⚖️ Grid S2 (position #${targetPos + 1}/${allVisibleRows.length}${loopOffset > 0 ? `, loop offset +${loopOffset}` : ''}): "${rowPreview}"`);
+                return { element: cell, confidence: 88 };
+              }
+            }
+            if (targetPos >= allVisibleRows.length && loopOffset > 0) return noMatch;
+          }
+
+          // Strategy 3: row-index
+          if (grid.rowIndex) {
+            const row = document.querySelector(`[row-index="${grid.rowIndex}"]`);
+            if (row) {
+              const cell = getCellFromRow(row);
+              if (cell) return { element: cell, confidence: 75 };
+            }
+          }
+
+          // Strategy 4: ARIA-based
+          if (grid.ariaRowIndex && grid.ariaColIndex) {
+            const row = document.querySelector(`[aria-rowindex="${grid.ariaRowIndex}"]`);
+            if (row) {
+              const cell = row.querySelector(`[aria-colindex="${grid.ariaColIndex}"]`);
+              if (cell && this.isVisible(cell)) return { element: cell, confidence: 65 };
             }
           }
         }
 
-        // ──────────────────────────────────────────────────────────
-        // Strategy 4: ARIA-based (aria-rowindex + aria-colindex)
-        // ──────────────────────────────────────────────────────────
-        if (grid.ariaRowIndex && grid.ariaColIndex) {
-          const row = document.querySelector(`[aria-rowindex="${grid.ariaRowIndex}"]`);
-          if (row) {
-            const cell = row.querySelector(`[aria-colindex="${grid.ariaColIndex}"]`);
-            if (cell && this.isVisible(cell)) {
-              console.log(`✅ Grid S4 (ARIA row=${grid.ariaRowIndex}, col=${grid.ariaColIndex})`);
-              return { element: cell, confidence: 65 };
-            }
-          }
-        }
-
-        // ──────────────────────────────────────────────────────────
-        // Strategy 5: Just col-id on FIRST visible row (last resort)
-        // "I know which column, just give me any row"
-        // ──────────────────────────────────────────────────────────
+        // All levels: last resort — first visible row
         if (grid.colId && allVisibleRows.length > 0) {
           const cell = getCellFromRow(allVisibleRows[0]);
           if (cell) {
-            console.log(`⚠️ Grid S5 (first visible row, col=${grid.colId})`);
+            console.log(`⚠️ Grid fallback (first visible row, col=${grid.colId})`);
             return { element: cell, confidence: 40 };
           }
         }
@@ -951,51 +1038,63 @@
       return true;
     },
 
-    calculateConfidence(element, fingerprint) {
+    calculateConfidence(element, fingerprint, intelligence) {
+      const level = intelligence || State.settings.defaultIntelligence || 2;
+
+      // Weights per intelligence level:
+      // Littéral (1): Heavy on position (xpath, class, coords). Light on content.
+      // Équilibré (2): Balanced weights (current default).
+      // Sémantique (3): Heavy on content (text, aria, data). Light on position.
+      const weights = {
+        1: { id: 40, className: 15, name: 10, text: 5,  tag: 5, aria: 5,  role: 5,  xpath: 40, grid: 15, coords: 10 }, // total ~150
+        2: { id: 40, className: 15, name: 15, text: 25, tag: 5, aria: 15, role: 10, xpath: 35, grid: 15, coords: 5 },  // total ~180
+        3: { id: 40, className: 5,  name: 15, text: 40, tag: 5, aria: 25, role: 10, xpath: 10, grid: 15, coords: 0 }   // total ~165
+      };
+      const w = weights[level] || weights[2];
       let score = 0;
 
-      // ID match is the strongest signal — 40pts
-      if (element.id && element.id === fingerprint.id) score += 40;
-      // Class match — 15pts (compare cleaned classNames for Angular compatibility)
-      if (this.cleanClassName(element.className || '') === fingerprint.className) score += 15;
-      // Name attribute — 15pts
-      if (element.getAttribute('name') === fingerprint.name) score += 15;
-      // Text content match — 25pts (strong differentiator for similar elements)
-      if (fingerprint.text && element.textContent?.trim().includes(fingerprint.text.substring(0, 30))) score += 25;
-      // Tag match — 5pts (very generic)
-      if (element.tagName.toLowerCase() === fingerprint.tag) score += 5;
-      // Aria-label match — 15pts (strong for icon buttons / SVGs)
+      // ID match is the strongest signal
+      if (element.id && element.id === fingerprint.id) score += w.id;
+      // Class match (compare cleaned classNames for Angular compatibility)
+      if (this.cleanClassName(element.className || '') === fingerprint.className) score += w.className;
+      // Name attribute
+      if (element.getAttribute('name') === fingerprint.name) score += w.name;
+      // Text content match (strong differentiator for similar elements)
+      if (fingerprint.text && element.textContent?.trim().includes(fingerprint.text.substring(0, 30))) score += w.text;
+      // Tag match (very generic)
+      if (element.tagName.toLowerCase() === fingerprint.tag) score += w.tag;
+      // Aria-label match (strong for icon buttons / SVGs)
       if (fingerprint.ariaLabel) {
         const elLabel = element.getAttribute('aria-label') || element.closest('[aria-label]')?.getAttribute('aria-label') || '';
-        if (elLabel === fingerprint.ariaLabel) score += 15;
+        if (elLabel === fingerprint.ariaLabel) score += w.aria;
       }
-      // Role match — 10pts (important for Angular Material components)
-      if (fingerprint.role && element.getAttribute('role') === fingerprint.role) score += 10;
-      // XPath positional match — 35pts (strongest unique identifier in Angular/SPA)
+      // Role match (important for Angular Material components)
+      if (fingerprint.role && element.getAttribute('role') === fingerprint.role) score += w.role;
+      // XPath positional match
       if (fingerprint.xpath) {
         try {
           const xpathEl = this.evaluateXPath(fingerprint.xpath);
-          if (xpathEl === element) score += 35;
+          if (xpathEl === element) score += w.xpath;
         } catch (e) {}
       }
       // AG Grid cell match — col-id is strong identity
       if (fingerprint.grid?.isGrid && fingerprint.grid?.colId) {
         const cellColId = element.closest('[col-id]')?.getAttribute('col-id') || element.getAttribute('col-id');
-        if (cellColId === fingerprint.grid.colId) score += 15;
+        if (cellColId === fingerprint.grid.colId) score += w.grid;
       }
-      // Coordinate proximity tiebreaker — 5pts if within 50px of recorded position
-      // SWAT audit: Reduced from 10 to 5pts. Coords are unreliable across zoom/resolution
-      // but still useful as weak tiebreaker when all semantic signals are equal.
-      if (fingerprint.coords) {
+      // Coordinate proximity tiebreaker
+      if (w.coords > 0 && fingerprint.coords) {
         try {
           const r = element.getBoundingClientRect();
           const dx = (r.left + r.width / 2) - fingerprint.coords.x;
           const dy = (r.top + r.height / 2) - fingerprint.coords.y;
-          if (Math.sqrt(dx * dx + dy * dy) < 50) score += 5;
+          if (Math.sqrt(dx * dx + dy * dy) < 50) score += w.coords;
         } catch (e) {}
       }
 
-      return Math.min(score, 100);
+      // Normalize to 0-100 (divide by max possible for this level, then scale to 100)
+      const maxPossible = Object.values(w).reduce((a, b) => a + b, 0);
+      return Math.min(Math.round((score / maxPossible) * 100), 100);
     }
   };
 
@@ -2074,7 +2173,19 @@
       State.calibration.results = [];
       State.calibration.awaitingResponse = false;
       State.calibration.viewportMatch = this.checkViewport();
+
+      // P0 FIX: Warn if recorded URL doesn't match current page
+      const currentUrl = window.location.href;
+      const recordedUrl = State.recordedActions.find(a => a.url)?.url;
+      if (recordedUrl && !currentUrl.includes(new URL(recordedUrl).pathname.split('/').slice(0, 3).join('/'))) {
+        Logger.warn('calibrate', `URL mismatch: recorded on ${recordedUrl}, current: ${currentUrl}`);
+        UI.flash('warning', 'Attention: les actions ont été enregistrées sur une page différente');
+      }
+
       UI.render();
+
+      let consecutiveFails = 0;
+      const MAX_CONSECUTIVE_FAILS = 5;
 
       for (let i = 0; i < testable.length; i++) {
         if (!State.calibration.isRunning) break;
@@ -2084,6 +2195,19 @@
         await this._executePrecedingSteps(i);
 
         await this.testAction(testable[i], i, testable.length);
+
+        // P0 FIX: Auto-stop after N consecutive fails (avoid endless fail loop)
+        const lastResult = State.calibration.results[State.calibration.results.length - 1];
+        if (lastResult?.status === 'fail') {
+          consecutiveFails++;
+          if (consecutiveFails >= MAX_CONSECUTIVE_FAILS) {
+            Logger.warn('calibrate', `Auto-stopping: ${MAX_CONSECUTIVE_FAILS} consecutive failures — elements likely from a different page`);
+            UI.flash('error', `Arrêt auto: ${MAX_CONSECUTIVE_FAILS} échecs consécutifs — vérifiez que vous êtes sur la bonne page`);
+            break;
+          }
+        } else {
+          consecutiveFails = 0;
+        }
       }
 
       State.calibration.isRunning = false;
@@ -2271,6 +2395,8 @@
       smartd:     { label: 'SmartD optimal', w: () => 1400, h: () => 900, x: () => Math.round((screen.availWidth - 1400) / 2), y: () => Math.round((screen.availHeight - 900) / 2) }
     },
 
+    _appliedLayouts: {}, // P0 FIX: Cache to prevent log spam
+
     applyLayout(presetKey) {
       const preset = this.layoutPresets[presetKey];
       if (!preset) return;
@@ -2279,6 +2405,11 @@
       const h = typeof preset.h === 'function' ? preset.h() : preset.h;
       const x = typeof preset.x === 'function' ? preset.x() : preset.x;
       const y = typeof preset.y === 'function' ? preset.y() : preset.y;
+
+      // P0 FIX: Skip if same layout was already attempted (prevents log spam)
+      const layoutKey = `${presetKey}_${w}_${h}`;
+      if (this._appliedLayouts[layoutKey]) return;
+      this._appliedLayouts[layoutKey] = true;
 
       // Try resizeTo/moveTo (works on popup windows opened with window.open)
       let resized = false;
@@ -2350,9 +2481,13 @@
       }
 
       // Expanded selector lists for maximum compatibility
+      // P0 FIX: Added Angular Material mat-paginator selectors for SmartD compatibility
       const lastSelectors = [
         '.ag-paging-button[ref="btLast"]', '[ref="btLast"]',
         'button[aria-label*="last" i]', 'button[aria-label*="dernière" i]',
+        'button[aria-label*="Dernière page" i]',
+        '.mat-paginator-navigation-last', 'button.mat-mdc-paginator-navigation-last',
+        'mat-paginator button:last-of-type',
         'button:has(.ag-icon-last)', 'button:has(mat-icon)',
         '.ag-paging-panel button:last-of-type',
         '[class*="pagination"] button:last-of-type',
@@ -2361,6 +2496,9 @@
       const firstSelectors = [
         '.ag-paging-button[ref="btFirst"]', '[ref="btFirst"]',
         'button[aria-label*="first" i]', 'button[aria-label*="première" i]',
+        'button[aria-label*="Première page" i]',
+        '.mat-paginator-navigation-first', 'button.mat-mdc-paginator-navigation-first',
+        'mat-paginator button:first-of-type',
         'button:has(.ag-icon-first)', 'button:has(mat-icon)',
         '.ag-paging-panel button:first-of-type',
         '[class*="pagination"] button:first-of-type',
@@ -2436,6 +2574,11 @@
   const Recorder = {
     start() {
       if (State.isRecording) return;
+      // P1 FIX: Prevent recording during playback (would record synthetic events)
+      if (State.isPlaying) {
+        UI.flash('warning', 'Impossible d\'enregistrer pendant la lecture');
+        return;
+      }
 
       State.isRecording = true;
       State.recordedActions = [];
@@ -2820,8 +2963,10 @@
             break; // Break inner for loop, continue to next loop iteration
           }
 
-          // Delay between actions
-          await this.sleep(State.settings.delayBetweenActions / State.speed);
+          // Delay between actions (P1 FIX: enforce minimum delay floor for Angular animation safety)
+          const rawDelay = State.settings.delayBetweenActions / State.speed;
+          const safeDelay = Math.max(rawDelay, State.settings.minActionDelay || 200);
+          await this.sleep(safeDelay);
         }
 
         // Record loop completion for stats
@@ -2837,7 +2982,8 @@
         }
 
         if (State.currentLoop < State.loopCount) {
-          await this.sleep(State.settings.delayBetweenLoops / State.speed);
+          const rawLoopDelay = State.settings.delayBetweenLoops / State.speed;
+          await this.sleep(Math.max(rawLoopDelay, State.settings.minActionDelay || 200));
         }
       }
 
@@ -2961,7 +3107,9 @@
         }
 
         // Regular action — resolve with MutationObserver-driven retry (Angular/SPA rendering)
-        let resolved = Fingerprint.resolve(action.fingerprint);
+        // Pass per-action intelligence level (or global default)
+        const actionIntelligence = action.intelligence || State.settings.defaultIntelligence || 2;
+        let resolved = Fingerprint.resolve(action.fingerprint, actionIntelligence);
         if (!resolved.element) {
           // Use MutationObserver to wait for DOM changes, then re-resolve
           resolved = await new Promise((resolvePromise) => {
@@ -2972,7 +3120,7 @@
             const observer = new MutationObserver(() => {
               if (resolved_early) return;
               attempts++;
-              const r = Fingerprint.resolve(action.fingerprint);
+              const r = Fingerprint.resolve(action.fingerprint, actionIntelligence);
               if (r.element) {
                 resolved_early = true;
                 clearInterval(interval);
@@ -2985,7 +3133,7 @@
             // Fallback: periodic check + hard timeout
             const interval = setInterval(() => {
               if (resolved_early) return;
-              const r = Fingerprint.resolve(action.fingerprint);
+              const r = Fingerprint.resolve(action.fingerprint, actionIntelligence);
               if (r.element) {
                 resolved_early = true;
                 clearInterval(interval);
@@ -2998,7 +3146,7 @@
               if (!resolved_early) {
                 clearInterval(interval);
                 observer.disconnect();
-                resolvePromise(Fingerprint.resolve(action.fingerprint)); // Final attempt
+                resolvePromise(Fingerprint.resolve(action.fingerprint, actionIntelligence)); // Final attempt
               }
             }, maxWait);
           });
@@ -3018,7 +3166,7 @@
         // Stale element check — verify still in DOM (Angular *ngIf may have removed it)
         if (!element.isConnected) {
           console.warn('⏭️ Stale element (detached from DOM), re-resolving:', action.fingerprint.selector);
-          resolved = Fingerprint.resolve(action.fingerprint);
+          resolved = Fingerprint.resolve(action.fingerprint, actionIntelligence);
           if (!resolved.element || !resolved.element.isConnected) {
             Audit.log(action, action.fingerprint?.selector, '', 'skipped', 0);
             return;
@@ -6366,6 +6514,7 @@
                     </div>
                   </div>
                   <div class="action-btns">
+                    <button class="action-btn-mini tooltip-wrap" data-tip="${(Fingerprint.intelligenceLabels[action.intelligence || State.settings.defaultIntelligence || 2] || {}).desc || 'Intelligence'}" data-cycle-intelligence="${index}" style="font-size: 13px; min-width: 22px;">${(Fingerprint.intelligenceLabels[action.intelligence || State.settings.defaultIntelligence || 2] || {}).icon || '⚖️'}</button>
                     ${index > 0 ? `<button class="action-btn-mini tooltip-wrap" data-tip="Monter" data-move-up="${index}">↑</button>` : ''}
                     ${index < State.recordedActions.length - 1 ? `<button class="action-btn-mini tooltip-wrap" data-tip="Descendre" data-move-down="${index}">↓</button>` : ''}
                     <button class="action-btn-mini tooltip-wrap" data-tip="Dupliquer" data-duplicate="${index}">⧉</button>
@@ -6872,6 +7021,35 @@
           </div>
 
           <div class="card">
+            <div class="card-header">Intelligence par défaut</div>
+            <div style="font-size: 12px; color: ${Config.theme.textSecondary}; margin-bottom: 12px;">
+              Contrôle comment les éléments sont trouvés lors de la lecture. Modifiable par action dans l'onglet Modifier.
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+              ${[1, 2, 3].map(lvl => {
+                const label = Fingerprint.intelligenceLabels[lvl];
+                const isActive = (State.settings.defaultIntelligence || 2) === lvl;
+                return `<button class="btn ${isActive ? 'btn-primary' : 'btn-secondary'} btn-small" data-set-intelligence="${lvl}" style="flex:1;">
+                  ${label.icon} ${label.name}
+                </button>`;
+              }).join('')}
+            </div>
+            <div style="font-size: 11px; color: ${Config.theme.textSecondary};">
+              ${(Fingerprint.intelligenceLabels[State.settings.defaultIntelligence || 2] || {}).desc || ''}
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Délai minimum (ms)</div>
+            <div style="font-size: 12px; color: ${Config.theme.textSecondary}; margin-bottom: 8px;">
+              Plancher de délai entre actions, même à vitesse 8x. Protège contre les animations Angular trop lentes.
+            </div>
+            <div class="input-group">
+              <input type="number" id="setting-min-delay" min="50" max="1000" step="50" value="${State.settings.minActionDelay || 200}">
+            </div>
+          </div>
+
+          <div class="card">
             <div class="card-header">Emma Vibe Theme</div>
             <div style="display:flex;gap:8px;margin-bottom:12px;">
               ${Object.entries(Config.vibeThemes).map(([id, t]) => `
@@ -7064,6 +7242,19 @@
           if (State.settings.confirmBeforeDelete && !confirm('Supprimer cette action?')) return;
           State.recordedActions.splice(i, 1);
           State.editingActionIndex = null;
+          this.render();
+          return;
+        }
+
+        // Intelligence level cycle (📌 → ⚖️ → 🧠 → 📌)
+        const intBtn = t.closest('[data-cycle-intelligence]');
+        if (intBtn) {
+          const i = parseInt(intBtn.dataset.cycleIntelligence);
+          const action = State.recordedActions[i];
+          const current = action.intelligence || State.settings.defaultIntelligence || 2;
+          action.intelligence = current >= 3 ? 1 : current + 1;
+          const label = Fingerprint.intelligenceLabels[action.intelligence];
+          this.flash('info', `${label.icon} ${label.name}: ${label.desc}`);
           this.render();
           return;
         }
@@ -7678,6 +7869,20 @@
       if (autoSave) autoSave.addEventListener('change', (e) => { State.settings.autoSave = e.target.checked; });
       if (tooltips) tooltips.addEventListener('change', (e) => { State.settings.showTooltips = e.target.checked; });
       if (confirmDelete) confirmDelete.addEventListener('change', (e) => { State.settings.confirmBeforeDelete = e.target.checked; });
+
+      // Intelligence default buttons
+      root.querySelectorAll('[data-set-intelligence]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          State.settings.defaultIntelligence = parseInt(btn.dataset.setIntelligence);
+          this.render();
+          this.flash('success', `Intelligence par défaut: ${Fingerprint.intelligenceLabels[State.settings.defaultIntelligence].icon} ${Fingerprint.intelligenceLabels[State.settings.defaultIntelligence].name}`);
+        });
+      });
+
+      // Min delay input
+      const minDelay = root.querySelector('#setting-min-delay');
+      if (minDelay) minDelay.addEventListener('input', (e) => { State.settings.minActionDelay = parseInt(e.target.value) || 200; });
+
       if (resetSettings) {
         resetSettings.addEventListener('click', () => {
           State.settings = {
@@ -7686,7 +7891,9 @@
             delayBetweenLoops: 2000,
             autoSave: true,
             showTooltips: true,
-            confirmBeforeDelete: true
+            confirmBeforeDelete: true,
+            defaultIntelligence: 2,
+            minActionDelay: 200
           };
           this.render();
           this.flash('success', 'Réglages réinitialisés');
